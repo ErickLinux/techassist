@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Registro de Servicio | TechAssist</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  >
+
+  <link rel="stylesheet" href="./css/registro-servicio.css">
+</head>
+
+<body>
+
+  <!-- Menú lateral -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-header">
+      <h2>TechAssist</h2>
+    </div>
+
+    <nav class="sidebar-menu">
+
+      <a href="./dashboard.html" class="menu-item">
+        <i class="bi bi-house-door"></i>
+        <span>Inicio</span>
+      </a>
+
+      <a href="./registro-servicio.html" class="menu-item active">
+        <i class="bi bi-clipboard-plus"></i>
+        <span>Nuevo servicio</span>
+      </a>
+
+      <a href="#" class="menu-item">
+        <i class="bi bi-clock-history"></i>
+        <span>Horas extras</span>
+      </a>
+
+      <a href="#" class="menu-item">
+        <i class="bi bi-receipt"></i>
+        <span>Liquidaciones</span>
+      </a>
+
+      <a href="#" class="menu-item">
+        <i class="bi bi-file-earmark-bar-graph"></i>
+        <span>Reportes</span>
+      </a>
+
+      <a href="#" class="menu-item">
+        <i class="bi bi-person-circle"></i>
+        <span>Perfil</span>
+      </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <button
+        type="button"
+        class="btn btn-outline-light w-100"
+        id="btnCerrarSesion"
+      >
+        <i class="bi bi-box-arrow-left"></i>
+        Cerrar sesión
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+
+    <header class="topbar">
+
+      <button
+        type="button"
+        class="btn btn-light menu-button"
+        id="btnMenu"
+      >
+        <i class="bi bi-list"></i>
+      </button>
+
+      <div>
+        <span class="text-secondary">Usuario:</span>
+        <strong id="nombreUsuario">Usuario</strong>
+      </div>
+
+    </header>
+
+    <section class="content">
+
+      <div class="page-header">
+
+        <div>
+          <h1>Registro de servicio</h1>
+
+          <p>
+            Ingresa la información correspondiente al servicio realizado.
+          </p>
+        </div>
+
+        <a href="./dashboard.html" class="btn btn-outline-secondary">
+          <i class="bi bi-arrow-left"></i>
+          Regresar
+        </a>
+
+      </div>
+
+      <form id="formServicio">
+
+        <!-- Información general -->
+        <section class="card form-card">
+
+          <div class="card-header-custom">
+            <div class="section-icon">
+              <i class="bi bi-person-vcard"></i>
+            </div>
+
+            <div>
+              <h2>Información general</h2>
+              <p>Datos automáticos del técnico y del registro.</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+            <div class="row g-3">
+
+              <div class="col-12 col-md-6">
+                <label for="nombreTecnico" class="form-label">
+                  Nombre del técnico
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombreTecnico"
+                  readonly
+                >
+              </div>
+
+              <div class="col-12 col-md-3">
+                <label for="diaServicio" class="form-label">
+                  Día
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="diaServicio"
+                  readonly
+                >
+              </div>
+
+              <div class="col-12 col-md-3">
+                <label for="fechaServicio" class="form-label">
+                  Fecha
+                </label>
+
+                <input
+                  type="date"
+                  class="form-control"
+                  id="fechaServicio"
+                  readonly
+                >
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Ubicación -->
+        <section class="card form-card">
+
+          <div class="card-header-custom">
+            <div class="section-icon">
+              <i class="bi bi-geo-alt"></i>
+            </div>
+
+            <div>
+              <h2>Ubicación de la tienda</h2>
+              <p>Ingresa únicamente el código identificador de la tienda.</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+            <div class="row g-3">
+
+              <div class="col-12 col-md-4">
+                <label for="codigoTienda" class="form-label">
+                  Código de tienda
+                  <span class="required">*</span>
+                </label>
+
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <i class="bi bi-shop"></i>
+                  </span>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="codigoTienda"
+                    placeholder="Ejemplo: 4155"
+                    min="1"
+                    required
+                  >
+
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="btnBuscarTienda"
+                  >
+                    <i class="bi bi-search"></i>
+                  </button>
+                </div>
+
+                <div class="form-text">
+                  Escribe solamente el número identificador.
+                </div>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="nombreTienda" class="form-label">
+                  Tienda
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombreTienda"
+                  placeholder="Se completará automáticamente"
+                  readonly
+                >
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="departamento" class="form-label">
+                  Departamento
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="departamento"
+                  placeholder="Se completará automáticamente"
+                  readonly
+                >
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="municipio" class="form-label">
+                  Municipio
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="municipio"
+                  placeholder="Se completará automáticamente"
+                  readonly
+                >
+              </div>
+
+            </div>
+
+            <div
+              class="alert mt-3 d-none"
+              id="mensajeTienda"
+              role="alert"
+            ></div>
+
+          </div>
+
+        </section>
+
+        <!-- Información del servicio -->
+        <section class="card form-card">
+
+          <div class="card-header-custom">
+            <div class="section-icon">
+              <i class="bi bi-tools"></i>
+            </div>
+
+            <div>
+              <h2>Información del servicio</h2>
+              <p>Datos del ticket, atención y recorrido realizado.</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+            <div class="row g-3">
+
+              <div class="col-12 col-md-6">
+                <label for="numeroTicket" class="form-label">
+                  Número de ticket
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="numeroTicket"
+                  placeholder="Ejemplo: INC54125616"
+                  maxlength="50"
+                  required
+                >
+              </div>
+
+              <div class="col-12 col-md-6">
+                <label for="numeroCaf" class="form-label">
+                  Número de CAF
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control"
+                  id="numeroCaf"
+                  placeholder="Ingresa el número de CAF"
+                  maxlength="50"
+                >
+              </div>
+
+              <div class="col-12">
+                <hr class="section-divider">
+              </div>
+
+              <div class="col-12">
+                <h3 class="subsection-title">
+                  <i class="bi bi-stopwatch"></i>
+                  Tiempo de atención
+                </h3>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="horaIngreso" class="form-label">
+                  Hora de ingreso
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="time"
+                  class="form-control"
+                  id="horaIngreso"
+                  required
+                >
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="horaEgreso" class="form-label">
+                  Hora de egreso
+                  <span class="required">*</span>
+                </label>
+
+                <input
+                  type="time"
+                  class="form-control"
+                  id="horaEgreso"
+                  required
+                >
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="totalAtencion" class="form-label">
+                  Total de atención
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control calculated-field"
+                  id="totalAtencion"
+                  value="0 h 0 min"
+                  readonly
+                >
+              </div>
+
+              <div class="col-12">
+                <hr class="section-divider">
+              </div>
+
+              <div class="col-12">
+                <h3 class="subsection-title">
+                  <i class="bi bi-car-front"></i>
+                  Información del viaje
+                </h3>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="inicioViaje" class="form-label">
+                  Inicio de viaje
+                </label>
+
+                <input
+                  type="time"
+                  class="form-control"
+                  id="inicioViaje"
+                >
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="finViaje" class="form-label">
+                  Fin de viaje
+                </label>
+
+                <input
+                  type="time"
+                  class="form-control"
+                  id="finViaje"
+                >
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="totalViaje" class="form-label">
+                  Total de viaje
+                </label>
+
+                <input
+                  type="text"
+                  class="form-control calculated-field"
+                  id="totalViaje"
+                  value="0 h 0 min"
+                  readonly
+                >
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label for="totalKilometros" class="form-label">
+                  Total de kilómetros recorridos
+                  <span class="required">*</span>
+                </label>
+
+                <div class="input-group">
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="totalKilometros"
+                    placeholder="Ejemplo: 160"
+                    min="0"
+                    step="1"
+                    required
+                  >
+
+                  <span class="input-group-text">km</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Trabajo realizado -->
+        <section class="card form-card">
+
+          <div class="card-header-custom">
+            <div class="section-icon">
+              <i class="bi bi-card-text"></i>
+            </div>
+
+            <div>
+              <h2>Trabajo realizado o justificación</h2>
+              <p>Describe claramente la actividad realizada.</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+            <label for="trabajoRealizado" class="form-label">
+              Descripción
+              <span class="required">*</span>
+            </label>
+
+            <textarea
+              class="form-control"
+              id="trabajoRealizado"
+              rows="6"
+              maxlength="1500"
+              placeholder="Describe el trabajo realizado, diagnóstico, reparación o justificación..."
+              required
+            ></textarea>
+
+            <div class="character-counter">
+              <span id="contadorCaracteres">0</span>/1500 caracteres
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- Botones -->
+        <div class="form-actions">
+
+          <button
+            type="reset"
+            class="btn btn-outline-secondary btn-lg"
+            id="btnLimpiar"
+          >
+            <i class="bi bi-eraser"></i>
+            Limpiar
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+          >
+            <i class="bi bi-floppy"></i>
+            Guardar servicio
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+
+  </main>
+
+  <script src="./js/registro-servicio.js"></script>
+</body>
+</html>
