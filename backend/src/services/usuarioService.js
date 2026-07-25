@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import prisma from "../config/prisma.js";
-
+import jwt from "jsonwebtoken";
 export const crearUsuario = async ({
   nombre,
   correo,
@@ -59,4 +59,72 @@ export const crearUsuario = async ({
   });
 
   return usuario;
+};
+
+export const iniciarSesion = async ({ correo, password }) => {
+  if (!correo || !password) {
+    const error = new Error(
+      "El correo y la contraseña son obligatorios"
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const correoNormalizado = correo.trim().toLowerCase();
+
+  const usuario = await prisma.usuario.findUnique({
+    where: {
+      correo: correoNormalizado
+    }
+  });
+
+  if (!usuario) {
+    const error = new Error(
+      "Correo o contraseña incorrectos"
+    );
+    error.statusCode = 401;
+    throw error;
+  }
+
+  if (!usuario.activo) {
+    const error = new Error(
+      "El usuario se encuentra desactivado"
+    );
+    error.statusCode = 403;
+    throw error;
+  }
+
+  const passwordCorrecta = await bcrypt.compare(
+    password,
+    usuario.passwordHash
+  );
+
+  if (!passwordCorrecta) {
+    const error = new Error(
+      "Correo o contraseña incorrectos"
+    );
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const token = jwt.sign(
+    {
+      id: usuario.id,
+      correo: usuario.correo
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "8h"
+    }
+  );
+
+  return {
+    token,
+    usuario: {
+      id: usuario.id,
+      nombre: usuario.nombre,
+      correo: usuario.correo,
+      bodega: usuario.bodega
+    }
+  };
 };
