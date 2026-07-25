@@ -12,14 +12,66 @@ datasource db {
 }
 
 model Usuario {
-  id            String   @id @default(uuid())
-  nombre        String
-  correo        String   @unique
-  passwordHash  String
-  bodega        String?
-  activo        Boolean  @default(true)
-  fechaRegistro DateTime @default(now())
+  id                String             @id @default(uuid())
+  nombre            String
+  correo            String             @unique
+  passwordHash      String
+  bodega            String?
+  activo            Boolean            @default(true)
+  fechaRegistro     DateTime           @default(now())
+  registrosServicio RegistroServicio[]
 
   @@map("usuarios")
 }
 
+model RegistroServicio {
+  id String @id @default(uuid())
+
+  dia   String
+  fecha DateTime @default(now())
+
+  numeroTicket String
+  numeroCaf    String?
+
+  horaIngreso          DateTime
+  horaEgreso           DateTime
+  totalMinutosAtencion Int
+
+  totalKilometros Int @default(0)
+
+  inicioViaje       DateTime?
+  finViaje          DateTime?
+  totalMinutosViaje Int       @default(0)
+
+  trabajoRealizado String
+
+  fechaRegistro      DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+
+  usuarioId String
+  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+
+  tiendaId String
+  tienda   Tienda @relation(fields: [tiendaId], references: [id])
+
+  @@index([usuarioId])
+  @@index([tiendaId])
+  @@index([numeroTicket])
+  @@index([fecha])
+}
+
+model Tienda {
+  id            String   @id @default(uuid())
+  codigo        Int      @unique
+  nombre        String
+  departamento  String
+  municipio     String
+  activa        Boolean  @default(true)
+  fechaRegistro DateTime @default(now())
+
+  registros RegistroServicio[]
+
+  @@index([codigo])
+  @@index([departamento])
+  @@index([municipio])
+}
