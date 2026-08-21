@@ -48,21 +48,17 @@ const tablaUsuariosContenedor =
   document.getElementById(
     "tablaUsuariosContenedor"
   );
-let modalEditarUsuario = null;
-
-if (modalEditarUsuarioElemento) {
-  modalEditarUsuario =
-    bootstrap.Modal.getOrCreateInstance(
-      modalEditarUsuarioElemento
-    );
-}
 
 const cargandoUsuarios =
   document.getElementById(
     "cargandoUsuarios"
   );
 
-  const modalEditarUsuarioElemento =
+// ==============================
+// ELEMENTOS MODAL EDITAR
+// ==============================
+
+const modalEditarUsuarioElemento =
   document.getElementById(
     "modalEditarUsuario"
   );
@@ -72,7 +68,19 @@ const formEditarUsuario =
     "formEditarUsuario"
   );
 
+// ==============================
+// MODALES BOOTSTRAP
+// ==============================
 
+const modalNuevoUsuario =
+  bootstrap.Modal.getOrCreateInstance(
+    modalNuevoUsuarioElemento
+  );
+
+const modalEditarUsuario =
+  bootstrap.Modal.getOrCreateInstance(
+    modalEditarUsuarioElemento
+  );
 
 // ==============================
 // VALIDAR SESIÓN Y ROL
@@ -418,10 +426,7 @@ formEditarUsuario.addEventListener(
 // NUEVO USUARIO
 // ==============================
 
-const modalNuevoUsuario =
-  bootstrap.Modal.getOrCreateInstance(
-    modalNuevoUsuarioElemento
-  );
+
 
 
 btnNuevoUsuario.addEventListener(
