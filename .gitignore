@@ -1,0 +1,19 @@
+# Credenciales y archivos privados
+contraseña_supa.txt
+
+# Variables de entorno
+.env
+*.env
+
+# Dependencias
+node_modules/
+
+# Temporales del backend
+backend/temp/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/

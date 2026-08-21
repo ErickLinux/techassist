@@ -60,23 +60,58 @@ function verificarSesion() {
  * Coloca automáticamente la fecha y el día actual.
  */
 function cargarFechaActual() {
-  const fechaActual = new Date();
 
-  const anio = fechaActual.getFullYear();
-  const mes = String(fechaActual.getMonth() + 1).padStart(2, "0");
-  const dia = String(fechaActual.getDate()).padStart(2, "0");
+  const hoy = new Date();
 
-  fechaServicio.value = `${anio}-${mes}-${dia}`;
+  const anio = hoy.getFullYear();
 
-  diaServicio.value = fechaActual.toLocaleDateString("es-GT", {
-    weekday: "long"
-  });
+  const mes = String(
+    hoy.getMonth() + 1
+  ).padStart(2, "0");
+
+  const dia = String(
+    hoy.getDate()
+  ).padStart(2, "0");
+
+  fechaServicio.value =
+    `${anio}-${mes}-${dia}`;
+
+  actualizarDiaServicio();
+}
+function actualizarDiaServicio() {
+
+  if (!fechaServicio.value) {
+
+    diaServicio.value = "";
+
+    return;
+  }
+
+  const fecha =
+    new Date(
+      `${fechaServicio.value}T12:00:00`
+    );
+
+  const diasSemana = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado"
+  ];
 
   diaServicio.value =
-    diaServicio.value.charAt(0).toUpperCase() +
-    diaServicio.value.slice(1);
+    diasSemana[
+      fecha.getDay()
+    ];
 }
 
+fechaServicio.addEventListener(
+  "change",
+  actualizarDiaServicio
+);
 /**
  * Convierte una hora HH:mm a minutos.
  */
@@ -149,8 +184,21 @@ function mostrarMensajeTienda(mensaje, tipo) {
 /**
  * Esta función será conectada posteriormente con el backend.
  */
-function buscarTienda() {
+async function buscarTienda() {
   const codigo = codigoTienda.value.trim();
+
+  const nombreTienda =
+    document.getElementById("nombreTienda");
+
+  const departamento =
+    document.getElementById("departamento");
+
+  const municipio =
+    document.getElementById("municipio");
+
+  nombreTienda.value = "";
+  departamento.value = "";
+  municipio.value = "";
 
   if (!codigo) {
     mostrarMensajeTienda(
@@ -161,10 +209,53 @@ function buscarTienda() {
     return;
   }
 
-  mostrarMensajeTienda(
-    "La búsqueda de tienda se conectará al backend en el siguiente paso.",
-    "info"
-  );
+  try {
+    btnBuscarTienda.disabled = true;
+
+    mostrarMensajeTienda(
+      "Buscando tienda...",
+      "info"
+    );
+
+    const respuesta = await fetch(
+      `http://localhost:3000/api/tiendas/codigo/${codigo}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      throw new Error(
+        datos.mensaje ||
+        "No fue posible buscar la tienda"
+      );
+    }
+
+    nombreTienda.value = datos.tienda.nombre;
+    departamento.value = datos.tienda.departamento;
+    municipio.value = datos.tienda.municipio;
+
+    mostrarMensajeTienda(
+      `Tienda ${datos.tienda.nombre} encontrada correctamente.`,
+      "success"
+    );
+
+  } catch (error) {
+
+    mostrarMensajeTienda(
+      error.message,
+      "danger"
+    );
+
+  } finally {
+
+    btnBuscarTienda.disabled = false;
+
+  }
 }
 
 horaIngreso.addEventListener("change", calcularTiempoAtencion);
@@ -176,16 +267,57 @@ finViaje.addEventListener("change", calcularTiempoViaje);
 trabajoRealizado.addEventListener("input", actualizarContador);
 
 btnBuscarTienda.addEventListener("click", buscarTienda);
+let temporizadorBusquedaTienda;
+
+codigoTienda.addEventListener(
+  "input",
+  () => {
+
+    clearTimeout(
+      temporizadorBusquedaTienda
+    );
+
+    // Limpiamos la tienda anterior
+    tiendaSeleccionada = null;
+
+    // Esperamos un momento después
+    // de que el usuario deje de escribir
+    if (!codigoTienda.value.trim()) {
+
+  tiendaSeleccionada = null;
+
+  nombreTienda.value = "";
+  departamento.value = "";
+  municipio.value = "";
+
+  return;
+}
+    temporizadorBusquedaTienda =
+      setTimeout(
+        () => {
+
+          const codigo =
+            codigoTienda.value.trim();
+
+          if (codigo.length > 0) {
+            buscarTienda();
+          }
+
+        },
+        500
+      );
+  }
+);
 
 codigoTienda.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
-    event.preventDefault();
+    
     buscarTienda();
   }
 });
 
-formServicio.addEventListener("submit", (event) => {
-  event.preventDefault();
+formServicio.addEventListener("submit", async (event) => {
+  
 
   if (!formServicio.checkValidity()) {
     formServicio.classList.add("was-validated");
@@ -202,27 +334,150 @@ formServicio.addEventListener("submit", (event) => {
     return;
   }
 
+  calcularTiempoAtencion();
+  calcularTiempoViaje();
+
   const datosServicio = {
-    codigoTienda: Number(codigoTienda.value),
-    numeroTicket: document.getElementById("numeroTicket").value.trim(),
-    numeroCaf: document.getElementById("numeroCaf").value.trim() || null,
-    horaIngreso: horaIngreso.value,
-    horaEgreso: horaEgreso.value,
+    fecha: fechaServicio.value,
+    dia: diaServicio.value,
+
+    codigoTienda:
+      Number(codigoTienda.value),
+
+    numeroTicket:
+      document
+        .getElementById("numeroTicket")
+        .value
+        .trim(),
+
+    numeroCaf:
+      document
+        .getElementById("numeroCaf")
+        .value
+        .trim() || null,
+
+    horaIngreso:
+      horaIngreso.value,
+
+    horaEgreso:
+      horaEgreso.value,
+
     totalMinutosAtencion,
-    totalKilometros: Number(
-      document.getElementById("totalKilometros").value
-    ),
-    inicioViaje: inicioViaje.value || null,
-    finViaje: finViaje.value || null,
+
+    totalKilometros:
+      Number(
+        document
+          .getElementById("totalKilometros")
+          .value
+      ) || 0,
+      lugarSalida:
+  document
+    .getElementById("lugarSalida")
+    .value
+    .trim() || null,
+
+    inicioViaje:
+      inicioViaje.value || null,
+
+    finViaje:
+      finViaje.value || null,
+
     totalMinutosViaje,
-    trabajoRealizado: trabajoRealizado.value.trim()
+
+    trabajoRealizado:
+      trabajoRealizado.value.trim()
   };
 
-  console.log("Datos preparados para guardar:", datosServicio);
+  try {
 
-  alert(
-    "El formulario funciona correctamente. En el siguiente paso lo conectaremos con el backend."
-  );
+    const botonGuardar =
+      formServicio.querySelector(
+        'button[type="submit"]'
+      );
+
+    if (botonGuardar) {
+      botonGuardar.disabled = true;
+      botonGuardar.textContent =
+        "Guardando...";
+    }
+
+    const respuesta = await fetch(
+      "http://localhost:3000/api/servicios",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+
+        body: JSON.stringify(datosServicio)
+      }
+    );
+
+    const datos = await respuesta.json();
+
+    if (!respuesta.ok) {
+      throw new Error(
+        datos.mensaje ||
+        "No fue posible guardar el servicio"
+      );
+    }
+
+    alert(
+      "Servicio registrado correctamente"
+    );
+
+    console.log(
+      "Servicio guardado:",
+      datos.registro
+    );
+
+    formServicio.reset();
+
+    cargarFechaActual();
+
+    totalMinutosAtencion = 0;
+    totalMinutosViaje = 0;
+
+    totalAtencion.value = "0 h 0 min";
+    totalViaje.value = "0 h 0 min";
+
+    contadorCaracteres.textContent = "0";
+
+    mensajeTienda.className =
+      "alert mt-3 d-none";
+
+    mensajeTienda.textContent = "";
+
+    formServicio.classList.remove(
+      "was-validated"
+    );
+
+    verificarSesion();
+
+  } catch (error) {
+
+    console.error(
+      "Error al guardar:",
+      error
+    );
+
+    alert(error.message);
+
+  } finally {
+
+    const botonGuardar =
+      formServicio.querySelector(
+        'button[type="submit"]'
+      );
+
+    if (botonGuardar) {
+      botonGuardar.disabled = false;
+      botonGuardar.textContent =
+        "Guardar servicio";
+    }
+  }
 });
 
 btnLimpiar.addEventListener("click", () => {

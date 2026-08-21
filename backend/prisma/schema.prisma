@@ -26,7 +26,7 @@ model Usuario {
 
 model RegistroServicio {
   id String @id @default(uuid())
-
+  
   dia   String
   fecha DateTime @default(now())
 
@@ -38,7 +38,7 @@ model RegistroServicio {
   totalMinutosAtencion Int
 
   totalKilometros Int @default(0)
-
+  lugarSalida String?
   inicioViaje       DateTime?
   finViaje          DateTime?
   totalMinutosViaje Int       @default(0)

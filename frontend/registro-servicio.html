@@ -44,12 +44,12 @@
         <span>Nuevo servicio</span>
       </a>
 
-      <a href="#" class="menu-item">
+      <a href="./horas-extras.html" class="menu-item">
         <i class="bi bi-clock-history"></i>
         <span>Horas extras</span>
       </a>
 
-      <a href="#" class="menu-item">
+      <a href="./liquidaciones.html" class="menu-item">
         <i class="bi bi-receipt"></i>
         <span>Liquidaciones</span>
       </a>
@@ -157,11 +157,11 @@
                 </label>
 
                 <input
-                  type="text"
-                  class="form-control"
-                  id="diaServicio"
-                  readonly
-                >
+  type="text"
+  id="diaServicio"
+  class="form-control"
+  readonly
+>
               </div>
 
               <div class="col-12 col-md-3">
@@ -170,11 +170,11 @@
                 </label>
 
                 <input
-                  type="date"
-                  class="form-control"
-                  id="fechaServicio"
-                  readonly
-                >
+  type="date"
+  id="fechaServicio"
+  class="form-control"
+  required
+>
               </div>
 
             </div>
@@ -400,6 +400,23 @@
                   Información del viaje
                 </h3>
               </div>
+              <div class="col-md-6">
+
+                  <label
+                    for="lugarSalida"
+                    class="form-label"
+                  >
+                    Lugar de salida
+                  </label>
+
+                  <input
+                    type="text"
+                    id="lugarSalida"
+                    class="form-control"
+                    placeholder="Ej. Cobán, oficina, domicilio..."
+                  >
+
+                </div>
 
               <div class="col-12 col-md-4">
                 <label for="inicioViaje" class="form-label">
