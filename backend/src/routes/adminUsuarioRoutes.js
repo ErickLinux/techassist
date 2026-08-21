@@ -3,7 +3,8 @@ import express from "express";
 import {
   obtenerUsuarios,
   registrarUsuarioAdmin,
-  actualizarEstadoUsuario
+  actualizarEstadoUsuario,
+  editarUsuario
 } from "../controllers/adminUsuarioController.js";
 
 import {
@@ -13,19 +14,14 @@ import {
 import {
   verificarAdmin
 } from "../middleware/adminMiddleware.js";
-import {
-  obtenerUsuarios,
-  registrarUsuarioAdmin,
-  actualizarEstadoUsuario,
-  editarUsuario
-} from "../controllers/adminUsuarioController.js";
 
 
 const router = express.Router();
 
 
-// Todas estas rutas requieren
-// autenticación y rol ADMIN.
+// ==============================
+// SEGURIDAD ADMIN
+// ==============================
 
 router.use(
   verificarToken,
@@ -33,29 +29,43 @@ router.use(
 );
 
 
-// Listar usuarios
+// ==============================
+// LISTAR USUARIOS
+// ==============================
+
 router.get(
   "/",
   obtenerUsuarios
 );
 
 
-// Crear usuario
+// ==============================
+// CREAR USUARIO
+// ==============================
+
 router.post(
   "/",
   registrarUsuarioAdmin
 );
 
 
-// Activar / desactivar
-router.patch(
-  "/:id/estado",
-  actualizarEstadoUsuario
-);
+// ==============================
+// EDITAR USUARIO
+// ==============================
 
 router.put(
   "/:id",
   editarUsuario
+);
+
+
+// ==============================
+// ACTIVAR / DESACTIVAR
+// ==============================
+
+router.patch(
+  "/:id/estado",
+  actualizarEstadoUsuario
 );
 
 
