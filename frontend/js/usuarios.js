@@ -54,6 +54,21 @@ const cargandoUsuarios =
     "cargandoUsuarios"
   );
 
+  const modalEditarUsuarioElemento =
+  document.getElementById(
+    "modalEditarUsuario"
+  );
+
+const formEditarUsuario =
+  document.getElementById(
+    "formEditarUsuario"
+  );
+
+const modalEditarUsuario =
+  bootstrap.Modal.getOrCreateInstance(
+    modalEditarUsuarioElemento
+  );
+
 
 // ==============================
 // VALIDAR SESIÓN Y ROL
@@ -196,56 +211,172 @@ async function cargarUsuarios() {
             ? "text-bg-success"
             : "text-bg-secondary";
 
-        const accion =
-          usuario.activo
-            ? `
-              <button
-                class="btn btn-sm btn-outline-danger btn-estado"
-                data-id="${usuario.id}"
-                data-activo="false"
-              >
-                Desactivar
-              </button>
-            `
-            : `
-              <button
-                class="btn btn-sm btn-outline-success btn-estado"
-                data-id="${usuario.id}"
-                data-activo="true"
-              >
-                Activar
-              </button>
-            `;
+        const botonEstado =
+  usuario.activo
+    ? `
+      <button
+        class="btn btn-sm btn-outline-danger btn-estado"
+        data-id="${usuario.id}"
+        data-activo="false"
+      >
+        Desactivar
+      </button>
+    `
+    : `
+      <button
+        class="btn btn-sm btn-outline-success btn-estado"
+        data-id="${usuario.id}"
+        data-activo="true"
+      >
+        Activar
+      </button>
+    `;
 
-        fila.innerHTML = `
-          <td>
-            ${usuario.nombre}
-          </td>
+const accion = `
+  <div class="d-flex gap-2 flex-wrap">
 
-          <td>
-            ${usuario.correo}
-          </td>
+    <button
+      type="button"
+      class="btn btn-sm btn-outline-primary btn-editar-usuario"
+      data-id="${usuario.id}"
+      data-nombre="${usuario.nombre}"
+      data-correo="${usuario.correo}"
+      data-bodega="${usuario.bodega || ""}"
+    >
+      <i class="bi bi-pencil"></i>
+      Editar
+    </button>
 
-          <td>
-            ${usuario.bodega || "-"}
-          </td>
+    ${botonEstado}
 
-          <td>
-            <span class="badge text-bg-primary">
-              ${usuario.rol}
-            </span>
-          </td>
+  </div>
+`;
+tablaUsuarios.addEventListener(
+  "click",
+  (event) => {
 
-          <td>
-            <span class="badge ${claseEstado}">
-              ${estado}
-            </span>
-          </td>
+    const boton =
+      event.target.closest(
+        ".btn-editar-usuario"
+      );
 
-          <td>
-            ${accion}
-          </td>
-        `;
+    if (!boton) {
+      return;
+    }
+
+    document.getElementById(
+      "editarUsuarioId"
+    ).value =
+      boton.dataset.id;
+
+    document.getElementById(
+      "editarNombre"
+    ).value =
+      boton.dataset.nombre;
+
+    document.getElementById(
+      "editarCorreo"
+    ).value =
+      boton.dataset.correo;
+
+    document.getElementById(
+      "editarBodega"
+    ).value =
+      boton.dataset.bodega;
+
+    modalEditarUsuario.show();
+  }
+);
+formEditarUsuario.addEventListener(
+  "submit",
+  async (event) => {
+
+    event.preventDefault();
+
+    const id =
+      document.getElementById(
+        "editarUsuarioId"
+      ).value;
+
+    const datos = {
+
+      nombre:
+        document
+          .getElementById(
+            "editarNombre"
+          )
+          .value
+          .trim(),
+
+      correo:
+        document
+          .getElementById(
+            "editarCorreo"
+          )
+          .value
+          .trim(),
+
+      bodega:
+        document
+          .getElementById(
+            "editarBodega"
+          )
+          .value
+          .trim() || null
+    };
+
+    try {
+
+      const respuesta =
+        await fetch(
+          `${API_URL}/api/admin/usuarios/${id}`,
+          {
+            method: "PUT",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+
+              Authorization:
+                `Bearer ${token}`
+            },
+
+            body:
+              JSON.stringify(datos)
+          }
+        );
+
+      const resultado =
+        await respuesta.json();
+
+      if (!respuesta.ok) {
+        throw new Error(
+          resultado.mensaje ||
+          "No fue posible actualizar el usuario"
+        );
+      }
+
+      alert(
+        "Usuario actualizado correctamente"
+      );
+
+      modalEditarUsuario.hide();
+
+      await cargarUsuarios();
+
+    } catch (error) {
+
+      console.error(
+        "Error editando usuario:",
+        error
+      );
+
+      alert(
+        error.message
+      );
+    }
+  }
+);
 
         tablaUsuarios.appendChild(
           fila

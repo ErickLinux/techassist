@@ -129,3 +129,63 @@ export const actualizarEstadoUsuario = async (
       });
   }
 };
+import {
+  listarUsuarios,
+  crearUsuarioAdmin,
+  cambiarEstadoUsuario,
+  editarUsuarioAdmin
+} from "../services/adminUsuarioService.js";
+export const editarUsuario = async (
+  req,
+  res
+) => {
+
+  try {
+
+    const {
+      nombre,
+      correo,
+      bodega
+    } = req.body;
+
+    if (!nombre || !correo) {
+
+      return res.status(400).json({
+        mensaje:
+          "Nombre y correo son obligatorios"
+      });
+    }
+
+    const usuario =
+      await editarUsuarioAdmin(
+        req.params.id,
+        {
+          nombre,
+          correo,
+          bodega
+        }
+      );
+
+    return res.status(200).json({
+      mensaje:
+        "Usuario actualizado correctamente",
+      usuario
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Error editando usuario:",
+      error
+    );
+
+    return res
+      .status(error.statusCode || 500)
+      .json({
+        mensaje:
+          error.statusCode
+            ? error.message
+            : "Error interno al editar usuario"
+      });
+  }
+};

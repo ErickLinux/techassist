@@ -13,6 +13,12 @@ import {
 import {
   verificarAdmin
 } from "../middleware/adminMiddleware.js";
+import {
+  obtenerUsuarios,
+  registrarUsuarioAdmin,
+  actualizarEstadoUsuario,
+  editarUsuario
+} from "../controllers/adminUsuarioController.js";
 
 
 const router = express.Router();
@@ -45,6 +51,11 @@ router.post(
 router.patch(
   "/:id/estado",
   actualizarEstadoUsuario
+);
+
+router.put(
+  "/:id",
+  editarUsuario
 );
 
 

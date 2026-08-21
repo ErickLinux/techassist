@@ -118,3 +118,70 @@ export const cambiarEstadoUsuario = async (
     }
   });
 };
+export const editarUsuarioAdmin = async (
+  id,
+  {
+    nombre,
+    correo,
+    bodega
+  }
+) => {
+
+  const usuario =
+    await prisma.usuario.findUnique({
+      where: { id }
+    });
+
+  if (!usuario) {
+    const error =
+      new Error("Usuario no encontrado");
+
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const correoNormalizado =
+    correo.trim().toLowerCase();
+
+  const correoExistente =
+    await prisma.usuario.findFirst({
+      where: {
+        correo: correoNormalizado,
+        NOT: {
+          id
+        }
+      }
+    });
+
+  if (correoExistente) {
+    const error =
+      new Error(
+        "Ya existe otro usuario con ese correo"
+      );
+
+    error.statusCode = 409;
+    throw error;
+  }
+
+  return await prisma.usuario.update({
+    where: {
+      id
+    },
+
+    data: {
+      nombre: nombre.trim(),
+      correo: correoNormalizado,
+      bodega:
+        bodega?.trim() || null
+    },
+
+    select: {
+      id: true,
+      nombre: true,
+      correo: true,
+      bodega: true,
+      activo: true,
+      rol: true
+    }
+  });
+};
