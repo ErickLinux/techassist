@@ -400,15 +400,15 @@ function formatearHora(fechaHora) {
     return "No registrado";
   }
 
-  const valor =
-    new Date(fechaHora);
+  const fecha = new Date(fechaHora);
 
-  return valor.toLocaleTimeString(
+  return fecha.toLocaleTimeString(
     "es-GT",
     {
       hour: "2-digit",
       minute: "2-digit",
-      hour12: true
+      hour12: true,
+      timeZone: "America/Guatemala"
     }
   );
 }
@@ -420,15 +420,15 @@ function formatearHora24(fechaHora) {
 
   const fecha = new Date(fechaHora);
 
-  const horas = String(
-    fecha.getHours()
-  ).padStart(2, "0");
-
-  const minutos = String(
-    fecha.getMinutes()
-  ).padStart(2, "0");
-
-  return `${horas}:${minutos}`;
+  return fecha.toLocaleTimeString(
+    "es-GT",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "America/Guatemala"
+    }
+  );
 }
 
 

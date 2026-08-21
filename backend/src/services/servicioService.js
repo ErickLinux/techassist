@@ -5,7 +5,8 @@ function crearFechaHora(fecha, hora) {
     return null;
   }
 
-  return new Date(`${fecha}T${hora}:00`);
+  // Guatemala utiliza UTC-6
+  return new Date(`${fecha}T${hora}:00-06:00`);
 }
 
 function ajustarCruceMedianoche(inicio, fin) {
