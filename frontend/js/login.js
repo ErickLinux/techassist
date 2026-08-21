@@ -31,7 +31,7 @@ loginForm.addEventListener("submit", async (event) => {
     mensaje.className = "alert d-none";
 
     const respuesta = await fetch(
-  `${API_URL}/api/auth/login`,
+  `${API_URL}/api/usuarios/login`,
   {
     method: "POST",
 
