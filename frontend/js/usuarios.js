@@ -79,15 +79,24 @@ const formEditarUsuario =
 // MODALES BOOTSTRAP
 // ==============================
 
-const modalNuevoUsuario =
-  bootstrap.Modal.getOrCreateInstance(
-    modalNuevoUsuarioElemento
-  );
+let modalNuevoUsuario = null;
+let modalEditarUsuario = null;
 
-const modalEditarUsuario =
-  bootstrap.Modal.getOrCreateInstance(
-    modalEditarUsuarioElemento
-  );
+if (modalNuevoUsuarioElemento) {
+
+  modalNuevoUsuario =
+    bootstrap.Modal.getOrCreateInstance(
+      modalNuevoUsuarioElemento
+    );
+}
+
+if (modalEditarUsuarioElemento) {
+
+  modalEditarUsuario =
+    bootstrap.Modal.getOrCreateInstance(
+      modalEditarUsuarioElemento
+    );
+}
 
 
 // ==============================
@@ -117,8 +126,10 @@ if (!token || !usuarioGuardado) {
 
     } else {
 
-      nombreUsuario.textContent =
-        usuario.nombre;
+      if (nombreUsuario) {
+        nombreUsuario.textContent =
+          usuario.nombre;
+      }
     }
 
   } catch (error) {
@@ -146,37 +157,43 @@ if (!token || !usuarioGuardado) {
 // MENÚ
 // ==============================
 
-btnMenu.addEventListener(
-  "click",
-  () => {
+if (btnMenu && sidebar) {
 
-    sidebar.classList.toggle(
-      "visible"
-    );
-  }
-);
+  btnMenu.addEventListener(
+    "click",
+    () => {
+
+      sidebar.classList.toggle(
+        "visible"
+      );
+    }
+  );
+}
 
 
 // ==============================
 // CERRAR SESIÓN
 // ==============================
 
-btnCerrarSesion.addEventListener(
-  "click",
-  () => {
+if (btnCerrarSesion) {
 
-    localStorage.removeItem(
-      "token"
-    );
+  btnCerrarSesion.addEventListener(
+    "click",
+    () => {
 
-    localStorage.removeItem(
-      "usuario"
-    );
+      localStorage.removeItem(
+        "token"
+      );
 
-    window.location.href =
-      "./index.html";
-  }
-);
+      localStorage.removeItem(
+        "usuario"
+      );
+
+      window.location.href =
+        "./index.html";
+    }
+  );
+}
 
 
 // ==============================
@@ -185,6 +202,20 @@ btnCerrarSesion.addEventListener(
 
 async function cargarUsuarios() {
 
+  if (
+    !tablaUsuarios ||
+    !tablaUsuariosContenedor ||
+    !cargandoUsuarios
+  ) {
+
+    console.error(
+      "Faltan elementos de la tabla de usuarios en usuarios.html"
+    );
+
+    return;
+  }
+
+
   cargandoUsuarios.classList.remove(
     "d-none"
   );
@@ -192,6 +223,7 @@ async function cargarUsuarios() {
   tablaUsuariosContenedor.classList.add(
     "d-none"
   );
+
 
   try {
 
@@ -206,8 +238,25 @@ async function cargarUsuarios() {
         }
       );
 
+
+    if (
+      respuesta.status === 401 ||
+      respuesta.status === 403
+    ) {
+
+      const datosError =
+        await respuesta.json();
+
+      throw new Error(
+        datosError.mensaje ||
+        "No tienes permisos para consultar usuarios"
+      );
+    }
+
+
     const datos =
       await respuesta.json();
+
 
     if (!respuesta.ok) {
 
@@ -220,6 +269,21 @@ async function cargarUsuarios() {
 
     tablaUsuarios.innerHTML =
       "";
+
+
+    if (
+      !datos.usuarios ||
+      datos.usuarios.length === 0
+    ) {
+
+      cargandoUsuarios.innerHTML = `
+        <div class="alert alert-info">
+          No hay usuarios registrados.
+        </div>
+      `;
+
+      return;
+    }
 
 
     datos.usuarios.forEach(
@@ -283,13 +347,21 @@ async function cargarUsuarios() {
           </td>
 
           <td>
-            <span class="badge text-bg-primary">
+            <span
+              class="badge ${
+                usuario.rol === "ADMIN"
+                  ? "text-bg-dark"
+                  : "text-bg-primary"
+              }"
+            >
               ${usuario.rol}
             </span>
           </td>
 
           <td>
-            <span class="badge ${claseEstado}">
+            <span
+              class="badge ${claseEstado}"
+            >
               ${estado}
             </span>
           </td>
@@ -343,6 +415,10 @@ async function cargarUsuarios() {
       error
     );
 
+    cargandoUsuarios.classList.remove(
+      "d-none"
+    );
+
     cargandoUsuarios.innerHTML = `
       <div class="alert alert-danger">
         ${error.message}
@@ -356,379 +432,473 @@ async function cargarUsuarios() {
 // NUEVO USUARIO
 // ==============================
 
-btnNuevoUsuario.addEventListener(
-  "click",
-  () => {
+if (
+  btnNuevoUsuario &&
+  formNuevoUsuario
+) {
 
-    formNuevoUsuario.reset();
+  btnNuevoUsuario.addEventListener(
+    "click",
+    () => {
 
-    modalNuevoUsuario.show();
-  }
-);
+      formNuevoUsuario.reset();
+
+      if (modalNuevoUsuario) {
+
+        modalNuevoUsuario.show();
+
+      } else {
+
+        console.error(
+          "No se encontró modalNuevoUsuario"
+        );
+      }
+    }
+  );
+}
 
 
 // ==============================
 // GUARDAR NUEVO USUARIO
 // ==============================
 
-formNuevoUsuario.addEventListener(
-  "submit",
-  async (event) => {
+if (formNuevoUsuario) {
 
-    event.preventDefault();
+  formNuevoUsuario.addEventListener(
+    "submit",
+    async (event) => {
 
-
-    const datos = {
-
-      nombre:
-        document
-          .getElementById(
-            "nuevoNombre"
-          )
-          .value
-          .trim(),
-
-      correo:
-        document
-          .getElementById(
-            "nuevoCorreo"
-          )
-          .value
-          .trim(),
-
-      password:
-        document
-          .getElementById(
-            "nuevaPassword"
-          )
-          .value,
-
-      bodega:
-        document
-          .getElementById(
-            "nuevaBodega"
-          )
-          .value
-          .trim() || null
-    };
+      event.preventDefault();
 
 
-    try {
+      const nombre =
+        document.getElementById(
+          "nuevoNombre"
+        );
 
-      const respuesta =
-        await fetch(
-          `${API_URL}/api/admin/usuarios`,
-          {
-            method: "POST",
+      const correo =
+        document.getElementById(
+          "nuevoCorreo"
+        );
 
-            headers: {
-              "Content-Type":
-                "application/json",
+      const password =
+        document.getElementById(
+          "nuevaPassword"
+        );
 
-              Authorization:
-                `Bearer ${token}`
-            },
-
-            body:
-              JSON.stringify(datos)
-          }
+      const bodega =
+        document.getElementById(
+          "nuevaBodega"
         );
 
 
-      const resultado =
-        await respuesta.json();
+      const datos = {
+
+        nombre:
+          nombre.value.trim(),
+
+        correo:
+          correo.value.trim(),
+
+        password:
+          password.value,
+
+        bodega:
+          bodega.value.trim() ||
+          null
+      };
 
 
-      if (!respuesta.ok) {
+      try {
 
-        throw new Error(
+        const respuesta =
+          await fetch(
+            `${API_URL}/api/admin/usuarios`,
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                Authorization:
+                  `Bearer ${token}`
+              },
+
+              body:
+                JSON.stringify(datos)
+            }
+          );
+
+
+        const resultado =
+          await respuesta.json();
+
+
+        if (!respuesta.ok) {
+
+          throw new Error(
+            resultado.mensaje ||
+            "No fue posible crear el usuario"
+          );
+        }
+
+
+        alert(
           resultado.mensaje ||
-          "No fue posible crear el usuario"
+          "Usuario creado correctamente"
+        );
+
+
+        if (modalNuevoUsuario) {
+          modalNuevoUsuario.hide();
+        }
+
+
+        formNuevoUsuario.reset();
+
+        await cargarUsuarios();
+
+
+      } catch (error) {
+
+        console.error(
+          "Error creando usuario:",
+          error
+        );
+
+        alert(
+          error.message
         );
       }
-
-
-      alert(
-        "Usuario creado correctamente"
-      );
-
-
-      modalNuevoUsuario.hide();
-
-      formNuevoUsuario.reset();
-
-      await cargarUsuarios();
-
-
-    } catch (error) {
-
-      console.error(
-        "Error creando usuario:",
-        error
-      );
-
-      alert(
-        error.message
-      );
     }
-  }
-);
+  );
+}
 
 
 // ==============================
 // ABRIR MODAL EDITAR
 // ==============================
 
-tablaUsuarios.addEventListener(
-  "click",
-  (event) => {
+if (tablaUsuarios) {
 
-    const boton =
-      event.target.closest(
-        ".btn-editar-usuario"
-      );
+  tablaUsuarios.addEventListener(
+    "click",
+    (event) => {
 
-    if (!boton) {
-      return;
+      const boton =
+        event.target.closest(
+          ".btn-editar-usuario"
+        );
+
+
+      if (!boton) {
+        return;
+      }
+
+
+      const editarUsuarioId =
+        document.getElementById(
+          "editarUsuarioId"
+        );
+
+      const editarNombre =
+        document.getElementById(
+          "editarNombre"
+        );
+
+      const editarCorreo =
+        document.getElementById(
+          "editarCorreo"
+        );
+
+      const editarBodega =
+        document.getElementById(
+          "editarBodega"
+        );
+
+
+      if (
+        !editarUsuarioId ||
+        !editarNombre ||
+        !editarCorreo ||
+        !editarBodega
+      ) {
+
+        console.error(
+          "Faltan campos del modal Editar Usuario"
+        );
+
+        return;
+      }
+
+
+      editarUsuarioId.value =
+        boton.dataset.id;
+
+      editarNombre.value =
+        boton.dataset.nombre;
+
+      editarCorreo.value =
+        boton.dataset.correo;
+
+      editarBodega.value =
+        boton.dataset.bodega;
+
+
+      if (modalEditarUsuario) {
+
+        modalEditarUsuario.show();
+
+      } else {
+
+        console.error(
+          "No se encontró modalEditarUsuario"
+        );
+      }
     }
-
-
-    document.getElementById(
-      "editarUsuarioId"
-    ).value =
-      boton.dataset.id;
-
-
-    document.getElementById(
-      "editarNombre"
-    ).value =
-      boton.dataset.nombre;
-
-
-    document.getElementById(
-      "editarCorreo"
-    ).value =
-      boton.dataset.correo;
-
-
-    document.getElementById(
-      "editarBodega"
-    ).value =
-      boton.dataset.bodega;
-
-
-    modalEditarUsuario.show();
-  }
-);
+  );
+}
 
 
 // ==============================
 // GUARDAR EDICIÓN
 // ==============================
 
-formEditarUsuario.addEventListener(
-  "submit",
-  async (event) => {
+if (formEditarUsuario) {
 
-    event.preventDefault();
+  formEditarUsuario.addEventListener(
+    "submit",
+    async (event) => {
 
-
-    const id =
-      document.getElementById(
-        "editarUsuarioId"
-      ).value;
+      event.preventDefault();
 
 
-    const datos = {
+      const editarUsuarioId =
+        document.getElementById(
+          "editarUsuarioId"
+        );
 
-      nombre:
-        document
-          .getElementById(
-            "editarNombre"
-          )
-          .value
-          .trim(),
+      const editarNombre =
+        document.getElementById(
+          "editarNombre"
+        );
 
-      correo:
-        document
-          .getElementById(
-            "editarCorreo"
-          )
-          .value
-          .trim(),
+      const editarCorreo =
+        document.getElementById(
+          "editarCorreo"
+        );
 
-      bodega:
-        document
-          .getElementById(
-            "editarBodega"
-          )
-          .value
-          .trim() || null
-    };
-
-
-    try {
-
-      const respuesta =
-        await fetch(
-          `${API_URL}/api/admin/usuarios/${id}`,
-          {
-            method: "PUT",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-
-              Authorization:
-                `Bearer ${token}`
-            },
-
-            body:
-              JSON.stringify(datos)
-          }
+      const editarBodega =
+        document.getElementById(
+          "editarBodega"
         );
 
 
-      const resultado =
-        await respuesta.json();
+      if (
+        !editarUsuarioId ||
+        !editarNombre ||
+        !editarCorreo ||
+        !editarBodega
+      ) {
 
-
-      if (!respuesta.ok) {
-
-        throw new Error(
-          resultado.mensaje ||
-          "No fue posible actualizar el usuario"
+        alert(
+          "No fue posible leer los datos del formulario"
         );
+
+        return;
       }
 
 
-      alert(
-        "Usuario actualizado correctamente"
-      );
+      const id =
+        editarUsuarioId.value;
 
 
-      modalEditarUsuario.hide();
+      const datos = {
 
-      await cargarUsuarios();
+        nombre:
+          editarNombre.value.trim(),
+
+        correo:
+          editarCorreo.value.trim(),
+
+        bodega:
+          editarBodega.value.trim() ||
+          null
+      };
 
 
-    } catch (error) {
+      try {
 
-      console.error(
-        "Error editando usuario:",
-        error
-      );
+        const respuesta =
+          await fetch(
+            `${API_URL}/api/admin/usuarios/${id}`,
+            {
+              method: "PUT",
 
-      alert(
-        error.message
-      );
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                Authorization:
+                  `Bearer ${token}`
+              },
+
+              body:
+                JSON.stringify(datos)
+            }
+          );
+
+
+        const resultado =
+          await respuesta.json();
+
+
+        if (!respuesta.ok) {
+
+          throw new Error(
+            resultado.mensaje ||
+            "No fue posible actualizar el usuario"
+          );
+        }
+
+
+        alert(
+          resultado.mensaje ||
+          "Usuario actualizado correctamente"
+        );
+
+
+        if (modalEditarUsuario) {
+          modalEditarUsuario.hide();
+        }
+
+
+        await cargarUsuarios();
+
+
+      } catch (error) {
+
+        console.error(
+          "Error editando usuario:",
+          error
+        );
+
+        alert(
+          error.message
+        );
+      }
     }
-  }
-);
+  );
+}
 
 
 // ==============================
 // ACTIVAR / DESACTIVAR
 // ==============================
 
-tablaUsuarios.addEventListener(
-  "click",
-  async (event) => {
+if (tablaUsuarios) {
 
-    const boton =
-      event.target.closest(
-        ".btn-estado"
-      );
+  tablaUsuarios.addEventListener(
+    "click",
+    async (event) => {
 
-    if (!boton) {
-      return;
-    }
-
-
-    const id =
-      boton.dataset.id;
-
-
-    const activo =
-      boton.dataset.activo ===
-      "true";
-
-
-    const textoAccion =
-      activo
-        ? "activar"
-        : "desactivar";
-
-
-    const confirmar =
-      confirm(
-        `¿Deseas ${textoAccion} este usuario?`
-      );
-
-
-    if (!confirmar) {
-      return;
-    }
-
-
-    try {
-
-      const respuesta =
-        await fetch(
-          `${API_URL}/api/admin/usuarios/${id}/estado`,
-          {
-            method: "PATCH",
-
-            headers: {
-              "Content-Type":
-                "application/json",
-
-              Authorization:
-                `Bearer ${token}`
-            },
-
-            body:
-              JSON.stringify({
-                activo
-              })
-          }
+      const boton =
+        event.target.closest(
+          ".btn-estado"
         );
 
 
-      const resultado =
-        await respuesta.json();
-
-
-      if (!respuesta.ok) {
-
-        throw new Error(
-          resultado.mensaje ||
-          "No fue posible actualizar el usuario"
-        );
+      if (!boton) {
+        return;
       }
 
 
-      alert(
-        resultado.mensaje
-      );
+      const id =
+        boton.dataset.id;
 
 
-      await cargarUsuarios();
+      const activo =
+        boton.dataset.activo ===
+        "true";
 
 
-    } catch (error) {
+      const textoAccion =
+        activo
+          ? "activar"
+          : "desactivar";
 
-      console.error(
-        "Error actualizando usuario:",
-        error
-      );
 
-      alert(
-        error.message
-      );
+      const confirmar =
+        confirm(
+          `¿Deseas ${textoAccion} este usuario?`
+        );
+
+
+      if (!confirmar) {
+        return;
+      }
+
+
+      try {
+
+        const respuesta =
+          await fetch(
+            `${API_URL}/api/admin/usuarios/${id}/estado`,
+            {
+              method: "PATCH",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                Authorization:
+                  `Bearer ${token}`
+              },
+
+              body:
+                JSON.stringify({
+                  activo
+                })
+            }
+          );
+
+
+        const resultado =
+          await respuesta.json();
+
+
+        if (!respuesta.ok) {
+
+          throw new Error(
+            resultado.mensaje ||
+            "No fue posible actualizar el usuario"
+          );
+        }
+
+
+        alert(
+          resultado.mensaje
+        );
+
+
+        await cargarUsuarios();
+
+
+      } catch (error) {
+
+        console.error(
+          "Error actualizando usuario:",
+          error
+        );
+
+        alert(
+          error.message
+        );
+      }
     }
-  }
-);
+  );
+}
 
 
 // ==============================

@@ -29,6 +29,7 @@
 
 <body>
 
+  <!-- MENÚ LATERAL -->
   <aside
     class="sidebar"
     id="sidebar"
@@ -98,6 +99,7 @@
   </aside>
 
 
+  <!-- CONTENIDO PRINCIPAL -->
   <main class="main-content">
 
     <header class="topbar">
@@ -111,6 +113,7 @@
       </button>
 
       <div>
+
         <span class="text-secondary">
           Administrador:
         </span>
@@ -118,6 +121,7 @@
         <strong id="nombreUsuario">
           Usuario
         </strong>
+
       </div>
 
     </header>
@@ -125,6 +129,7 @@
 
     <section class="content">
 
+      <!-- ENCABEZADO -->
       <div class="welcome-section">
 
         <h1>
@@ -132,12 +137,14 @@
         </h1>
 
         <p>
-          Crea, consulta, activa o desactiva usuarios de TechAssist.
+          Crea, consulta, edita, activa o
+          desactiva usuarios de TechAssist.
         </p>
 
       </div>
 
 
+      <!-- TABLA USUARIOS -->
       <div class="card mt-4">
 
         <div class="card-body">
@@ -162,6 +169,7 @@
           </div>
 
 
+          <!-- CARGANDO -->
           <div
             id="cargandoUsuarios"
             class="text-center py-4"
@@ -178,6 +186,7 @@
           </div>
 
 
+          <!-- TABLA -->
           <div
             id="tablaUsuariosContenedor"
             class="table-responsive d-none"
@@ -188,6 +197,7 @@
             >
 
               <thead>
+
                 <tr>
                   <th>Nombre</th>
                   <th>Correo</th>
@@ -196,6 +206,7 @@
                   <th>Estado</th>
                   <th>Acciones</th>
                 </tr>
+
               </thead>
 
               <tbody id="tablaUsuarios">
@@ -214,18 +225,310 @@
   </main>
 
 
-  <!-- Modal nuevo usuario -->
+  <!-- ================================= -->
+  <!-- MODAL NUEVO USUARIO -->
+  <!-- ================================= -->
+
+  <div
+    class="modal fade"
+    id="modalNuevoUsuario"
+    tabindex="-1"
+    aria-labelledby="tituloModalNuevoUsuario"
+    aria-hidden="true"
+  >
+
+    <div class="modal-dialog">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5
+            class="modal-title"
+            id="tituloModalNuevoUsuario"
+          >
+            <i class="bi bi-person-plus me-2"></i>
+            Nuevo usuario
+          </h5>
+
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Cerrar"
+          ></button>
+
+        </div>
 
 
+        <form id="formNuevoUsuario">
 
+          <div class="modal-body">
+
+            <!-- NOMBRE -->
+            <div class="mb-3">
+
+              <label
+                for="nuevoNombre"
+                class="form-label"
+              >
+                Nombre
+              </label>
+
+              <input
+                type="text"
+                id="nuevoNombre"
+                class="form-control"
+                placeholder="Nombre del técnico"
+                required
+              >
+
+            </div>
+
+
+            <!-- CORREO -->
+            <div class="mb-3">
+
+              <label
+                for="nuevoCorreo"
+                class="form-label"
+              >
+                Correo
+              </label>
+
+              <input
+                type="email"
+                id="nuevoCorreo"
+                class="form-control"
+                placeholder="correo@empresa.com"
+                required
+              >
+
+            </div>
+
+
+            <!-- CONTRASEÑA -->
+            <div class="mb-3">
+
+              <label
+                for="nuevaPassword"
+                class="form-label"
+              >
+                Contraseña
+              </label>
+
+              <input
+                type="password"
+                id="nuevaPassword"
+                class="form-control"
+                minlength="6"
+                placeholder="Mínimo 6 caracteres"
+                required
+              >
+
+            </div>
+
+
+            <!-- BODEGA -->
+            <div class="mb-3">
+
+              <label
+                for="nuevaBodega"
+                class="form-label"
+              >
+                Bodega
+              </label>
+
+              <input
+                type="text"
+                id="nuevaBodega"
+                class="form-control"
+                placeholder="Ej. Guatemala, Cobán..."
+              >
+
+            </div>
+
+          </div>
+
+
+          <div class="modal-footer">
+
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-check-lg"></i>
+              Crear usuario
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ================================= -->
+  <!-- MODAL EDITAR USUARIO -->
+  <!-- ================================= -->
+
+  <div
+    class="modal fade"
+    id="modalEditarUsuario"
+    tabindex="-1"
+    aria-labelledby="tituloModalEditarUsuario"
+    aria-hidden="true"
+  >
+
+    <div class="modal-dialog">
+
+      <div class="modal-content">
+
+        <div class="modal-header">
+
+          <h5
+            class="modal-title"
+            id="tituloModalEditarUsuario"
+          >
+            <i class="bi bi-pencil-square me-2"></i>
+            Editar usuario
+          </h5>
+
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Cerrar"
+          ></button>
+
+        </div>
+
+
+        <form id="formEditarUsuario">
+
+          <div class="modal-body">
+
+
+            <!-- ID OCULTO -->
+            <input
+              type="hidden"
+              id="editarUsuarioId"
+            >
+
+
+            <!-- NOMBRE -->
+            <div class="mb-3">
+
+              <label
+                for="editarNombre"
+                class="form-label"
+              >
+                Nombre
+              </label>
+
+              <input
+                type="text"
+                id="editarNombre"
+                class="form-control"
+                required
+              >
+
+            </div>
+
+
+            <!-- CORREO -->
+            <div class="mb-3">
+
+              <label
+                for="editarCorreo"
+                class="form-label"
+              >
+                Correo
+              </label>
+
+              <input
+                type="email"
+                id="editarCorreo"
+                class="form-control"
+                required
+              >
+
+            </div>
+
+
+            <!-- BODEGA -->
+            <div class="mb-3">
+
+              <label
+                for="editarBodega"
+                class="form-label"
+              >
+                Bodega
+              </label>
+
+              <input
+                type="text"
+                id="editarBodega"
+                class="form-control"
+              >
+
+            </div>
+
+          </div>
+
+
+          <div class="modal-footer">
+
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+            >
+              <i class="bi bi-save"></i>
+              Guardar cambios
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- BOOTSTRAP -->
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   ></script>
 
+  <!-- CONFIGURACIÓN API -->
   <script src="./js/config.js"></script>
+
+  <!-- USUARIOS -->
   <script src="./js/usuarios.js"></script>
 
 </body>
 
 </html>
-
