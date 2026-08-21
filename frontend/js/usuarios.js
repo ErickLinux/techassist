@@ -48,10 +48,14 @@ const tablaUsuariosContenedor =
   document.getElementById(
     "tablaUsuariosContenedor"
   );
-const modalEditarUsuario =
-  bootstrap.Modal.getOrCreateInstance(
-    modalEditarUsuarioElemento
-  );
+let modalEditarUsuario = null;
+
+if (modalEditarUsuarioElemento) {
+  modalEditarUsuario =
+    bootstrap.Modal.getOrCreateInstance(
+      modalEditarUsuarioElemento
+    );
+}
 
 const cargandoUsuarios =
   document.getElementById(
@@ -284,7 +288,9 @@ tablaUsuarios.addEventListener(
     ).value =
       boton.dataset.bodega;
 
-    modalEditarUsuario.show();
+    if (modalEditarUsuario) {
+  modalEditarUsuario.show();
+}
   }
 );
 formEditarUsuario.addEventListener(
