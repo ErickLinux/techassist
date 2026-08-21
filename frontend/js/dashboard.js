@@ -6,6 +6,10 @@ let servicioSeleccionado = null;
 
 const token = localStorage.getItem("token");
 const usuarioGuardado = localStorage.getItem("usuario");
+const menuAdministrarUsuarios =
+  document.getElementById(
+    "menuAdministrarUsuarios"
+  );
 
 // ==============================
 // ELEMENTOS DEL DOM
@@ -53,6 +57,14 @@ if (!token || !usuarioGuardado) {
   try {
 
     const usuario = JSON.parse(usuarioGuardado);
+    if (
+  usuario.rol === "ADMIN" &&
+  menuAdministrarUsuarios
+) {
+  menuAdministrarUsuarios.classList.remove(
+    "d-none"
+  );
+}
 
     nombreUsuario.textContent = usuario.nombre;
     nombreBienvenida.textContent = usuario.nombre;
