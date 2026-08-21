@@ -49,13 +49,14 @@ export const crearUsuario = async ({
       bodega: bodega?.trim() || null
     },
     select: {
-      id: true,
-      nombre: true,
-      correo: true,
-      bodega: true,
-      activo: true,
-      fechaRegistro: true
-    }
+  id: true,
+  nombre: true,
+  correo: true,
+  bodega: true,
+  activo: true,
+  rol: true,
+  fechaRegistro: true
+}
   });
 
   return usuario;
@@ -107,24 +108,29 @@ export const iniciarSesion = async ({ correo, password }) => {
     throw error;
   }
 
-  const token = jwt.sign(
-    {
-      id: usuario.id,
-      correo: usuario.correo
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "8h"
-    }
-  );
+const token = jwt.sign(
+  {
+    id: usuario.id,
+    correo: usuario.correo,
+    rol: usuario.rol
+  },
+
+  process.env.JWT_SECRET,
+
+  {
+    expiresIn: "8h"
+  }
+);
 
   return {
-    token,
-    usuario: {
-      id: usuario.id,
-      nombre: usuario.nombre,
-      correo: usuario.correo,
-      bodega: usuario.bodega
-    }
-  };
+  token,
+
+  usuario: {
+    id: usuario.id,
+    nombre: usuario.nombre,
+    correo: usuario.correo,
+    bodega: usuario.bodega,
+    rol: usuario.rol
+  }
+};
 };

@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,6 +13,7 @@ model Usuario {
   passwordHash      String
   bodega            String?
   activo            Boolean            @default(true)
+  rol               String             @default("TECNICO")
   fechaRegistro     DateTime           @default(now())
   registrosServicio RegistroServicio[]
 
@@ -25,34 +21,26 @@ model Usuario {
 }
 
 model RegistroServicio {
-  id String @id @default(uuid())
-  
-  dia   String
-  fecha DateTime @default(now())
-
-  numeroTicket String
-  numeroCaf    String?
-
+  id                   String    @id @default(uuid())
+  dia                  String
+  fecha                DateTime  @default(now())
+  numeroTicket         String
+  numeroCaf            String?
   horaIngreso          DateTime
   horaEgreso           DateTime
   totalMinutosAtencion Int
-
-  totalKilometros Int @default(0)
-  lugarSalida String?
-  inicioViaje       DateTime?
-  finViaje          DateTime?
-  totalMinutosViaje Int       @default(0)
-
-  trabajoRealizado String
-
-  fechaRegistro      DateTime @default(now())
-  fechaActualizacion DateTime @updatedAt
-
-  usuarioId String
-  usuario   Usuario @relation(fields: [usuarioId], references: [id])
-
-  tiendaId String
-  tienda   Tienda @relation(fields: [tiendaId], references: [id])
+  totalKilometros      Int       @default(0)
+  inicioViaje          DateTime?
+  finViaje             DateTime?
+  totalMinutosViaje    Int       @default(0)
+  trabajoRealizado     String
+  fechaRegistro        DateTime  @default(now())
+  fechaActualizacion   DateTime  @updatedAt
+  usuarioId            String
+  tiendaId             String
+  lugarSalida          String?
+  tienda               Tienda    @relation(fields: [tiendaId], references: [id])
+  usuario              Usuario   @relation(fields: [usuarioId], references: [id])
 
   @@index([usuarioId])
   @@index([tiendaId])
@@ -61,15 +49,14 @@ model RegistroServicio {
 }
 
 model Tienda {
-  id            String   @id @default(uuid())
-  codigo        Int      @unique
+  id            String             @id @default(uuid())
   nombre        String
   departamento  String
   municipio     String
-  activa        Boolean  @default(true)
-  fechaRegistro DateTime @default(now())
-
-  registros RegistroServicio[]
+  activa        Boolean            @default(true)
+  fechaRegistro DateTime           @default(now())
+  codigo        Int                @unique
+  registros     RegistroServicio[]
 
   @@index([codigo])
   @@index([departamento])
