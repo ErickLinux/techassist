@@ -1285,6 +1285,344 @@ btnGenerarScript.addEventListener(
       servicioSeleccionado;
 
 
+    // Calcular únicamente las horas
+    // que realmente corresponden a extra
+    const horasExtras =
+      calcularHorasExtrasServicio(
+        servicio
+      );
+
+
+    // ==========================
+    // ATENCIÓN EXTRA
+    // ==========================
+
+    let horaIngresoExtra = "00:00";
+    let horaEgresoExtra = "00:00";
+    let totalAtencionExtra = "00:00";
+
+
+    if (
+      horasExtras.minutosExtraAtencion > 0
+    ) {
+
+      const fechaServicio =
+        new Date(servicio.fecha);
+
+      const diaSemana =
+        fechaServicio.getDay();
+
+
+      // Sábado y domingo:
+      // toda la atención es extra
+      if (
+        diaSemana === 0 ||
+        diaSemana === 6
+      ) {
+
+        horaIngresoExtra =
+          formatearHora24(
+            servicio.horaIngreso
+          );
+
+        horaEgresoExtra =
+          formatearHora24(
+            servicio.horaEgreso
+          );
+
+      } else {
+
+        const ingreso =
+          new Date(
+            servicio.horaIngreso
+          );
+
+        const egreso =
+          new Date(
+            servicio.horaEgreso
+          );
+
+
+        const inicioHorarioNormal =
+          new Date(
+            servicio.fecha
+          );
+
+        inicioHorarioNormal.setHours(
+          8,
+          0,
+          0,
+          0
+        );
+
+
+        const finHorarioNormal =
+          new Date(
+            servicio.fecha
+          );
+
+        finHorarioNormal.setHours(
+          18,
+          0,
+          0,
+          0
+        );
+
+
+        // Si toda la atención ocurrió
+        // antes de las 08:00
+        if (
+          egreso <=
+          inicioHorarioNormal
+        ) {
+
+          horaIngresoExtra =
+            formatearHora24(
+              servicio.horaIngreso
+            );
+
+          horaEgresoExtra =
+            formatearHora24(
+              servicio.horaEgreso
+            );
+
+        }
+
+        // Si comenzó antes de las 08:00
+        // pero terminó dentro del horario normal
+        else if (
+          ingreso <
+            inicioHorarioNormal &&
+          egreso <=
+            finHorarioNormal
+        ) {
+
+          horaIngresoExtra =
+            formatearHora24(
+              servicio.horaIngreso
+            );
+
+          horaEgresoExtra =
+            "08:00";
+
+        }
+
+        // Si comenzó dentro del horario
+        // normal y terminó después de 18:00
+        else if (
+          ingreso >=
+            inicioHorarioNormal &&
+          ingreso <
+            finHorarioNormal &&
+          egreso >
+            finHorarioNormal
+        ) {
+
+          horaIngresoExtra =
+            "18:00";
+
+          horaEgresoExtra =
+            formatearHora24(
+              servicio.horaEgreso
+            );
+
+        }
+
+        // Si toda la atención ocurrió
+        // después de las 18:00
+        else if (
+          ingreso >=
+          finHorarioNormal
+        ) {
+
+          horaIngresoExtra =
+            formatearHora24(
+              servicio.horaIngreso
+            );
+
+          horaEgresoExtra =
+            formatearHora24(
+              servicio.horaEgreso
+            );
+
+        }
+
+      }
+
+
+      totalAtencionExtra =
+        convertirMinutosFormato(
+          horasExtras.minutosExtraAtencion
+        );
+    }
+
+
+    // ==========================
+    // VIAJE EXTRA
+    // ==========================
+
+    let inicioViajeExtra = "00:00";
+    let finViajeExtra = "00:00";
+    let totalViajeExtra = "00:00";
+
+
+    if (
+      horasExtras.minutosExtraViaje > 0
+    ) {
+
+      const fechaServicio =
+        new Date(servicio.fecha);
+
+      const diaSemana =
+        fechaServicio.getDay();
+
+
+      // Sábado y domingo:
+      // todo el viaje cuenta como extra
+      if (
+        diaSemana === 0 ||
+        diaSemana === 6
+      ) {
+
+        inicioViajeExtra =
+          formatearHora24(
+            servicio.inicioViaje
+          );
+
+        finViajeExtra =
+          formatearHora24(
+            servicio.finViaje
+          );
+
+      } else {
+
+        const inicioViaje =
+          new Date(
+            servicio.inicioViaje
+          );
+
+        const finViaje =
+          new Date(
+            servicio.finViaje
+          );
+
+
+        const inicioHorarioNormal =
+          new Date(
+            servicio.fecha
+          );
+
+        inicioHorarioNormal.setHours(
+          8,
+          0,
+          0,
+          0
+        );
+
+
+        const finHorarioNormal =
+          new Date(
+            servicio.fecha
+          );
+
+        finHorarioNormal.setHours(
+          18,
+          0,
+          0,
+          0
+        );
+
+
+        // Todo el viaje antes de 08:00
+        if (
+          finViaje <=
+          inicioHorarioNormal
+        ) {
+
+          inicioViajeExtra =
+            formatearHora24(
+              servicio.inicioViaje
+            );
+
+          finViajeExtra =
+            formatearHora24(
+              servicio.finViaje
+            );
+
+        }
+
+        // Empieza antes de 08:00
+        // y termina dentro del horario normal
+        else if (
+          inicioViaje <
+            inicioHorarioNormal &&
+          finViaje <=
+            finHorarioNormal
+        ) {
+
+          inicioViajeExtra =
+            formatearHora24(
+              servicio.inicioViaje
+            );
+
+          finViajeExtra =
+            "08:00";
+
+        }
+
+        // Empieza dentro del horario
+        // normal y termina después de 18:00
+        else if (
+          inicioViaje >=
+            inicioHorarioNormal &&
+          inicioViaje <
+            finHorarioNormal &&
+          finViaje >
+            finHorarioNormal
+        ) {
+
+          inicioViajeExtra =
+            "18:00";
+
+          finViajeExtra =
+            formatearHora24(
+              servicio.finViaje
+            );
+
+        }
+
+        // Todo el viaje después de 18:00
+        else if (
+          inicioViaje >=
+          finHorarioNormal
+        ) {
+
+          inicioViajeExtra =
+            formatearHora24(
+              servicio.inicioViaje
+            );
+
+          finViajeExtra =
+            formatearHora24(
+              servicio.finViaje
+            );
+
+        }
+
+      }
+
+
+      totalViajeExtra =
+        convertirMinutosFormato(
+          horasExtras.minutosExtraViaje
+        );
+    }
+
+
+    // ==========================
+    // CREAR SCRIPT
+    // ==========================
+
     const script = `
 TÉCNICO DEPARTAMENTAL
 • Nombre: ${servicio.usuario.nombre}
@@ -1294,27 +1632,13 @@ TÉCNICO DEPARTAMENTAL
 • Tienda: ${servicio.tienda.nombre}
 • INC / Tarea: ${servicio.numeroTicket}
 • No. CAF: ${servicio.numeroCaf || "N/A"}
-• Hora de ingreso: ${formatearHora24(servicio.horaIngreso)}
-• Hora de egreso: ${formatearHora24(servicio.horaEgreso)}
-• Total de horas por atención: ${convertirMinutosFormato(servicio.totalMinutosAtencion)}
+• Hora de ingreso: ${horaIngresoExtra}
+• Hora de egreso: ${horaEgresoExtra}
+• Total de horas por atención: ${totalAtencionExtra}
 • Total kilómetros: ${servicio.totalKilometros}
-• Inicio de viaje: ${
-  servicio.inicioViaje
-    ? formatearHora24(servicio.inicioViaje)
-    : "0"
-}
-• Fin de viaje: ${
-  servicio.finViaje
-    ? formatearHora24(servicio.finViaje)
-    : "0"
-}
-• Total horas de viaje: ${
-  servicio.totalMinutosViaje
-    ? convertirMinutosFormato(
-        servicio.totalMinutosViaje
-      )
-    : "0"
-}
+• Inicio de viaje: ${inicioViajeExtra}
+• Fin de viaje: ${finViajeExtra}
+• Total horas de viaje: ${totalViajeExtra}
 • Comentario: ${servicio.trabajoRealizado}
 `.trim();
 
