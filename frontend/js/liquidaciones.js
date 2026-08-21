@@ -150,14 +150,14 @@ btnExportarExcel.addEventListener(
 
       const respuesta =
         await fetch(
-          `http://localhost:3000/api/liquidaciones/exportar?mes=${mes}&anio=${anio}`,
+        `${API_URL}/api/liquidaciones/exportar?mes=${mes}&anio=${anio}`,
           {
             headers: {
-              Authorization:
-                `Bearer ${token}`
+             Authorization:
+          `   Bearer ${token}`
+              }
             }
-          }
-        );
+           );
 
 
       if (!respuesta.ok) {
@@ -358,15 +358,15 @@ async function cargarServicios() {
   try {
 
     const respuesta =
-      await fetch(
-        "http://localhost:3000/api/servicios/mis-servicios",
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`
-          }
-        }
-      );
+  await fetch(
+    `${API_URL}/api/servicios/mis-servicios`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${token}`
+      }
+    }
+  );
 
     if (
       respuesta.status === 401 ||

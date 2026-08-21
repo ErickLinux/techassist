@@ -218,13 +218,13 @@ async function buscarTienda() {
     );
 
     const respuesta = await fetch(
-      `http://localhost:3000/api/tiendas/codigo/${codigo}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+  `${API_URL}/api/tiendas/codigo/${codigo}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
 
     const datos = await respuesta.json();
 
@@ -402,18 +402,18 @@ formServicio.addEventListener("submit", async (event) => {
     }
 
     const respuesta = await fetch(
-      "http://localhost:3000/api/servicios",
-      {
-        method: "POST",
+  `${API_URL}/api/servicios`,
+  {
+    method: "POST",
 
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
 
-        body: JSON.stringify(datosServicio)
-      }
-    );
+    body: JSON.stringify(datosServicio)
+  }
+);
 
     const datos = await respuesta.json();
 

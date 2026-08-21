@@ -629,15 +629,15 @@ async function cargarServicios() {
   try {
 
     const respuesta =
-      await fetch(
-        "http://localhost:3000/api/servicios/mis-servicios",
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`
-          }
-        }
-      );
+  await fetch(
+    `${API_URL}/api/servicios/mis-servicios`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${token}`
+      }
+    }
+  );
 
 
     if (
@@ -895,15 +895,15 @@ async function seleccionarServicio(id) {
   try {
 
     const respuesta =
-      await fetch(
-        `http://localhost:3000/api/servicios/${id}`,
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`
-          }
-        }
-      );
+  await fetch(
+    `${API_URL}/api/servicios/${id}`,
+    {
+      headers: {
+        Authorization:
+          `Bearer ${token}`
+      }
+    }
+  );
 
 
     const datos =

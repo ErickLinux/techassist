@@ -4,7 +4,6 @@ const passwordInput = document.getElementById("password");
 const mensaje = document.getElementById("mensaje");
 const btnLogin = document.getElementById("btnLogin");
 
-const API_URL = "http://localhost:3000/api/usuarios/login";
 
 const mostrarMensaje = (texto, tipo) => {
   mensaje.textContent = texto;
@@ -31,16 +30,21 @@ loginForm.addEventListener("submit", async (event) => {
 
     mensaje.className = "alert d-none";
 
-    const respuesta = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        correo,
-        password
-      })
-    });
+    const respuesta = await fetch(
+  `${API_URL}/api/auth/login`,
+  {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json"
+    },
+
+    body: JSON.stringify({
+      correo,
+      password
+    })
+  }
+);
 
     const datos = await respuesta.json();
 

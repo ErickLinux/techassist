@@ -208,13 +208,13 @@ async function cargarServicios() {
   try {
 
     const respuesta = await fetch(
-      "http://localhost:3000/api/servicios/mis-servicios",
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+  `${API_URL}/api/servicios/mis-servicios`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
 
     // Token vencido o inválido
     if (
@@ -423,13 +423,13 @@ async function verDetalleServicio(id) {
   try {
 
     const respuesta = await fetch(
-      `http://localhost:3000/api/servicios/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
+  `${API_URL}/api/servicios/${id}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+);
 
     if (
       respuesta.status === 401 ||
@@ -1118,23 +1118,18 @@ async function guardarEdicionServicio(
   try {
 
     const respuesta = await fetch(
-      `http://localhost:3000/api/servicios/${servicioSeleccionado.id}`,
-      {
-        method: "PUT",
+  `${API_URL}/api/servicios/${servicioSeleccionado.id}`,
+  {
+    method: "PUT",
 
-        headers: {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
 
-          "Content-Type":
-            "application/json",
-
-          Authorization:
-            `Bearer ${token}`
-        },
-
-        body:
-          JSON.stringify(datos)
-      }
-    );
+    body: JSON.stringify(datos)
+  }
+);
 
     const resultado =
       await respuesta.json();
@@ -1232,16 +1227,16 @@ async function eliminarServicioSeleccionado() {
     `;
 
     const respuesta = await fetch(
-      `http://localhost:3000/api/servicios/${servicioSeleccionado.id}`,
-      {
-        method: "DELETE",
+  `${API_URL}/api/servicios/${servicioSeleccionado.id}`,
+  {
+    method: "DELETE",
 
-        headers: {
-          Authorization:
-            `Bearer ${token}`
-        }
-      }
-    );
+    headers: {
+      Authorization:
+        `Bearer ${token}`
+    }
+  }
+);
 
     const resultado =
       await respuesta.json();
