@@ -48,6 +48,10 @@ const tablaUsuariosContenedor =
   document.getElementById(
     "tablaUsuariosContenedor"
   );
+const modalEditarUsuario =
+  bootstrap.Modal.getOrCreateInstance(
+    modalEditarUsuarioElemento
+  );
 
 const cargandoUsuarios =
   document.getElementById(
@@ -64,10 +68,6 @@ const formEditarUsuario =
     "formEditarUsuario"
   );
 
-const modalEditarUsuario =
-  bootstrap.Modal.getOrCreateInstance(
-    modalEditarUsuarioElemento
-  );
 
 
 // ==============================
