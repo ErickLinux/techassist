@@ -156,15 +156,19 @@ let nombreArchivo;
 
 if (inicio && fin) {
 
-  // Exportar únicamente el rango seleccionado
   urlExportacion =
     `${API_URL}/api/liquidaciones/exportar?inicio=${inicio}&fin=${fin}`;
 
+  nombreArchivo =
+    `LIQUIDACION_${inicio}_AL_${fin}.xlsx`;
+
 } else {
 
-  // Exportar el mes completo
   urlExportacion =
     `${API_URL}/api/liquidaciones/exportar?mes=${mes}&anio=${anio}`;
+
+  nombreArchivo =
+    `LIQUIDACION_${mes}_${anio}.xlsx`;
 }
 
 const respuesta =
