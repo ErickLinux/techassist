@@ -357,10 +357,10 @@ formServicio.addEventListener("submit", async (event) => {
         .trim() || null,
 
     horaIngreso:
-      horaIngreso.value,
+  horaIngreso.value || null,
 
-    horaEgreso:
-      horaEgreso.value,
+horaEgreso:
+  horaEgreso.value || null,
 
     totalMinutosAtencion,
 

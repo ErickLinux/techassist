@@ -42,21 +42,19 @@ export const crearRegistroServicio = async ({
 }) => {
 
   if (
-    !fecha ||
-    !dia ||
-    !codigoTienda ||
-    !numeroTicket ||
-    !horaIngreso ||
-    !horaEgreso ||
-    !trabajoRealizado
-  ) {
-    const error = new Error(
-      "Faltan datos obligatorios para registrar el servicio"
-    );
+  !fecha ||
+  !dia ||
+  !codigoTienda ||
+  !numeroTicket ||
+  !trabajoRealizado
+) {
+  const error = new Error(
+    "Faltan datos obligatorios para registrar el servicio"
+  );
 
-    error.statusCode = 400;
-    throw error;
-  }
+  error.statusCode = 400;
+  throw error;
+}
 
   const usuario = await prisma.usuario.findUnique({
     where: {
@@ -138,7 +136,7 @@ export const crearRegistroServicio = async ({
       horaEgreso: fechaEgreso,
 
       totalMinutosAtencion:
-        Number(totalMinutosAtencion),
+  Number(totalMinutosAtencion) || 0,
 
       totalKilometros:
         Number(totalKilometros) || 0,
@@ -323,10 +321,14 @@ export const actualizarRegistroServicio = async ({
       fechaEgreso
     );
 
-  const totalMinutosAtencion =
+  let totalMinutosAtencion = 0;
+
+if (fechaIngreso && fechaEgreso) {
+  totalMinutosAtencion =
     Math.round(
       (fechaEgreso - fechaIngreso) / 60000
     );
+}
 
   let fechaInicioViaje = null;
   let fechaFinViaje = null;

@@ -26,9 +26,9 @@ model RegistroServicio {
   fecha                DateTime  @default(now())
   numeroTicket         String
   numeroCaf            String?
-  horaIngreso          DateTime
-  horaEgreso           DateTime
-  totalMinutosAtencion Int
+  horaIngreso          DateTime?
+  horaEgreso           DateTime?
+  totalMinutosAtencion Int @default(0)
   totalKilometros      Int       @default(0)
   inicioViaje          DateTime?
   finViaje             DateTime?
