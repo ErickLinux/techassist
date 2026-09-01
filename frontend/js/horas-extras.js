@@ -1971,7 +1971,6 @@ TÉCNICO DEPARTAMENTAL
 • Inicio de viaje: ${inicioViajeExtra}
 • Fin de viaje: ${finViajeExtra}
 • Total horas de viaje: ${totalViajeExtra}${textoRegresoCasa}
-
 • Comentario: ${servicio.trabajoRealizado}
 `.trim();
 
