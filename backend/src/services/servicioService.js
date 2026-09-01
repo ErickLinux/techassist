@@ -38,6 +38,11 @@ export const crearRegistroServicio = async ({
   inicioViaje,
   finViaje,
   totalMinutosViaje,
+
+  inicioRegresoCasa,
+  finRegresoCasa,
+  totalMinutosRegresoCasa,
+
   trabajoRealizado
 }) => {
 
@@ -120,6 +125,32 @@ export const crearRegistroServicio = async ({
       fechaFinViaje
     );
   }
+  let fechaInicioRegresoCasa = null;
+let fechaFinRegresoCasa = null;
+
+if (
+  inicioRegresoCasa &&
+  finRegresoCasa
+) {
+
+  fechaInicioRegresoCasa =
+    crearFechaHora(
+      fecha,
+      inicioRegresoCasa
+    );
+
+  fechaFinRegresoCasa =
+    crearFechaHora(
+      fecha,
+      finRegresoCasa
+    );
+
+  fechaFinRegresoCasa =
+    ajustarCruceMedianoche(
+      fechaInicioRegresoCasa,
+      fechaFinRegresoCasa
+    );
+}
 
   const registro = await prisma.registroServicio.create({
     data: {
@@ -143,10 +174,19 @@ export const crearRegistroServicio = async ({
         lugarSalida:
     lugarSalida?.trim() || null,
       inicioViaje: fechaInicioViaje,
-      finViaje: fechaFinViaje,
+finViaje: fechaFinViaje,
 
-      totalMinutosViaje:
-        Number(totalMinutosViaje) || 0,
+totalMinutosViaje:
+  Number(totalMinutosViaje) || 0,
+
+inicioRegresoCasa:
+  fechaInicioRegresoCasa,
+
+finRegresoCasa:
+  fechaFinRegresoCasa,
+
+totalMinutosRegresoCasa:
+  Number(totalMinutosRegresoCasa) || 0,
 
       trabajoRealizado:
         trabajoRealizado.trim(),
@@ -274,6 +314,10 @@ export const actualizarRegistroServicio = async ({
   lugarSalida,
   inicioViaje,
   finViaje,
+
+  inicioRegresoCasa,
+  finRegresoCasa,
+
   trabajoRealizado
 }) => {
 
@@ -353,6 +397,41 @@ if (fechaIngreso && fechaEgreso) {
         (fechaFinViaje - fechaInicioViaje) / 60000
       );
   }
+  let fechaInicioRegresoCasa = null;
+let fechaFinRegresoCasa = null;
+let totalMinutosRegresoCasa = 0;
+
+if (
+  inicioRegresoCasa &&
+  finRegresoCasa
+) {
+
+  fechaInicioRegresoCasa =
+    crearFechaHora(
+      fecha,
+      inicioRegresoCasa
+    );
+
+  fechaFinRegresoCasa =
+    crearFechaHora(
+      fecha,
+      finRegresoCasa
+    );
+
+  fechaFinRegresoCasa =
+    ajustarCruceMedianoche(
+      fechaInicioRegresoCasa,
+      fechaFinRegresoCasa
+    );
+
+  totalMinutosRegresoCasa =
+    Math.round(
+      (
+        fechaFinRegresoCasa -
+        fechaInicioRegresoCasa
+      ) / 60000
+    );
+}
 
   const diasSemana = [
     "Domingo",
@@ -397,12 +476,20 @@ if (fechaIngreso && fechaEgreso) {
 lugarSalida:
   lugarSalida?.trim() || null,
         inicioViaje: fechaInicioViaje,
-        finViaje: fechaFinViaje,
+finViaje: fechaFinViaje,
 
-        totalMinutosViaje,
+totalMinutosViaje,
 
-        trabajoRealizado:
-          trabajoRealizado.trim(),
+inicioRegresoCasa:
+  fechaInicioRegresoCasa,
+
+finRegresoCasa:
+  fechaFinRegresoCasa,
+
+totalMinutosRegresoCasa,
+
+trabajoRealizado:
+  trabajoRealizado.trim(),
 
         tiendaId: tienda.id
       },

@@ -219,7 +219,8 @@ btnMesSiguiente.addEventListener(
   function calcularResumenHorasExtras(lista) {
 
   let minutosAtencion = 0;
-  let minutosViaje = 0;
+let minutosViaje = 0;
+let minutosRegresoCasa = 0;
 
   lista.forEach((servicio) => {
 
@@ -233,12 +234,15 @@ btnMesSiguiente.addEventListener(
 
     minutosViaje +=
       resultado.minutosExtraViaje;
+      minutosRegresoCasa +=
+  resultado.minutosExtraRegresoCasa;
   });
 
 
   const total =
-    minutosAtencion +
-    minutosViaje;
+  minutosAtencion +
+  minutosViaje +
+  minutosRegresoCasa;
 
 
   totalExtraAtencion.textContent =
@@ -585,7 +589,6 @@ function calcularHorasExtrasServicio(
       servicio.fecha
     );
 
-
   const minutosExtraViaje =
     calcularMinutosExtra(
       servicio.inicioViaje,
@@ -593,15 +596,22 @@ function calcularHorasExtrasServicio(
       servicio.fecha
     );
 
+  const minutosExtraRegresoCasa =
+    calcularMinutosExtra(
+      servicio.inicioRegresoCasa,
+      servicio.finRegresoCasa,
+      servicio.fecha
+    );
 
   const totalMinutosExtra =
     minutosExtraAtencion +
-    minutosExtraViaje;
-
+    minutosExtraViaje +
+    minutosExtraRegresoCasa;
 
   return {
     minutosExtraAtencion,
     minutosExtraViaje,
+    minutosExtraRegresoCasa,
     totalMinutosExtra
   };
 }
@@ -957,7 +967,21 @@ function mostrarDetalleServicio(
     servicio.numeroTicket;
 
 
+  function mostrarDetalleServicio(
+  servicio
+) {
+
+  const horasExtras =
+    calcularHorasExtrasServicio(
+      servicio
+    );
+
+  badgeTicket.textContent =
+    servicio.numeroTicket;
+
+
   detalleServicio.innerHTML = `
+
     <div class="col-md-6">
 
       <label class="text-secondary small">
@@ -997,17 +1021,19 @@ function mostrarDetalleServicio(
       </div>
 
     </div>
+
+
     <div class="col-md-6">
 
-  <label class="text-secondary small">
-    Lugar de salida
-  </label>
+      <label class="text-secondary small">
+        Lugar de salida
+      </label>
 
-  <div class="fw-semibold">
-    ${servicio.lugarSalida || "N/A"}
-  </div>
+      <div class="fw-semibold">
+        ${servicio.lugarSalida || "N/A"}
+      </div>
 
-</div>
+    </div>
 
 
     <div class="col-md-6">
@@ -1145,54 +1171,6 @@ function mostrarDetalleServicio(
       <label class="text-secondary small">
         Total viaje
       </label>
-      <div class="col-12">
-  <hr>
-</div>
-
-
-<div class="col-md-4">
-
-  <label class="text-secondary small">
-    Extra de atención
-  </label>
-
-  <div class="fw-bold text-primary">
-    ${convertirMinutos(
-      horasExtras.minutosExtraAtencion
-    )}
-  </div>
-
-</div>
-
-
-<div class="col-md-4">
-
-  <label class="text-secondary small">
-    Extra de viaje
-  </label>
-
-  <div class="fw-bold text-primary">
-    ${convertirMinutos(
-      horasExtras.minutosExtraViaje
-    )}
-  </div>
-
-</div>
-
-
-<div class="col-md-4">
-
-  <label class="text-secondary small">
-    Total horas extra
-  </label>
-
-  <div class="fw-bold text-success">
-    ${convertirMinutos(
-      horasExtras.totalMinutosExtra
-    )}
-  </div>
-
-</div>
 
       <div class="fw-semibold">
         ${convertirMinutos(
@@ -1200,6 +1178,135 @@ function mostrarDetalleServicio(
         )}
       </div>
 
+    </div>
+
+
+    ${
+      servicio.inicioRegresoCasa &&
+      servicio.finRegresoCasa
+        ? `
+
+          <div class="col-12">
+            <hr>
+          </div>
+
+
+          <div class="col-md-4">
+
+            <label class="text-secondary small">
+              Inicio regreso a casa
+            </label>
+
+            <div class="fw-semibold">
+              ${formatearHora(
+                servicio.inicioRegresoCasa
+              )}
+            </div>
+
+          </div>
+
+
+          <div class="col-md-4">
+
+            <label class="text-secondary small">
+              Fin regreso a casa
+            </label>
+
+            <div class="fw-semibold">
+              ${formatearHora(
+                servicio.finRegresoCasa
+              )}
+            </div>
+
+          </div>
+
+
+          <div class="col-md-4">
+
+            <label class="text-secondary small">
+              Total regreso a casa
+            </label>
+
+            <div class="fw-semibold">
+              ${convertirMinutos(
+                servicio.totalMinutosRegresoCasa
+              )}
+            </div>
+
+          </div>
+
+        `
+        : ""
+    }
+
+
+    <div class="col-12">
+      <hr>
+    </div>
+
+
+    <div class="col-md-3">
+
+      <label class="text-secondary small">
+        Extra de atención
+      </label>
+
+      <div class="fw-bold text-primary">
+        ${convertirMinutos(
+          horasExtras.minutosExtraAtencion
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="col-md-3">
+
+      <label class="text-secondary small">
+        Extra de viaje
+      </label>
+
+      <div class="fw-bold text-primary">
+        ${convertirMinutos(
+          horasExtras.minutosExtraViaje
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="col-md-3">
+
+      <label class="text-secondary small">
+        Extra regreso a casa
+      </label>
+
+      <div class="fw-bold text-primary">
+        ${convertirMinutos(
+          horasExtras.minutosExtraRegresoCasa
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="col-md-3">
+
+      <label class="text-secondary small">
+        Total horas extra
+      </label>
+
+      <div class="fw-bold text-success">
+        ${convertirMinutos(
+          horasExtras.totalMinutosExtra
+        )}
+      </div>
+
+    </div>
+
+
+    <div class="col-12">
+      <hr>
     </div>
 
 
@@ -1216,7 +1323,28 @@ function mostrarDetalleServicio(
       </div>
 
     </div>
+
   `;
+
+
+  seccionServicioSeleccionado.classList.remove(
+    "d-none"
+  );
+
+
+  seccionScript.classList.add(
+    "d-none"
+  );
+
+
+  textoScript.value =
+    "";
+
+
+  seccionServicioSeleccionado.scrollIntoView({
+    behavior: "smooth"
+  });
+}
 
 
   seccionServicioSeleccionado.classList.remove(
@@ -1281,12 +1409,15 @@ btnGenerarScript.addEventListener(
       return;
     }
 
+
     const servicio =
       servicioSeleccionado;
 
 
-    // Calcular únicamente las horas
-    // que realmente corresponden a extra
+    // ==========================
+    // CALCULAR HORAS EXTRAS
+    // ==========================
+
     const horasExtras =
       calcularHorasExtrasServicio(
         servicio
@@ -1369,8 +1500,7 @@ btnGenerarScript.addEventListener(
         );
 
 
-        // Si toda la atención ocurrió
-        // antes de las 08:00
+        // Todo antes de las 08:00
         if (
           egreso <=
           inicioHorarioNormal
@@ -1388,8 +1518,9 @@ btnGenerarScript.addEventListener(
 
         }
 
-        // Si comenzó antes de las 08:00
-        // pero terminó dentro del horario normal
+
+        // Empieza antes de las 08:00
+        // y termina dentro del horario normal
         else if (
           ingreso <
             inicioHorarioNormal &&
@@ -1407,8 +1538,9 @@ btnGenerarScript.addEventListener(
 
         }
 
-        // Si comenzó dentro del horario
-        // normal y terminó después de 18:00
+
+        // Empieza dentro del horario normal
+        // y termina después de las 18:00
         else if (
           ingreso >=
             inicioHorarioNormal &&
@@ -1428,8 +1560,8 @@ btnGenerarScript.addEventListener(
 
         }
 
-        // Si toda la atención ocurrió
-        // después de las 18:00
+
+        // Todo después de las 18:00
         else if (
           ingreso >=
           finHorarioNormal
@@ -1478,7 +1610,7 @@ btnGenerarScript.addEventListener(
 
 
       // Sábado y domingo:
-      // todo el viaje cuenta como extra
+      // todo el viaje es extra
       if (
         diaSemana === 0 ||
         diaSemana === 6
@@ -1496,12 +1628,12 @@ btnGenerarScript.addEventListener(
 
       } else {
 
-        const inicioViaje =
+        const inicio =
           new Date(
             servicio.inicioViaje
           );
 
-        const finViaje =
+        const fin =
           new Date(
             servicio.finViaje
           );
@@ -1533,9 +1665,9 @@ btnGenerarScript.addEventListener(
         );
 
 
-        // Todo el viaje antes de 08:00
+        // Todo antes de las 08:00
         if (
-          finViaje <=
+          fin <=
           inicioHorarioNormal
         ) {
 
@@ -1551,12 +1683,13 @@ btnGenerarScript.addEventListener(
 
         }
 
+
         // Empieza antes de 08:00
         // y termina dentro del horario normal
         else if (
-          inicioViaje <
+          inicio <
             inicioHorarioNormal &&
-          finViaje <=
+          fin <=
             finHorarioNormal
         ) {
 
@@ -1570,14 +1703,15 @@ btnGenerarScript.addEventListener(
 
         }
 
-        // Empieza dentro del horario
-        // normal y termina después de 18:00
+
+        // Empieza en horario normal
+        // y termina después de 18:00
         else if (
-          inicioViaje >=
+          inicio >=
             inicioHorarioNormal &&
-          inicioViaje <
+          inicio <
             finHorarioNormal &&
-          finViaje >
+          fin >
             finHorarioNormal
         ) {
 
@@ -1591,9 +1725,10 @@ btnGenerarScript.addEventListener(
 
         }
 
-        // Todo el viaje después de 18:00
+
+        // Todo después de 18:00
         else if (
-          inicioViaje >=
+          inicio >=
           finHorarioNormal
         ) {
 
@@ -1620,6 +1755,203 @@ btnGenerarScript.addEventListener(
 
 
     // ==========================
+    // REGRESO A CASA EXTRA
+    // ==========================
+
+    let inicioRegresoExtra = "00:00";
+    let finRegresoExtra = "00:00";
+    let totalRegresoExtra = "00:00";
+
+
+    if (
+      horasExtras.minutosExtraRegresoCasa > 0
+    ) {
+
+      const fechaServicio =
+        new Date(
+          servicio.fecha
+        );
+
+      const diaSemana =
+        fechaServicio.getDay();
+
+
+      // Sábado y domingo:
+      // todo el regreso es extra
+      if (
+        diaSemana === 0 ||
+        diaSemana === 6
+      ) {
+
+        inicioRegresoExtra =
+          formatearHora24(
+            servicio.inicioRegresoCasa
+          );
+
+        finRegresoExtra =
+          formatearHora24(
+            servicio.finRegresoCasa
+          );
+
+      } else {
+
+        const inicio =
+          new Date(
+            servicio.inicioRegresoCasa
+          );
+
+        const fin =
+          new Date(
+            servicio.finRegresoCasa
+          );
+
+
+        const inicioHorarioNormal =
+          new Date(
+            servicio.fecha
+          );
+
+        inicioHorarioNormal.setHours(
+          8,
+          0,
+          0,
+          0
+        );
+
+
+        const finHorarioNormal =
+          new Date(
+            servicio.fecha
+          );
+
+        finHorarioNormal.setHours(
+          18,
+          0,
+          0,
+          0
+        );
+
+
+        // Todo el regreso antes de 08:00
+        if (
+          fin <=
+          inicioHorarioNormal
+        ) {
+
+          inicioRegresoExtra =
+            formatearHora24(
+              servicio.inicioRegresoCasa
+            );
+
+          finRegresoExtra =
+            formatearHora24(
+              servicio.finRegresoCasa
+            );
+
+        }
+
+
+        // Empieza antes de las 08:00
+        // y termina dentro del horario normal
+        else if (
+          inicio <
+            inicioHorarioNormal &&
+          fin <=
+            finHorarioNormal
+        ) {
+
+          inicioRegresoExtra =
+            formatearHora24(
+              servicio.inicioRegresoCasa
+            );
+
+          finRegresoExtra =
+            "08:00";
+
+        }
+
+
+        // Empieza dentro del horario normal
+        // y termina después de las 18:00
+        else if (
+          inicio >=
+            inicioHorarioNormal &&
+          inicio <
+            finHorarioNormal &&
+          fin >
+            finHorarioNormal
+        ) {
+
+          inicioRegresoExtra =
+            "18:00";
+
+          finRegresoExtra =
+            formatearHora24(
+              servicio.finRegresoCasa
+            );
+
+        }
+
+
+        // Todo después de las 18:00
+        else if (
+          inicio >=
+          finHorarioNormal
+        ) {
+
+          inicioRegresoExtra =
+            formatearHora24(
+              servicio.inicioRegresoCasa
+            );
+
+          finRegresoExtra =
+            formatearHora24(
+              servicio.finRegresoCasa
+            );
+
+        }
+
+      }
+
+
+      totalRegresoExtra =
+        convertirMinutosFormato(
+          horasExtras.minutosExtraRegresoCasa
+        );
+    }
+
+
+    // ==========================
+    // TEXTO REGRESO A CASA
+    // ==========================
+
+    let textoRegresoCasa = "";
+
+
+    if (
+      servicio.inicioRegresoCasa &&
+      servicio.finRegresoCasa &&
+      horasExtras.minutosExtraRegresoCasa > 0
+    ) {
+
+      textoRegresoCasa = `
+• Inicio regreso a casa: ${inicioRegresoExtra}
+• Fin regreso a casa: ${finRegresoExtra}
+• Total horas regreso a casa: ${totalRegresoExtra}`;
+    }
+
+
+    // ==========================
+    // TOTAL GENERAL
+    // ==========================
+
+    const totalGeneralExtra =
+      convertirMinutosFormato(
+        horasExtras.totalMinutosExtra
+      );
+
+
+    // ==========================
     // CREAR SCRIPT
     // ==========================
 
@@ -1638,7 +1970,8 @@ TÉCNICO DEPARTAMENTAL
 • Total kilómetros: ${servicio.totalKilometros}
 • Inicio de viaje: ${inicioViajeExtra}
 • Fin de viaje: ${finViajeExtra}
-• Total horas de viaje: ${totalViajeExtra}
+• Total horas de viaje: ${totalViajeExtra}${textoRegresoCasa}
+• Total general horas extra: ${totalGeneralExtra}
 • Comentario: ${servicio.trabajoRealizado}
 `.trim();
 

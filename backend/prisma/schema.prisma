@@ -33,6 +33,9 @@ model RegistroServicio {
   inicioViaje          DateTime?
   finViaje             DateTime?
   totalMinutosViaje    Int       @default(0)
+  inicioRegresoCasa       DateTime?
+finRegresoCasa          DateTime?
+totalMinutosRegresoCasa Int       @default(0)
   trabajoRealizado     String
   fechaRegistro        DateTime  @default(now())
   fechaActualizacion   DateTime  @updatedAt

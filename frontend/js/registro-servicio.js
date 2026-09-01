@@ -31,7 +31,36 @@ const sidebar = document.getElementById("sidebar");
 
 let totalMinutosAtencion = 0;
 let totalMinutosViaje = 0;
+let totalMinutosRegresoCasa = 0;
 
+// ==============================
+// REGRESO A CASA
+// ==============================
+
+const activarRegresoCasa =
+  document.getElementById(
+    "activarRegresoCasa"
+  );
+
+const camposRegresoCasa =
+  document.getElementById(
+    "camposRegresoCasa"
+  );
+
+const inicioRegresoCasa =
+  document.getElementById(
+    "inicioRegresoCasa"
+  );
+
+const finRegresoCasa =
+  document.getElementById(
+    "finRegresoCasa"
+  );
+
+const totalRegresoCasa =
+  document.getElementById(
+    "totalRegresoCasa"
+  );
 /**
  * Verifica que exista una sesión activa.
  */
@@ -171,6 +200,19 @@ function calcularTiempoViaje() {
 
   totalViaje.value = formatearMinutos(totalMinutosViaje);
 }
+function calcularTiempoRegresoCasa() {
+
+  totalMinutosRegresoCasa =
+    calcularDiferenciaMinutos(
+      inicioRegresoCasa.value,
+      finRegresoCasa.value
+    );
+
+  totalRegresoCasa.value =
+    formatearMinutos(
+      totalMinutosRegresoCasa
+    );
+}
 
 function actualizarContador() {
   contadorCaracteres.textContent = trabajoRealizado.value.length;
@@ -263,7 +305,43 @@ horaEgreso.addEventListener("change", calcularTiempoAtencion);
 
 inicioViaje.addEventListener("change", calcularTiempoViaje);
 finViaje.addEventListener("change", calcularTiempoViaje);
+inicioRegresoCasa.addEventListener(
+  "change",
+  calcularTiempoRegresoCasa
+);
 
+finRegresoCasa.addEventListener(
+  "change",
+  calcularTiempoRegresoCasa
+);
+
+
+activarRegresoCasa.addEventListener(
+  "change",
+  () => {
+
+    if (activarRegresoCasa.checked) {
+
+      camposRegresoCasa.classList.remove(
+        "d-none"
+      );
+
+    } else {
+
+      camposRegresoCasa.classList.add(
+        "d-none"
+      );
+
+      inicioRegresoCasa.value = "";
+      finRegresoCasa.value = "";
+
+      totalMinutosRegresoCasa = 0;
+
+      totalRegresoCasa.value =
+        "0 h 0 min";
+    }
+  }
+);
 trabajoRealizado.addEventListener("input", actualizarContador);
 
 btnBuscarTienda.addEventListener("click", buscarTienda);
@@ -339,8 +417,14 @@ formServicio.addEventListener("submit", async (event) => {
     return;
   }
 
-  calcularTiempoAtencion();
-  calcularTiempoViaje();
+ calcularTiempoAtencion();
+calcularTiempoViaje();
+
+if (activarRegresoCasa.checked) {
+  calcularTiempoRegresoCasa();
+} else {
+  totalMinutosRegresoCasa = 0;
+}
 
   const datosServicio = {
     fecha: fechaServicio.value,
@@ -388,6 +472,20 @@ horaEgreso:
       finViaje.value || null,
 
     totalMinutosViaje,
+    inicioRegresoCasa:
+  activarRegresoCasa.checked
+    ? inicioRegresoCasa.value || null
+    : null,
+
+finRegresoCasa:
+  activarRegresoCasa.checked
+    ? finRegresoCasa.value || null
+    : null,
+
+totalMinutosRegresoCasa:
+  activarRegresoCasa.checked
+    ? totalMinutosRegresoCasa
+    : 0,
 
     trabajoRealizado:
       trabajoRealizado.value.trim()
@@ -444,9 +542,16 @@ horaEgreso:
 
     totalMinutosAtencion = 0;
     totalMinutosViaje = 0;
+    totalMinutosRegresoCasa = 0;
 
     totalAtencion.value = "0 h 0 min";
     totalViaje.value = "0 h 0 min";
+    totalRegresoCasa.value =
+  "0 h 0 min";
+
+camposRegresoCasa.classList.add(
+  "d-none"
+);
 
     contadorCaracteres.textContent = "0";
 
@@ -491,26 +596,29 @@ btnLimpiar.addEventListener("click", () => {
 
     totalMinutosAtencion = 0;
     totalMinutosViaje = 0;
+    totalMinutosRegresoCasa = 0;
 
     totalAtencion.value = "0 h 0 min";
     totalViaje.value = "0 h 0 min";
+    totalRegresoCasa.value = "0 h 0 min";
+
+    camposRegresoCasa.classList.add(
+      "d-none"
+    );
 
     contadorCaracteres.textContent = "0";
 
-    mensajeTienda.className = "alert mt-3 d-none";
+    mensajeTienda.className =
+      "alert mt-3 d-none";
+
     mensajeTienda.textContent = "";
 
-    formServicio.classList.remove("was-validated");
+    formServicio.classList.remove(
+      "was-validated"
+    );
 
     verificarSesion();
   }, 0);
-});
-
-btnCerrarSesion.addEventListener("click", () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("usuario");
-
-  window.location.href = "./login.html";
 });
 
 btnMenu.addEventListener("click", () => {

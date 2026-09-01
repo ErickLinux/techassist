@@ -456,6 +456,110 @@
   <label for="totalKilometros" class="form-label">
     Total de kilómetros recorridos
   </label>
+  <!-- REGRESO A CASA -->
+<div class="col-12 mt-3">
+
+  <div class="form-check form-switch">
+
+    <input
+      class="form-check-input"
+      type="checkbox"
+      role="switch"
+      id="activarRegresoCasa"
+    >
+
+    <label
+      class="form-check-label"
+      for="activarRegresoCasa"
+    >
+      Agregar viaje de regreso a casa
+    </label>
+
+  </div>
+
+  <div class="form-text">
+    Activa esta opción únicamente cuando sea necesario registrar el regreso a casa.
+  </div>
+
+</div>
+
+
+<!-- CAMPOS REGRESO A CASA -->
+<div
+  class="col-12 d-none"
+  id="camposRegresoCasa"
+>
+
+  <div class="row g-3 mt-1">
+
+    <div class="col-12">
+
+      <h3 class="subsection-title">
+        <i class="bi bi-house-door"></i>
+        Regreso a casa
+      </h3>
+
+    </div>
+
+
+    <div class="col-12 col-md-4">
+
+      <label
+        for="inicioRegresoCasa"
+        class="form-label"
+      >
+        Inicio de viaje de regreso
+      </label>
+
+      <input
+        type="time"
+        class="form-control"
+        id="inicioRegresoCasa"
+      >
+
+    </div>
+
+
+    <div class="col-12 col-md-4">
+
+      <label
+        for="finRegresoCasa"
+        class="form-label"
+      >
+        Fin de viaje de regreso
+      </label>
+
+      <input
+        type="time"
+        class="form-control"
+        id="finRegresoCasa"
+      >
+
+    </div>
+
+
+    <div class="col-12 col-md-4">
+
+      <label
+        for="totalRegresoCasa"
+        class="form-label"
+      >
+        Total de regreso
+      </label>
+
+      <input
+        type="text"
+        class="form-control calculated-field"
+        id="totalRegresoCasa"
+        value="0 h 0 min"
+        readonly
+      >
+
+    </div>
+
+  </div>
+
+</div>
 
   <div class="input-group">
     <input
