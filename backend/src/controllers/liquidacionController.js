@@ -9,33 +9,94 @@ export const exportarLiquidacion =
     try {
 
       const mes =
-        Number(req.query.mes);
+        req.query.mes
+          ? Number(req.query.mes)
+          : null;
 
       const anio =
-        Number(req.query.anio);
+        req.query.anio
+          ? Number(req.query.anio)
+          : null;
+
+      const inicio =
+        req.query.inicio || null;
+
+      const fin =
+        req.query.fin || null;
 
 
+      // ==============================
+      // VALIDAR FILTRO
+      // ==============================
+
+      const tieneRango =
+        inicio && fin;
+
+      const tieneMes =
+        mes &&
+        mes >= 1 &&
+        mes <= 12 &&
+        anio;
+
+
+      if (!tieneRango && !tieneMes) {
+
+        return res.status(400).json({
+          mensaje:
+            "Debes seleccionar un mes y año o un rango de fechas"
+        });
+      }
+
+
+      // Validar que el rango esté completo
       if (
-        !mes ||
-        mes < 1 ||
-        mes > 12 ||
-        !anio
+        (inicio && !fin) ||
+        (!inicio && fin)
       ) {
 
         return res.status(400).json({
           mensaje:
-            "Mes y año son obligatorios"
+            "Debes seleccionar fecha de inicio y fecha final"
         });
       }
 
+
+      // Validar orden de fechas
+      if (tieneRango) {
+
+        const fechaInicio =
+          new Date(`${inicio}T00:00:00`);
+
+        const fechaFin =
+          new Date(`${fin}T23:59:59`);
+
+        if (fechaInicio > fechaFin) {
+
+          return res.status(400).json({
+            mensaje:
+              "La fecha de inicio no puede ser mayor que la fecha final"
+          });
+        }
+      }
+
+
+      // ==============================
+      // GENERAR EXCEL
+      // ==============================
 
       const resultado =
         await generarLiquidacionExcel(
           req.usuario.id,
           mes,
-          anio
+          anio,
+          inicio,
+          fin
         );
 
+
+      // ==============================
+      // DESCARGAR ARCHIVO
+      // ==============================
 
       return res.download(
         resultado.rutaSalida,

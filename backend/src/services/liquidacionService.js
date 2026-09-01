@@ -6,7 +6,9 @@ import prisma from "../config/prisma.js";
 export const generarLiquidacionExcel = async (
   usuarioId,
   mes,
-  anio
+  anio,
+  inicio = null,
+  fin = null
 ) => {
 
   const usuario = await prisma.usuario.findUnique({
@@ -21,17 +23,46 @@ export const generarLiquidacionExcel = async (
     throw error;
   }
 
-  const fechaInicio = new Date(
-    anio,
-    mes - 1,
-    1
+  let fechaInicio;
+let fechaFin;
+
+if (inicio && fin) {
+
+  // Rango seleccionado por el usuario
+  fechaInicio =
+    new Date(`${inicio}T00:00:00-06:00`);
+
+  // Se utiliza el día siguiente para poder usar "lt"
+  fechaFin =
+    new Date(`${fin}T00:00:00-06:00`);
+
+  fechaFin.setDate(
+    fechaFin.getDate() + 1
   );
 
-  const fechaFin = new Date(
-    anio,
-    mes,
-    1
-  );
+} else {
+
+  // Mes completo
+  fechaInicio =
+    new Date(
+      `${anio}-${String(mes).padStart(2, "0")}-01T00:00:00-06:00`
+    );
+
+  if (mes === 12) {
+
+    fechaFin =
+      new Date(
+        `${anio + 1}-01-01T00:00:00-06:00`
+      );
+
+  } else {
+
+    fechaFin =
+      new Date(
+        `${anio}-${String(mes + 1).padStart(2, "0")}-01T00:00:00-06:00`
+      );
+  }
+}
 
   const servicios =
     await prisma.registroServicio.findMany({
@@ -259,10 +290,22 @@ export const generarLiquidacionExcel = async (
   }
 
 
-  const nombreArchivo =
+  let nombreArchivo;
+
+if (inicio && fin) {
+
+  nombreArchivo =
+    `LIQUIDACION_${usuario.nombre
+      .replace(/\s+/g, "_")
+      .toUpperCase()}_${inicio}_AL_${fin}.xlsx`;
+
+} else {
+
+  nombreArchivo =
     `LIQUIDACION_${usuario.nombre
       .replace(/\s+/g, "_")
       .toUpperCase()}_${mes}_${anio}.xlsx`;
+}
 
 
   const rutaSalida =

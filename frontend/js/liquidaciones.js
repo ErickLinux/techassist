@@ -148,16 +148,34 @@ btnExportarExcel.addEventListener(
       `;
 
 
-      const respuesta =
-        await fetch(
-        `${API_URL}/api/liquidaciones/exportar?mes=${mes}&anio=${anio}`,
-          {
-            headers: {
-             Authorization:
-          `   Bearer ${token}`
-              }
-            }
-           );
+      const inicio = fechaInicioSemana.value;
+const fin = fechaFinSemana.value;
+
+let urlExportacion;
+let nombreArchivo;
+
+if (inicio && fin) {
+
+  // Exportar únicamente el rango seleccionado
+  urlExportacion =
+    `${API_URL}/api/liquidaciones/exportar?inicio=${inicio}&fin=${fin}`;
+
+} else {
+
+  // Exportar el mes completo
+  urlExportacion =
+    `${API_URL}/api/liquidaciones/exportar?mes=${mes}&anio=${anio}`;
+}
+
+const respuesta =
+  await fetch(
+    urlExportacion,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    }
+  );
 
 
       if (!respuesta.ok) {
@@ -192,8 +210,7 @@ btnExportarExcel.addEventListener(
         url;
 
 
-      enlace.download =
-        `LIQUIDACION_${mes}_${anio}.xlsx`;
+      enlace.download = nombreArchivo;
 
 
       document.body.appendChild(
@@ -342,6 +359,7 @@ function formatearFecha(fecha) {
 // ==============================
 
 async function cargarServicios() {
+  
 
   cargandoServicios.classList.remove(
     "d-none"
@@ -357,16 +375,20 @@ async function cargarServicios() {
 
   try {
 
-    const respuesta =
-  await fetch(
+    const respuesta = await fetch(
     `${API_URL}/api/servicios/mis-servicios`,
     {
       headers: {
-        Authorization:
-          `Bearer ${token}`
+        Authorization: `Bearer ${token}`
       }
     }
   );
+
+  if (
+    respuesta.status === 401 ||
+    respuesta.status === 403
+);
+
 
     if (
       respuesta.status === 401 ||
