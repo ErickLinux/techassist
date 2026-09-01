@@ -134,6 +134,47 @@ btnExportarExcel.addEventListener(
     const anio =
       Number(filtroAnio.value);
 
+    const inicio =
+      fechaInicioSemana.value;
+
+    const fin =
+      fechaFinSemana.value;
+
+    let urlExportacion = "";
+    let nombreArchivo = "";
+
+    // ==============================
+    // DEFINIR TIPO DE EXPORTACIÓN
+    // ==============================
+
+    if (inicio && fin) {
+
+      urlExportacion =
+        `${API_URL}/api/liquidaciones/exportar?inicio=${inicio}&fin=${fin}`;
+
+      nombreArchivo =
+        `LIQUIDACION_${inicio}_AL_${fin}.xlsx`;
+
+    } else {
+
+      urlExportacion =
+        `${API_URL}/api/liquidaciones/exportar?mes=${mes}&anio=${anio}`;
+
+      nombreArchivo =
+        `LIQUIDACION_${mes}_${anio}.xlsx`;
+    }
+
+
+    console.log(
+      "URL exportación:",
+      urlExportacion
+    );
+
+    console.log(
+      "Nombre archivo:",
+      nombreArchivo
+    );
+
 
     try {
 
@@ -148,48 +189,41 @@ btnExportarExcel.addEventListener(
       `;
 
 
-      const inicio = fechaInicioSemana.value;
-const fin = fechaFinSemana.value;
-
-let urlExportacion;
-let nombreArchivo;
-
-if (inicio && fin) {
-
-  urlExportacion =
-    `${API_URL}/api/liquidaciones/exportar?inicio=${inicio}&fin=${fin}`;
-
-  nombreArchivo =
-    `LIQUIDACION_${inicio}_AL_${fin}.xlsx`;
-
-} else {
-
-  urlExportacion =
-    `${API_URL}/api/liquidaciones/exportar?mes=${mes}&anio=${anio}`;
-
-  nombreArchivo =
-    `LIQUIDACION_${mes}_${anio}.xlsx`;
-}
-
-const respuesta =
-  await fetch(
-    urlExportacion,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    }
-  );
+      const respuesta =
+        await fetch(
+          urlExportacion,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`
+            }
+          }
+        );
 
 
       if (!respuesta.ok) {
 
-        const error =
-          await respuesta.json();
+        let mensaje =
+          "No fue posible generar el Excel";
+
+        try {
+
+          const error =
+            await respuesta.json();
+
+          mensaje =
+            error.mensaje || mensaje;
+
+        } catch (error) {
+
+          console.error(
+            "No fue posible leer el error:",
+            error
+          );
+        }
 
         throw new Error(
-          error.mensaje ||
-          "No fue posible generar el Excel"
+          mensaje
         );
       }
 
@@ -214,7 +248,11 @@ const respuesta =
         url;
 
 
-      enlace.download = nombreArchivo;
+      // IMPORTANTE:
+      // aquí siempre existe un nombre
+      enlace.download =
+        nombreArchivo ||
+        "LIQUIDACION.xlsx";
 
 
       document.body.appendChild(
@@ -225,7 +263,9 @@ const respuesta =
       enlace.click();
 
 
-      enlace.remove();
+      document.body.removeChild(
+        enlace
+      );
 
 
       URL.revokeObjectURL(
@@ -240,11 +280,9 @@ const respuesta =
         error
       );
 
-
       alert(
         error.message
       );
-
 
     } finally {
 
@@ -363,7 +401,6 @@ function formatearFecha(fecha) {
 // ==============================
 
 async function cargarServicios() {
-  
 
   cargandoServicios.classList.remove(
     "d-none"
@@ -380,19 +417,13 @@ async function cargarServicios() {
   try {
 
     const respuesta = await fetch(
-    `${API_URL}/api/servicios/mis-servicios`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`
+      `${API_URL}/api/servicios/mis-servicios`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       }
-    }
-  );
-
-  if (
-    respuesta.status === 401 ||
-    respuesta.status === 403
-);
-
+    );
 
     if (
       respuesta.status === 401 ||
@@ -451,7 +482,6 @@ async function cargarServicios() {
     `;
   }
 }
-
 
 // ==============================
 // FILTRAR POR MES Y AÑO
