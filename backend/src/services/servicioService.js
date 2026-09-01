@@ -183,29 +183,38 @@ export const crearRegistroServicio = async ({
 };
 
 export const obtenerServiciosPorUsuario = async (usuarioId) => {
-  const servicios = await prisma.registroServicio.findMany({
-    where: {
-      usuarioId
-    },
 
-    orderBy: {
-      fechaRegistro: "desc"
-    },
+  const servicios =
+    await prisma.registroServicio.findMany({
 
-    include: {
-      tienda: {
-        select: {
-          id: true,
-          codigo: true,
-          nombre: true,
-          departamento: true,
-          municipio: true
+      where: {
+        usuarioId
+      },
+
+      orderBy: [
+        {
+          fecha: "desc"
+        },
+        {
+          fechaRegistro: "desc"
         }
-      }
-    },
+      ],
 
-    take: 10
-  });
+      include: {
+
+        tienda: {
+          select: {
+            id: true,
+            codigo: true,
+            nombre: true,
+            departamento: true,
+            municipio: true
+          }
+        }
+
+      }
+
+    });
 
   return servicios;
 };
