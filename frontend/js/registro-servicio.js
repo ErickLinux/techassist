@@ -310,14 +310,19 @@ codigoTienda.addEventListener(
 );
 
 codigoTienda.addEventListener("keydown", (event) => {
+
   if (event.key === "Enter") {
-    
+
+    event.preventDefault();
+
     buscarTienda();
   }
+
 });
 
 formServicio.addEventListener("submit", async (event) => {
-  
+
+  event.preventDefault();
 
   if (!formServicio.checkValidity()) {
     formServicio.classList.add("was-validated");
