@@ -3,16 +3,17 @@ let servicios = [];
 // ==============================
 // SESIÓN
 // ==============================
- const menuAdministrarUsuarios =
-  document.getElementById(
-    "menuAdministrarUsuarios"
-  );
+ 
 
 const token =
   localStorage.getItem("token");
 
 const usuarioGuardado =
   localStorage.getItem("usuario");
+  const menuAdministrarUsuarios =
+  document.getElementById(
+    "menuAdministrarUsuarios"
+  );
 
 // ==============================
 // ELEMENTOS DEL DOM
