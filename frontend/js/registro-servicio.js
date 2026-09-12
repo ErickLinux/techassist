@@ -620,7 +620,12 @@ btnLimpiar.addEventListener("click", () => {
     verificarSesion();
   }, 0);
 });
+btnCerrarSesion.addEventListener("click", () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("usuario");
 
+  window.location.href = "./login.html";
+});
 btnMenu.addEventListener("click", () => {
   sidebar.classList.toggle("visible");
 });
