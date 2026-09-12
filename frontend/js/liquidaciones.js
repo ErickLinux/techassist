@@ -122,6 +122,10 @@ const fechaFinSemana =
   document.getElementById(
     "fechaFinSemana"
   );
+  const menuAdministrarUsuarios =
+  document.getElementById(
+    "menuAdministrarUsuarios"
+  );
 
 
 btnExportarExcel.addEventListener(
