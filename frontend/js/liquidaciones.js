@@ -847,4 +847,5 @@ filtroAnio.value =
 // INICIAR
 // ==============================
 
+verificarSesion();
 cargarServicios();
