@@ -197,3 +197,20 @@ body {
   padding: 15px;
   padding-bottom: calc(15px + env(safe-area-inset-bottom));
 }
+/* =================================
+   ACTIVIDAD RECIENTE CON SCROLL
+   ================================= */
+
+#tablaServiciosContenedor {
+  max-height: 560px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+/* Mantener encabezados visibles al desplazarse */
+#tablaServiciosContenedor thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #ffffff;
+}
