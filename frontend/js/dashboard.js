@@ -426,22 +426,25 @@ async function verDetalleServicio(id) {
   btnEditarServicio.classList.remove(
     "d-none"
   );
+
   btnEliminarServicio.classList.remove(
-  "d-none"
-);
+    "d-none"
+  );
 
   modal.show();
+
 
   try {
 
     const respuesta = await fetch(
-  `${API_URL}/api/servicios/${id}`,
-  {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-);
+      `${API_URL}/api/servicios/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
 
     if (
       respuesta.status === 401 ||
@@ -451,12 +454,16 @@ async function verDetalleServicio(id) {
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
 
-      window.location.href = "./login.html";
+      window.location.href =
+        "./login.html";
 
       return;
     }
 
-    const datos = await respuesta.json();
+
+    const datos =
+      await respuesta.json();
+
 
     if (!respuesta.ok) {
 
@@ -466,12 +473,18 @@ async function verDetalleServicio(id) {
       );
     }
 
-    const servicio = datos.servicio;
 
-    servicioSeleccionado = servicio;
+    const servicio =
+      datos.servicio;
+
+
+    servicioSeleccionado =
+      servicio;
+
 
     contenido.innerHTML = `
       <div class="row g-4">
+
 
         <!-- Técnico -->
 
@@ -531,6 +544,24 @@ async function verDetalleServicio(id) {
           <div class="fw-semibold">
             ${
               servicio.numeroCaf ||
+              "No registrado"
+            }
+          </div>
+
+        </div>
+
+
+        <!-- Lugar de salida -->
+
+        <div class="col-md-6">
+
+          <label class="text-secondary small">
+            Lugar de salida
+          </label>
+
+          <div class="fw-semibold">
+            ${
+              servicio.lugarSalida ||
               "No registrado"
             }
           </div>
@@ -608,7 +639,7 @@ async function verDetalleServicio(id) {
         </div>
 
 
-        <!-- Hora ingreso -->
+        <!-- Atención -->
 
         <div class="col-md-4">
 
@@ -625,8 +656,6 @@ async function verDetalleServicio(id) {
         </div>
 
 
-        <!-- Hora egreso -->
-
         <div class="col-md-4">
 
           <label class="text-secondary small">
@@ -641,8 +670,6 @@ async function verDetalleServicio(id) {
 
         </div>
 
-
-        <!-- Total atención -->
 
         <div class="col-md-4">
 
@@ -659,7 +686,7 @@ async function verDetalleServicio(id) {
         </div>
 
 
-        <!-- Inicio viaje -->
+        <!-- Viaje -->
 
         <div class="col-md-4">
 
@@ -676,8 +703,6 @@ async function verDetalleServicio(id) {
         </div>
 
 
-        <!-- Fin viaje -->
-
         <div class="col-md-4">
 
           <label class="text-secondary small">
@@ -692,8 +717,6 @@ async function verDetalleServicio(id) {
 
         </div>
 
-
-        <!-- Total viaje -->
 
         <div class="col-md-4">
 
@@ -725,6 +748,75 @@ async function verDetalleServicio(id) {
         </div>
 
 
+        ${
+          servicio.inicioRegresoCasa &&
+          servicio.finRegresoCasa
+            ? `
+
+              <div class="col-12">
+                <hr>
+              </div>
+
+
+              <div class="col-12">
+
+                <h6 class="fw-bold mb-0">
+                  <i class="bi bi-house-door me-1"></i>
+                  Regreso a casa
+                </h6>
+
+              </div>
+
+
+              <div class="col-md-4">
+
+                <label class="text-secondary small">
+                  Inicio regreso a casa
+                </label>
+
+                <div class="fw-semibold">
+                  ${formatearHora(
+                    servicio.inicioRegresoCasa
+                  )}
+                </div>
+
+              </div>
+
+
+              <div class="col-md-4">
+
+                <label class="text-secondary small">
+                  Fin regreso a casa
+                </label>
+
+                <div class="fw-semibold">
+                  ${formatearHora(
+                    servicio.finRegresoCasa
+                  )}
+                </div>
+
+              </div>
+
+
+              <div class="col-md-4">
+
+                <label class="text-secondary small">
+                  Total regreso a casa
+                </label>
+
+                <div class="fw-semibold">
+                  ${convertirMinutos(
+                    servicio.totalMinutosRegresoCasa
+                  )}
+                </div>
+
+              </div>
+
+            `
+            : ""
+        }
+
+
         <div class="col-12">
           <hr>
         </div>
@@ -746,8 +838,10 @@ async function verDetalleServicio(id) {
 
         </div>
 
+
       </div>
     `;
+
 
   } catch (error) {
 
@@ -756,11 +850,13 @@ async function verDetalleServicio(id) {
       error
     );
 
+
     contenido.innerHTML = `
       <div class="alert alert-danger">
         ${error.message}
       </div>
     `;
+
 
   } finally {
 
@@ -801,6 +897,14 @@ function mostrarFormularioEdicion(
       "contenidoDetalleServicio"
     );
 
+
+  const tieneRegresoCasa =
+    Boolean(
+      servicio.inicioRegresoCasa ||
+      servicio.finRegresoCasa
+    );
+
+
   contenido.innerHTML = `
     <form id="formEditarServicio">
 
@@ -811,7 +915,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarFecha"
+            class="form-label"
+          >
             Fecha
           </label>
 
@@ -832,7 +939,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarCodigoTienda"
+            class="form-label"
+          >
             Código tienda
           </label>
 
@@ -851,7 +961,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarTicket"
+            class="form-label"
+          >
             Ticket / INC
           </label>
 
@@ -870,7 +983,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarCaf"
+            class="form-label"
+          >
             CAF / Boleta
           </label>
 
@@ -886,11 +1002,55 @@ function mostrarFormularioEdicion(
         </div>
 
 
+        <!-- Lugar de salida -->
+
+        <div class="col-12">
+
+          <label
+            for="editarLugarSalida"
+            class="form-label"
+          >
+            Lugar de salida
+          </label>
+
+          <input
+            type="text"
+            id="editarLugarSalida"
+            class="form-control"
+            value="${
+              servicio.lugarSalida || ""
+            }"
+            placeholder="Ejemplo: Cobán"
+          >
+
+        </div>
+
+
+        <div class="col-12">
+          <hr>
+        </div>
+
+
+        <!-- Atención -->
+
+        <div class="col-12">
+
+          <h6 class="fw-bold mb-0">
+            <i class="bi bi-clock me-1"></i>
+            Atención
+          </h6>
+
+        </div>
+
+
         <!-- Hora ingreso -->
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarIngreso"
+            class="form-label"
+          >
             Hora ingreso
           </label>
 
@@ -901,7 +1061,6 @@ function mostrarFormularioEdicion(
             value="${obtenerHoraInput(
               servicio.horaIngreso
             )}"
-            required
           >
 
         </div>
@@ -911,7 +1070,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarEgreso"
+            class="form-label"
+          >
             Hora egreso
           </label>
 
@@ -922,8 +1084,24 @@ function mostrarFormularioEdicion(
             value="${obtenerHoraInput(
               servicio.horaEgreso
             )}"
-            required
           >
+
+        </div>
+
+
+        <div class="col-12">
+          <hr>
+        </div>
+
+
+        <!-- Viaje -->
+
+        <div class="col-12">
+
+          <h6 class="fw-bold mb-0">
+            <i class="bi bi-car-front me-1"></i>
+            Viaje
+          </h6>
 
         </div>
 
@@ -932,7 +1110,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarInicioViaje"
+            class="form-label"
+          >
             Inicio viaje
           </label>
 
@@ -952,7 +1133,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarFinViaje"
+            class="form-label"
+          >
             Fin viaje
           </label>
 
@@ -972,7 +1156,10 @@ function mostrarFormularioEdicion(
 
         <div class="col-md-6">
 
-          <label class="form-label">
+          <label
+            for="editarKilometros"
+            class="form-label"
+          >
             Kilómetros
           </label>
 
@@ -981,9 +1168,140 @@ function mostrarFormularioEdicion(
             id="editarKilometros"
             class="form-control"
             min="0"
-            value="${servicio.totalKilometros}"
+            value="${
+              servicio.totalKilometros || 0
+            }"
           >
 
+        </div>
+
+
+        <div class="col-12">
+          <hr>
+        </div>
+
+
+        <!-- Regreso a casa -->
+
+        <div class="col-12">
+
+          <div class="form-check form-switch">
+
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="editarActivarRegresoCasa"
+              ${tieneRegresoCasa ? "checked" : ""}
+            >
+
+            <label
+              class="form-check-label fw-semibold"
+              for="editarActivarRegresoCasa"
+            >
+              Agregar viaje de regreso a casa
+            </label>
+
+          </div>
+
+          <div class="form-text">
+            Activa esta opción cuando sea necesario
+            registrar el viaje de regreso a casa.
+          </div>
+
+        </div>
+
+
+        <!-- Campos regreso -->
+
+        <div
+          class="col-12 ${
+            tieneRegresoCasa
+              ? ""
+              : "d-none"
+          }"
+          id="editarCamposRegresoCasa"
+        >
+
+          <div class="row g-3 mt-1">
+
+
+            <!-- Inicio regreso -->
+
+            <div class="col-md-4">
+
+              <label
+                for="editarInicioRegresoCasa"
+                class="form-label"
+              >
+                Inicio regreso a casa
+              </label>
+
+              <input
+                type="time"
+                id="editarInicioRegresoCasa"
+                class="form-control"
+                value="${obtenerHoraInput(
+                  servicio.inicioRegresoCasa
+                )}"
+              >
+
+            </div>
+
+
+            <!-- Fin regreso -->
+
+            <div class="col-md-4">
+
+              <label
+                for="editarFinRegresoCasa"
+                class="form-label"
+              >
+                Fin regreso a casa
+              </label>
+
+              <input
+                type="time"
+                id="editarFinRegresoCasa"
+                class="form-control"
+                value="${obtenerHoraInput(
+                  servicio.finRegresoCasa
+                )}"
+              >
+
+            </div>
+
+
+            <!-- Total regreso -->
+
+            <div class="col-md-4">
+
+              <label
+                for="editarTotalRegresoCasa"
+                class="form-label"
+              >
+                Total regreso a casa
+              </label>
+
+              <input
+                type="text"
+                id="editarTotalRegresoCasa"
+                class="form-control"
+                value="${convertirMinutos(
+                  servicio.totalMinutosRegresoCasa
+                )}"
+                readonly
+              >
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-12">
+          <hr>
         </div>
 
 
@@ -991,8 +1309,11 @@ function mostrarFormularioEdicion(
 
         <div class="col-12">
 
-          <label class="form-label">
-            Trabajo realizado
+          <label
+            for="editarTrabajo"
+            class="form-label"
+          >
+            Trabajo realizado / Justificación
           </label>
 
           <textarea
@@ -1014,7 +1335,9 @@ function mostrarFormularioEdicion(
             class="btn btn-success"
           >
 
-            <i class="bi bi-check-lg me-1"></i>
+            <i
+              class="bi bi-check-lg me-1"
+            ></i>
 
             Guardar cambios
 
@@ -1022,24 +1345,182 @@ function mostrarFormularioEdicion(
 
         </div>
 
+
       </div>
 
     </form>
   `;
 
-  // Ocultar botón Editar mientras
-  // estamos editando
+
+  // ==============================
+  // ELEMENTOS REGRESO A CASA
+  // ==============================
+
+  const activarRegresoCasa =
+    document.getElementById(
+      "editarActivarRegresoCasa"
+    );
+
+  const camposRegresoCasa =
+    document.getElementById(
+      "editarCamposRegresoCasa"
+    );
+
+  const inicioRegresoCasa =
+    document.getElementById(
+      "editarInicioRegresoCasa"
+    );
+
+  const finRegresoCasa =
+    document.getElementById(
+      "editarFinRegresoCasa"
+    );
+
+  const totalRegresoCasa =
+    document.getElementById(
+      "editarTotalRegresoCasa"
+    );
+
+
+  // ==============================
+  // CALCULAR REGRESO
+  // ==============================
+
+  function calcularRegresoCasaEdicion() {
+
+    if (
+      !inicioRegresoCasa.value ||
+      !finRegresoCasa.value
+    ) {
+
+      totalRegresoCasa.value =
+        "0 h 0 min";
+
+      return;
+    }
+
+
+    const [
+      horaInicio,
+      minutoInicio
+    ] =
+      inicioRegresoCasa.value
+        .split(":")
+        .map(Number);
+
+
+    const [
+      horaFin,
+      minutoFin
+    ] =
+      finRegresoCasa.value
+        .split(":")
+        .map(Number);
+
+
+    let minutosInicio =
+      horaInicio * 60 +
+      minutoInicio;
+
+
+    let minutosFin =
+      horaFin * 60 +
+      minutoFin;
+
+
+    // Si cruza medianoche
+    if (
+      minutosFin <
+      minutosInicio
+    ) {
+
+      minutosFin +=
+        24 * 60;
+    }
+
+
+    const totalMinutos =
+      minutosFin -
+      minutosInicio;
+
+
+    totalRegresoCasa.value =
+      convertirMinutos(
+        totalMinutos
+      );
+  }
+
+
+  // ==============================
+  // EVENTO SWITCH
+  // ==============================
+
+  activarRegresoCasa.addEventListener(
+    "change",
+    () => {
+
+      if (
+        activarRegresoCasa.checked
+      ) {
+
+        camposRegresoCasa.classList.remove(
+          "d-none"
+        );
+
+      } else {
+
+        camposRegresoCasa.classList.add(
+          "d-none"
+        );
+
+
+        inicioRegresoCasa.value =
+          "";
+
+        finRegresoCasa.value =
+          "";
+
+        totalRegresoCasa.value =
+          "0 h 0 min";
+      }
+    }
+  );
+
+
+  // ==============================
+  // RECALCULAR AL CAMBIAR HORAS
+  // ==============================
+
+  inicioRegresoCasa.addEventListener(
+    "change",
+    calcularRegresoCasaEdicion
+  );
+
+
+  finRegresoCasa.addEventListener(
+    "change",
+    calcularRegresoCasaEdicion
+  );
+
+
+  // Ocultar botones mientras editamos
+
   btnEditarServicio.classList.add(
     "d-none"
   );
+
   btnEliminarServicio.classList.add(
-  "d-none"
-);
+    "d-none"
+  );
+
+
+  // Evento guardar
 
   const formulario =
     document.getElementById(
       "formEditarServicio"
     );
+
 
   formulario.addEventListener(
     "submit",
@@ -1057,9 +1538,17 @@ async function guardarEdicionServicio(
 
   event.preventDefault();
 
+
   if (!servicioSeleccionado) {
     return;
   }
+
+
+  const activarRegresoCasa =
+    document.getElementById(
+      "editarActivarRegresoCasa"
+    );
+
 
   const datos = {
 
@@ -1068,12 +1557,14 @@ async function guardarEdicionServicio(
         "editarFecha"
       ).value,
 
+
     codigoTienda:
       Number(
         document.getElementById(
           "editarCodigoTienda"
         ).value
       ),
+
 
     numeroTicket:
       document
@@ -1083,6 +1574,7 @@ async function guardarEdicionServicio(
         .value
         .trim(),
 
+
     numeroCaf:
       document
         .getElementById(
@@ -1091,25 +1583,39 @@ async function guardarEdicionServicio(
         .value
         .trim() || null,
 
+
+    lugarSalida:
+      document
+        .getElementById(
+          "editarLugarSalida"
+        )
+        .value
+        .trim() || null,
+
+
     horaIngreso:
       document.getElementById(
         "editarIngreso"
-      ).value,
+      ).value || null,
+
 
     horaEgreso:
       document.getElementById(
         "editarEgreso"
-      ).value,
+      ).value || null,
+
 
     inicioViaje:
       document.getElementById(
         "editarInicioViaje"
       ).value || null,
 
+
     finViaje:
       document.getElementById(
         "editarFinViaje"
       ).value || null,
+
 
     totalKilometros:
       Number(
@@ -1117,6 +1623,23 @@ async function guardarEdicionServicio(
           "editarKilometros"
         ).value
       ) || 0,
+
+
+    inicioRegresoCasa:
+      activarRegresoCasa.checked
+        ? document.getElementById(
+            "editarInicioRegresoCasa"
+          ).value || null
+        : null,
+
+
+    finRegresoCasa:
+      activarRegresoCasa.checked
+        ? document.getElementById(
+            "editarFinRegresoCasa"
+          ).value || null
+        : null,
+
 
     trabajoRealizado:
       document
@@ -1127,24 +1650,84 @@ async function guardarEdicionServicio(
         .trim()
   };
 
+
+  // ==============================
+  // VALIDACIONES
+  // ==============================
+
+  if (
+    activarRegresoCasa.checked &&
+    (
+      !datos.inicioRegresoCasa ||
+      !datos.finRegresoCasa
+    )
+  ) {
+
+    alert(
+      "Si activas regreso a casa debes ingresar la hora de inicio y la hora de fin."
+    );
+
+    return;
+  }
+
+
+  if (
+    (datos.horaIngreso &&
+      !datos.horaEgreso) ||
+    (!datos.horaIngreso &&
+      datos.horaEgreso)
+  ) {
+
+    alert(
+      "Para registrar atención debes ingresar tanto la hora de ingreso como la hora de egreso."
+    );
+
+    return;
+  }
+
+
+  if (
+    (datos.inicioViaje &&
+      !datos.finViaje) ||
+    (!datos.inicioViaje &&
+      datos.finViaje)
+  ) {
+
+    alert(
+      "Para registrar un viaje debes ingresar tanto la hora de inicio como la hora de fin."
+    );
+
+    return;
+  }
+
+
   try {
 
-    const respuesta = await fetch(
-  `${API_URL}/api/servicios/${servicioSeleccionado.id}`,
-  {
-    method: "PUT",
+    const respuesta =
+      await fetch(
+        `${API_URL}/api/servicios/${servicioSeleccionado.id}`,
+        {
+          method: "PUT",
 
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`
-    },
+          headers: {
+            "Content-Type":
+              "application/json",
 
-    body: JSON.stringify(datos)
-  }
-);
+            Authorization:
+              `Bearer ${token}`
+          },
+
+          body:
+            JSON.stringify(
+              datos
+            )
+        }
+      );
+
 
     const resultado =
       await respuesta.json();
+
 
     if (!respuesta.ok) {
 
@@ -1154,28 +1737,35 @@ async function guardarEdicionServicio(
       );
     }
 
+
     alert(
       "Servicio actualizado correctamente"
     );
 
+
     servicioSeleccionado =
       resultado.servicio;
+
 
     btnEditarServicio.classList.remove(
       "d-none"
     );
+
     btnEliminarServicio.classList.remove(
-  "d-none"
-);
+      "d-none"
+    );
+
 
     // Actualizar tabla
     await cargarServicios();
 
-    // Volver a mostrar el registro
-    // ya actualizado
+
+    // Mostrar nuevamente
+    // el servicio actualizado
     await verDetalleServicio(
       resultado.servicio.id
     );
+
 
   } catch (error) {
 
@@ -1183,6 +1773,7 @@ async function guardarEdicionServicio(
       "Error al editar servicio:",
       error
     );
+
 
     alert(
       error.message
