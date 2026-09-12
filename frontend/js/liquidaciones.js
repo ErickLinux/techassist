@@ -300,12 +300,12 @@ btnExportarExcel.addEventListener(
 // VALIDAR SESIÓN
 // ==============================
 
-if (!token || !usuarioGuardado) {
+function verificarSesion() {
 
-  window.location.href =
-    "./login.html";
-
-} else {
+  if (!token || !usuarioGuardado) {
+    window.location.href = "./login.html";
+    return;
+  }
 
   try {
 
@@ -315,23 +315,30 @@ if (!token || !usuarioGuardado) {
     nombreUsuario.textContent =
       usuario.nombre;
 
-    nombreTecnico.textContent =
+    nombreTecnico.value =
       usuario.nombre;
+
+
+    if (
+      menuAdministrarUsuarios &&
+      usuario.rol === "ADMIN"
+    ) {
+
+      menuAdministrarUsuarios.classList.remove(
+        "d-none"
+      );
+    }
+
 
   } catch (error) {
 
     console.error(
-      "No fue posible leer los datos del usuario:",
+      "Error al leer el usuario:",
       error
     );
 
-    localStorage.removeItem(
-      "token"
-    );
-
-    localStorage.removeItem(
-      "usuario"
-    );
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
 
     window.location.href =
       "./login.html";
