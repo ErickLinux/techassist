@@ -36,6 +36,10 @@ let totalMinutosRegresoCasa = 0;
 // ==============================
 // REGRESO A CASA
 // ==============================
+const menuAdministrarUsuarios =
+  document.getElementById(
+    "menuAdministrarUsuarios"
+  );
 
 const activarRegresoCasa =
   document.getElementById(
@@ -65,23 +69,47 @@ const totalRegresoCasa =
  * Verifica que exista una sesión activa.
  */
 function verificarSesion() {
+
   if (!token || !usuarioGuardado) {
     window.location.href = "./login.html";
     return;
   }
 
   try {
-    const usuario = JSON.parse(usuarioGuardado);
 
-    nombreUsuario.textContent = usuario.nombre;
-    nombreTecnico.value = usuario.nombre;
+    const usuario =
+      JSON.parse(usuarioGuardado);
+
+    nombreUsuario.textContent =
+      usuario.nombre;
+
+    nombreTecnico.value =
+      usuario.nombre;
+
+
+    if (
+      menuAdministrarUsuarios &&
+      usuario.rol === "ADMIN"
+    ) {
+
+      menuAdministrarUsuarios.classList.remove(
+        "d-none"
+      );
+    }
+
+
   } catch (error) {
-    console.error("Error al leer el usuario:", error);
+
+    console.error(
+      "Error al leer el usuario:",
+      error
+    );
 
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
 
-    window.location.href = "./login.html";
+    window.location.href =
+      "./login.html";
   }
 }
 
