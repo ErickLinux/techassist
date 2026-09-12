@@ -16,7 +16,10 @@ const usuarioGuardado =
 // ==============================
 // ELEMENTOS
 // ==============================
-
+const menuAdministrarUsuarios =
+  document.getElementById(
+    "menuAdministrarUsuarios"
+  );
 const nombreUsuario =
   document.getElementById(
     "nombreUsuario"
@@ -278,6 +281,14 @@ if (!token || !usuarioGuardado) {
 
     const usuario =
       JSON.parse(usuarioGuardado);
+      if (
+  menuAdministrarUsuarios &&
+  usuario.rol === "ADMIN"
+) {
+  menuAdministrarUsuarios.classList.remove(
+    "d-none"
+  );
+}
 
     nombreUsuario.textContent =
       usuario.nombre;
