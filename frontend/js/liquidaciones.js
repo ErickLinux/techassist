@@ -3,6 +3,10 @@ let servicios = [];
 // ==============================
 // SESIÓN
 // ==============================
+ const menuAdministrarUsuarios =
+  document.getElementById(
+    "menuAdministrarUsuarios"
+  );
 
 const token =
   localStorage.getItem("token");
@@ -122,12 +126,6 @@ const fechaFinSemana =
   document.getElementById(
     "fechaFinSemana"
   );
-  const menuAdministrarUsuarios =
-  document.getElementById(
-    "menuAdministrarUsuarios"
-  );
-
-
 btnExportarExcel.addEventListener(
   "click",
   async () => {
