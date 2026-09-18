@@ -1731,62 +1731,62 @@ async function guardarEdicionServicio(
 
     if (!respuesta.ok) {
 
-      throw new Error(
-        resultado.mensaje ||
-        "No fue posible actualizar el servicio"
-      );
-    }
+  throw new Error(
+    resultado.mensaje ||
+    "No fue posible actualizar el servicio"
+  );
+}
 
 
-    Swal.fire({
-  icon: "error",
-  title: "No se pudo eliminar",
-  text: error.message,
+// MENSAJE DE ÉXITO
+await Swal.fire({
+  icon: "success",
+  title: "¡Servicio actualizado!",
+  text: "Los cambios se guardaron correctamente.",
   confirmButtonText: "Aceptar",
-  confirmButtonColor: "#dc3545"
+  confirmButtonColor: "#0d6efd"
 });
 
 
-    servicioSeleccionado =
-      resultado.servicio;
+servicioSeleccionado =
+  resultado.servicio;
 
 
-    btnEditarServicio.classList.remove(
-      "d-none"
-    );
+btnEditarServicio.classList.remove(
+  "d-none"
+);
 
-    btnEliminarServicio.classList.remove(
-      "d-none"
-    );
-
-
-    // Actualizar tabla
-    await cargarServicios();
+btnEliminarServicio.classList.remove(
+  "d-none"
+);
 
 
-    // Mostrar nuevamente
-    // el servicio actualizado
-    await verDetalleServicio(
-      resultado.servicio.id
-    );
+// Actualizar tabla
+await cargarServicios();
 
 
-  } catch (error) {
+// Mostrar nuevamente
+// el servicio actualizado
+await verDetalleServicio(
+  resultado.servicio.id
+);
 
-    console.error(
-      "Error al editar servicio:",
-      error
-    );
 
+} catch (error) {
 
-    Swal.fire({
-  icon: "error",
-  title: "No se pudo actualizar",
-  text: error.message,
-  confirmButtonText: "Aceptar",
-  confirmButtonColor: "#dc3545"
-});
-  }
+  console.error(
+    "Error al editar servicio:",
+    error
+  );
+
+  await Swal.fire({
+    icon: "error",
+    title: "No se pudo actualizar",
+    text: error.message,
+    confirmButtonText: "Aceptar",
+    confirmButtonColor: "#dc3545"
+  });
+}
 }
 
 // ==============================
