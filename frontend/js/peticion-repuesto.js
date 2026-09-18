@@ -645,9 +645,118 @@ function seleccionarRepuesto(repuesto) {
     repuesto.numeroParte;
 
 
-  mostrarImagenRepuesto(
-    repuesto.imagenUrl
+  function mostrarImagenRepuesto(imagenUrl) {
+
+  console.log(
+    "URL imagen recibida:",
+    imagenUrl
   );
+
+
+  if (!imagenUrl) {
+
+    imagenRepuesto.removeAttribute(
+      "src"
+    );
+
+    imagenRepuesto.classList.add(
+      "d-none"
+    );
+
+    sinImagen.innerHTML = `
+      <i
+        class="bi bi-image"
+        style="font-size: 2rem;"
+      ></i>
+
+      <div>
+        Este repuesto todavía no tiene
+        una imagen registrada.
+      </div>
+    `;
+
+    sinImagen.classList.remove(
+      "d-none"
+    );
+
+    return;
+  }
+
+
+  const urlImagen =
+    convertirUrlDrive(
+      imagenUrl
+    );
+
+
+  console.log(
+    "URL imagen convertida:",
+    urlImagen
+  );
+
+
+  // Primero ocultamos la imagen
+  imagenRepuesto.classList.add(
+    "d-none"
+  );
+
+
+  sinImagen.innerHTML = `
+    <div
+      class="spinner-border spinner-border-sm"
+      role="status"
+    ></div>
+
+    <div class="mt-2">
+      Cargando imagen...
+    </div>
+  `;
+
+  sinImagen.classList.remove(
+    "d-none"
+  );
+
+
+  // Esperar a que la imagen realmente cargue
+  imagenRepuesto.onload = () => {
+
+    sinImagen.classList.add(
+      "d-none"
+    );
+
+    imagenRepuesto.classList.remove(
+      "d-none"
+    );
+  };
+
+
+  imagenRepuesto.onerror = () => {
+
+    imagenRepuesto.classList.add(
+      "d-none"
+    );
+
+    sinImagen.innerHTML = `
+      <i
+        class="bi bi-exclamation-triangle"
+        style="font-size: 2rem;"
+      ></i>
+
+      <div class="mt-2">
+        No fue posible cargar
+        la imagen del repuesto.
+      </div>
+    `;
+
+    sinImagen.classList.remove(
+      "d-none"
+    );
+  };
+
+
+  imagenRepuesto.src =
+    urlImagen;
+}
 
 
   resultadosRepuestos.innerHTML = "";
@@ -845,35 +954,7 @@ function ocultarImagenRepuesto() {
 }
 
 
-// ========================================
-// ERROR AL CARGAR IMAGEN
-// ========================================
 
-imagenRepuesto.addEventListener(
-  "error",
-  () => {
-
-    imagenRepuesto.classList.add(
-      "d-none"
-    );
-
-    sinImagen.innerHTML = `
-      <i
-        class="bi bi-image"
-        style="font-size: 2rem;"
-      ></i>
-
-      <div>
-        No fue posible cargar
-        la imagen del repuesto.
-      </div>
-    `;
-
-    sinImagen.classList.remove(
-      "d-none"
-    );
-  }
-);
 
 
 // ========================================
