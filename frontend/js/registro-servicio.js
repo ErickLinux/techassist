@@ -555,9 +555,13 @@ totalMinutosRegresoCasa:
       );
     }
 
-    alert(
-      "Servicio registrado correctamente"
-    );
+    Swal.fire({
+  icon: "success",
+  title: "¡Servicio registrado!",
+  text: "La información del servicio se guardó correctamente.",
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#0d6efd"
+});
 
     console.log(
       "Servicio guardado:",
@@ -601,7 +605,13 @@ camposRegresoCasa.classList.add(
       error
     );
 
-    alert(error.message);
+    Swal.fire({
+  icon: "error",
+  title: "No se pudo guardar",
+  text: error.message,
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#dc3545"
+});
 
   } finally {
 

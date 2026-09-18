@@ -1738,9 +1738,13 @@ async function guardarEdicionServicio(
     }
 
 
-    alert(
-      "Servicio actualizado correctamente"
-    );
+    Swal.fire({
+  icon: "error",
+  title: "No se pudo eliminar",
+  text: error.message,
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#dc3545"
+});
 
 
     servicioSeleccionado =
@@ -1775,9 +1779,13 @@ async function guardarEdicionServicio(
     );
 
 
-    alert(
-      error.message
-    );
+    Swal.fire({
+  icon: "error",
+  title: "No se pudo actualizar",
+  text: error.message,
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#dc3545"
+});
   }
 }
 
@@ -1810,9 +1818,26 @@ async function eliminarServicioSeleccionado() {
     return;
   }
 
-  const confirmar = confirm(
-    `¿Estás seguro de eliminar el servicio ${servicioSeleccionado.numeroTicket}?\n\nEsta acción no se puede deshacer.`
-  );
+  const resultadoConfirmacion = await Swal.fire({
+  icon: "warning",
+  title: "¿Eliminar servicio?",
+  html: `
+    ¿Estás seguro de eliminar el servicio
+    <strong>${servicioSeleccionado.numeroTicket}</strong>?
+    <br><br>
+    Esta acción no se puede deshacer.
+  `,
+  showCancelButton: true,
+  confirmButtonText: "Sí, eliminar",
+  cancelButtonText: "Cancelar",
+  confirmButtonColor: "#dc3545",
+  cancelButtonColor: "#6c757d",
+  reverseButtons: true
+});
+
+if (!resultadoConfirmacion.isConfirmed) {
+  return;
+}
 
   if (!confirmar) {
     return;
@@ -1852,9 +1877,13 @@ async function eliminarServicioSeleccionado() {
       );
     }
 
-    alert(
-      "Servicio eliminado correctamente"
-    );
+    await Swal.fire({
+  icon: "success",
+  title: "Servicio eliminado",
+  text: "El servicio se eliminó correctamente.",
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#0d6efd"
+});
 
     const modal =
       bootstrap.Modal.getInstance(
@@ -1874,9 +1903,13 @@ async function eliminarServicioSeleccionado() {
       error
     );
 
-    alert(
-      error.message
-    );
+    Swal.fire({
+  icon: "error",
+  title: "No se pudo actualizar",
+  text: error.message,
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#dc3545"
+});
 
   } finally {
 
