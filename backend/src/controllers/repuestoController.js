@@ -285,3 +285,41 @@ export const crearRepuesto = async (req, res) => {
     });
   }
 };
+
+// ========================================
+// LISTAR REPUESTOS - SOLO ADMIN
+// ========================================
+
+export const listarRepuestos = async (req, res) => {
+  try {
+
+    if (req.usuario.rol !== "ADMIN") {
+      return res.status(403).json({
+        mensaje: "No tienes permisos para consultar repuestos"
+      });
+    }
+
+    const repuestos =
+      await prisma.repuesto.findMany({
+        orderBy: {
+          nombre: "asc"
+        }
+      });
+
+    return res.status(200).json({
+      repuestos
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Error al listar repuestos:",
+      error
+    );
+
+    return res.status(500).json({
+      mensaje:
+        "Error interno al consultar los repuestos"
+    });
+  }
+};

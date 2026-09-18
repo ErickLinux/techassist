@@ -3,7 +3,8 @@ import { Router } from "express";
 import {
   buscarTickets,
   buscarRepuestos,
-  crearRepuesto
+  crearRepuesto,
+  listarRepuestos
 } from "../controllers/repuestoController.js";
 
 import {
@@ -45,4 +46,9 @@ router.get(
   "/buscar",
   verificarToken,
   buscarRepuestos
+);
+router.get(
+  "/admin/listar",
+  verificarToken,
+  listarRepuestos
 );
