@@ -657,7 +657,62 @@ function seleccionarRepuesto(repuesto) {
   );
 }
 
+// ========================================
+// CONVERTIR URL DE GOOGLE DRIVE
+// ========================================
 
+function convertirUrlDrive(url) {
+
+  if (!url) {
+    return "";
+  }
+
+  const texto = url.trim();
+
+  let idArchivo = null;
+
+
+  const coincidenciaFile =
+    texto.match(
+      /\/file\/d\/([^/]+)/
+    );
+
+
+  if (coincidenciaFile) {
+
+    idArchivo =
+      coincidenciaFile[1];
+  }
+
+
+  if (!idArchivo) {
+
+    try {
+
+      const urlObjeto =
+        new URL(texto);
+
+      idArchivo =
+        urlObjeto.searchParams.get("id");
+
+    } catch (error) {
+
+      return texto;
+    }
+  }
+
+
+  if (!idArchivo) {
+
+    return texto;
+  }
+
+
+  return (
+    "https://drive.google.com/thumbnail" +
+    `?id=${idArchivo}&sz=w1000`
+  );
+}
 // ========================================
 // MOSTRAR IMAGEN
 // ========================================
@@ -694,8 +749,57 @@ function mostrarImagenRepuesto(imagenUrl) {
   }
 
 
+  function mostrarImagenRepuesto(imagenUrl) {
+
+  if (!imagenUrl) {
+
+    imagenRepuesto.removeAttribute(
+      "src"
+    );
+
+    imagenRepuesto.classList.add(
+      "d-none"
+    );
+
+    sinImagen.innerHTML = `
+      <i
+        class="bi bi-image"
+        style="font-size: 2rem;"
+      ></i>
+
+      <div>
+        Este repuesto todavía no tiene
+        una imagen registrada.
+      </div>
+    `;
+
+    sinImagen.classList.remove(
+      "d-none"
+    );
+
+    return;
+  }
+
+
+  const urlImagen =
+    convertirUrlDrive(
+      imagenUrl
+    );
+
+
   imagenRepuesto.src =
-    imagenUrl;
+    urlImagen;
+
+
+  imagenRepuesto.classList.remove(
+    "d-none"
+  );
+
+
+  sinImagen.classList.add(
+    "d-none"
+  );
+}
 
   imagenRepuesto.classList.remove(
     "d-none"
