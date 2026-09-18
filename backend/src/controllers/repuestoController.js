@@ -321,3 +321,229 @@ export const listarRepuestos = async (req, res) => {
     });
   }
 };
+
+// ========================================
+// CREAR SOLICITUD DE REPUESTO
+// ========================================
+
+export const crearSolicitudRepuesto =
+  async (req, res) => {
+
+    try {
+
+      const usuarioId =
+        req.usuario.id;
+
+      const {
+        fechaSolicitud,
+        registroServicioId,
+        repuestoId,
+        descripcion
+      } = req.body;
+
+
+      // ========================================
+      // VALIDACIONES
+      // ========================================
+
+      if (!fechaSolicitud) {
+        return res.status(400).json({
+          mensaje:
+            "La fecha de solicitud es obligatoria"
+        });
+      }
+
+      if (!registroServicioId) {
+        return res.status(400).json({
+          mensaje:
+            "Debes seleccionar un ticket"
+        });
+      }
+
+      if (!repuestoId) {
+        return res.status(400).json({
+          mensaje:
+            "Debes seleccionar un repuesto"
+        });
+      }
+
+      if (!descripcion?.trim()) {
+        return res.status(400).json({
+          mensaje:
+            "La descripción es obligatoria"
+        });
+      }
+
+
+      // ========================================
+      // VALIDAR USUARIO
+      // ========================================
+
+      const usuario =
+        await prisma.usuario.findUnique({
+          where: {
+            id: usuarioId
+          }
+        });
+
+
+      if (!usuario || !usuario.activo) {
+
+        return res.status(403).json({
+          mensaje:
+            "El usuario no existe o está inactivo"
+        });
+      }
+
+
+      // ========================================
+      // VALIDAR SERVICIO
+      // ========================================
+
+      const servicio =
+        await prisma.registroServicio.findFirst({
+
+          where: {
+            id: registroServicioId,
+            usuarioId
+          },
+
+          include: {
+            tienda: true
+          }
+        });
+
+
+      if (!servicio) {
+
+        return res.status(404).json({
+          mensaje:
+            "El servicio seleccionado no existe o no pertenece al usuario"
+        });
+      }
+
+
+      // ========================================
+      // VALIDAR REPUESTO
+      // ========================================
+
+      const repuesto =
+        await prisma.repuesto.findFirst({
+
+          where: {
+            id: repuestoId,
+            activo: true
+          }
+        });
+
+
+      if (!repuesto) {
+
+        return res.status(404).json({
+          mensaje:
+            "El repuesto seleccionado no existe o está inactivo"
+        });
+      }
+
+
+      // ========================================
+      // FECHA GUATEMALA
+      // ========================================
+
+      const fecha =
+        new Date(
+          `${fechaSolicitud}T12:00:00-06:00`
+        );
+
+
+      // ========================================
+      // CREAR SOLICITUD + DETALLE
+      // ========================================
+
+      const solicitud =
+        await prisma.solicitudRepuesto.create({
+
+          data: {
+
+            pais: "Guatemala",
+
+            fechaSolicitud:
+              fecha,
+
+            soporte:
+              "L2 PBS",
+
+            descripcion:
+              descripcion.trim(),
+
+            usuarioId,
+
+            tiendaId:
+              servicio.tiendaId,
+
+            registroServicioId:
+              servicio.id,
+
+            detalles: {
+
+              create: {
+                repuestoId:
+                  repuesto.id,
+
+                cantidad: 1
+              }
+            }
+          },
+
+          include: {
+
+            usuario: {
+              select: {
+                id: true,
+                nombre: true,
+                bodega: true
+              }
+            },
+
+            tienda: true,
+
+            registroServicio: {
+              select: {
+                id: true,
+                numeroTicket: true
+              }
+            },
+
+            detalles: {
+
+              include: {
+                repuesto: true
+              }
+            }
+          }
+        });
+
+
+      return res.status(201).json({
+
+        mensaje:
+          "Solicitud de repuesto creada correctamente",
+
+        solicitud
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        "Error creando solicitud de repuesto:",
+        error
+      );
+
+
+      return res.status(500).json({
+        mensaje:
+          "Error interno al crear la solicitud de repuesto"
+      });
+    }
+  };

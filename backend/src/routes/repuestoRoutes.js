@@ -4,7 +4,8 @@ import {
   buscarTickets,
   buscarRepuestos,
   crearRepuesto,
-  listarRepuestos
+  listarRepuestos,
+  crearSolicitudRepuesto
 } from "../controllers/repuestoController.js";
 
 import {
@@ -35,6 +36,11 @@ router.post(
   "/",
   verificarToken,
   crearRepuesto
+);
+router.post(
+  "/solicitudes",
+  verificarToken,
+  crearSolicitudRepuesto
 );
 
 export default router;

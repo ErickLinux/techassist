@@ -10,6 +10,10 @@ const menuAdministrarUsuarios =
   document.getElementById(
     "menuAdministrarUsuarios"
   );
+  const menuAdministrarRepuestos =
+  document.getElementById(
+    "menuAdministrarRepuestos"
+  );
 
 // ==============================
 // ELEMENTOS DEL DOM
@@ -57,13 +61,21 @@ if (!token || !usuarioGuardado) {
   try {
 
     const usuario = JSON.parse(usuarioGuardado);
-    if (
-  usuario.rol === "ADMIN" &&
-  menuAdministrarUsuarios
-) {
-  menuAdministrarUsuarios.classList.remove(
-    "d-none"
-  );
+    if (usuario.rol === "ADMIN") {
+
+  if (menuAdministrarUsuarios) {
+
+    menuAdministrarUsuarios.classList.remove(
+      "d-none"
+    );
+  }
+
+  if (menuAdministrarRepuestos) {
+
+    menuAdministrarRepuestos.classList.remove(
+      "d-none"
+    );
+  }
 }
 
     nombreUsuario.textContent = usuario.nombre;
