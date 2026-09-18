@@ -117,12 +117,16 @@ if (!token || !usuarioGuardado) {
 
     if (usuario.rol !== "ADMIN") {
 
-      alert(
-        "No tienes permisos para acceder a esta sección"
-      );
-
-      window.location.href =
-        "./dashboard.html";
+      Swal.fire({
+  icon: "error",
+  title: "Acceso denegado",
+  text: "No tienes permisos para acceder a esta sección.",
+  confirmButtonText: "Volver al inicio",
+  confirmButtonColor: "#dc3545"
+}).then(() => {
+  window.location.href =
+    "./dashboard.html";
+});
 
     } else {
 
@@ -544,20 +548,26 @@ if (formNuevoUsuario) {
         }
 
 
-        alert(
-          resultado.mensaje ||
-          "Usuario creado correctamente"
-        );
-
-
         if (modalNuevoUsuario) {
-          modalNuevoUsuario.hide();
-        }
+              modalNuevoUsuario.hide();
+            }
+
+            formNuevoUsuario.reset();
+
+            await cargarUsuarios();
+
+            await Swal.fire({
+              icon: "success",
+              title: "¡Usuario creado!",
+              text:
+                resultado.mensaje ||
+                "El usuario se creó correctamente.",
+              confirmButtonText: "Aceptar",
+              confirmButtonColor: "#0d6efd"
+            });
 
 
-        formNuevoUsuario.reset();
-
-        await cargarUsuarios();
+        
 
 
       } catch (error) {
@@ -567,9 +577,13 @@ if (formNuevoUsuario) {
           error
         );
 
-        alert(
-          error.message
-        );
+        await Swal.fire({
+                  icon: "error",
+                  title: "No se pudo crear",
+                  text: error.message,
+                  confirmButtonText: "Aceptar",
+                  confirmButtonColor: "#dc3545"
+                });
       }
     }
   );
@@ -702,9 +716,13 @@ if (formEditarUsuario) {
         !editarBodega
       ) {
 
-        alert(
-          "No fue posible leer los datos del formulario"
-        );
+        await Swal.fire({
+  icon: "warning",
+  title: "Datos incompletos",
+  text: "No fue posible leer los datos del formulario.",
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#ffc107"
+});
 
         return;
       }
@@ -763,18 +781,21 @@ if (formEditarUsuario) {
         }
 
 
-        alert(
-          resultado.mensaje ||
-          "Usuario actualizado correctamente"
-        );
-
-
         if (modalEditarUsuario) {
-          modalEditarUsuario.hide();
-        }
+  modalEditarUsuario.hide();
+}
 
+await cargarUsuarios();
 
-        await cargarUsuarios();
+await Swal.fire({
+  icon: "success",
+  title: "¡Usuario actualizado!",
+  text:
+    resultado.mensaje ||
+    "Los datos del usuario se actualizaron correctamente.",
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#0d6efd"
+});
 
 
       } catch (error) {
@@ -784,9 +805,13 @@ if (formEditarUsuario) {
           error
         );
 
-        alert(
-          error.message
-        );
+        await Swal.fire({
+  icon: "error",
+  title: "No se pudo actualizar",
+  text: error.message,
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#dc3545"
+});
       }
     }
   );
@@ -829,15 +854,30 @@ if (tablaUsuarios) {
           : "desactivar";
 
 
-      const confirmar =
-        confirm(
-          `¿Deseas ${textoAccion} este usuario?`
-        );
+      const resultadoConfirmacion =
+  await Swal.fire({
+    icon: "warning",
+    title: activo
+      ? "¿Activar usuario?"
+      : "¿Desactivar usuario?",
+    text: activo
+      ? "El usuario podrá volver a utilizar TechAssist."
+      : "El usuario ya no podrá acceder a TechAssist.",
+    showCancelButton: true,
+    confirmButtonText: activo
+      ? "Sí, activar"
+      : "Sí, desactivar",
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: activo
+      ? "#198754"
+      : "#dc3545",
+    cancelButtonColor: "#6c757d",
+    reverseButtons: true
+  });
 
-
-      if (!confirmar) {
-        return;
-      }
+if (!resultadoConfirmacion.isConfirmed) {
+  return;
+}
 
 
       try {
@@ -877,12 +917,24 @@ if (tablaUsuarios) {
         }
 
 
-        alert(
-          resultado.mensaje
-        );
-
-
         await cargarUsuarios();
+
+await Swal.fire({
+  icon: "success",
+  title: activo
+    ? "Usuario activado"
+    : "Usuario desactivado",
+  text:
+    resultado.mensaje ||
+    (activo
+      ? "El usuario fue activado correctamente."
+      : "El usuario fue desactivado correctamente."),
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#0d6efd"
+});
+
+
+        
 
 
       } catch (error) {
@@ -892,9 +944,13 @@ if (tablaUsuarios) {
           error
         );
 
-        alert(
-          error.message
-        );
+        await Swal.fire({
+  icon: "error",
+  title: "No se pudo cambiar el estado",
+  text: error.message,
+  confirmButtonText: "Aceptar",
+  confirmButtonColor: "#dc3545"
+});
       }
     }
   );
