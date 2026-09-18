@@ -318,8 +318,8 @@ function verificarSesion() {
     nombreUsuario.textContent =
       usuario.nombre;
 
-    nombreTecnico.value =
-      usuario.nombre;
+    nombreTecnico.textContent =
+  usuario.nombre;
 
 
     if (
