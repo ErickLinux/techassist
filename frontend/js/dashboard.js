@@ -1818,28 +1818,28 @@ async function eliminarServicioSeleccionado() {
     return;
   }
 
+  // ==============================
+  // CONFIRMAR ELIMINACIÓN
+  // ==============================
+
   const resultadoConfirmacion = await Swal.fire({
-  icon: "warning",
-  title: "¿Eliminar servicio?",
-  html: `
-    ¿Estás seguro de eliminar el servicio
-    <strong>${servicioSeleccionado.numeroTicket}</strong>?
-    <br><br>
-    Esta acción no se puede deshacer.
-  `,
-  showCancelButton: true,
-  confirmButtonText: "Sí, eliminar",
-  cancelButtonText: "Cancelar",
-  confirmButtonColor: "#dc3545",
-  cancelButtonColor: "#6c757d",
-  reverseButtons: true
-});
+    icon: "warning",
+    title: "¿Eliminar servicio?",
+    html: `
+      ¿Estás seguro de eliminar el servicio
+      <strong>${servicioSeleccionado.numeroTicket}</strong>?
+      <br><br>
+      Esta acción no se puede deshacer.
+    `,
+    showCancelButton: true,
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: "#dc3545",
+    cancelButtonColor: "#6c757d",
+    reverseButtons: true
+  });
 
-if (!resultadoConfirmacion.isConfirmed) {
-  return;
-}
-
-  if (!confirmar) {
+  if (!resultadoConfirmacion.isConfirmed) {
     return;
   }
 
@@ -1855,46 +1855,47 @@ if (!resultadoConfirmacion.isConfirmed) {
     `;
 
     const respuesta = await fetch(
-  `${API_URL}/api/servicios/${servicioSeleccionado.id}`,
-  {
-    method: "DELETE",
+      `${API_URL}/api/servicios/${servicioSeleccionado.id}`,
+      {
+        method: "DELETE",
 
-    headers: {
-      Authorization:
-        `Bearer ${token}`
-    }
-  }
-);
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
 
-    const resultado =
-      await respuesta.json();
+    const resultado = await respuesta.json();
 
     if (!respuesta.ok) {
-
       throw new Error(
         resultado.mensaje ||
         "No fue posible eliminar el servicio"
       );
     }
 
-    await Swal.fire({
-  icon: "success",
-  title: "Servicio eliminado",
-  text: "El servicio se eliminó correctamente.",
-  confirmButtonText: "Aceptar",
-  confirmButtonColor: "#0d6efd"
-});
-
+    // Cerrar modal de detalle
     const modal =
       bootstrap.Modal.getInstance(
         modalDetalleServicio
       );
 
-    modal.hide();
+    if (modal) {
+      modal.hide();
+    }
 
     servicioSeleccionado = null;
 
     await cargarServicios();
+
+    // Mensaje moderno de éxito
+    await Swal.fire({
+      icon: "success",
+      title: "Servicio eliminado",
+      text: "El servicio se eliminó correctamente.",
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#0d6efd"
+    });
 
   } catch (error) {
 
@@ -1903,13 +1904,13 @@ if (!resultadoConfirmacion.isConfirmed) {
       error
     );
 
-    Swal.fire({
-  icon: "error",
-  title: "No se pudo actualizar",
-  text: error.message,
-  confirmButtonText: "Aceptar",
-  confirmButtonColor: "#dc3545"
-});
+    await Swal.fire({
+      icon: "error",
+      title: "No se pudo eliminar",
+      text: error.message,
+      confirmButtonText: "Aceptar",
+      confirmButtonColor: "#dc3545"
+    });
 
   } finally {
 
