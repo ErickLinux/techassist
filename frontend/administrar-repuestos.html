@@ -222,211 +222,16 @@
   </main>
 
 
-  <!-- MODAL NUEVO REPUESTO -->
-  <div
-    class="modal fade"
-    id="modalNuevoRepuesto"
-    tabindex="-1"
-    aria-hidden="true"
-  >
+  <!-- ====================================== -->
+<!-- MODAL NUEVO REPUESTO -->
+<!-- ====================================== -->
 
-    <div class="modal-dialog modal-lg">
-
-      <div class="modal-content">
-
-        <div class="modal-header">
-
-          <h5 class="modal-title">
-            <i class="bi bi-tools me-2"></i>
-            Nuevo repuesto
-          </h5>
-
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Cerrar"
-          ></button>
-
-        </div>
-
-
-        <form id="formNuevoRepuesto">
-
-          <div class="modal-body">
-
-            <div class="row g-3">
-
-              <div class="col-12 col-md-6">
-
-                <label
-                  for="nombreRepuesto"
-                  class="form-label"
-                >
-                  Nombre de parte *
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nombreRepuesto"
-                  placeholder="Ej. TOP MODULE"
-                  required
-                >
-
-              </div>
-
-
-              <div class="col-12 col-md-6">
-
-                <label
-                  for="numeroParte"
-                  class="form-label"
-                >
-                  Número de parte / Modelo *
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="numeroParte"
-                  placeholder="Ej. 497-0522696"
-                  required
-                >
-
-              </div>
-
-
-              <div class="col-12">
-
-                <label
-                  for="tipoEquipo"
-                  class="form-label"
-                >
-                  Tipo de equipo
-                </label>
-
-                <input
-                  type="text"
-                  class="form-control"
-                  id="tipoEquipo"
-                  placeholder="Opcional"
-                >
-
-              </div>
-
-
-              <div class="col-12">
-
-                <label
-                  for="descripcionRepuesto"
-                  class="form-label"
-                >
-                  Descripción
-                </label>
-
-                <textarea
-                  class="form-control"
-                  id="descripcionRepuesto"
-                  rows="3"
-                  placeholder="Descripción opcional del repuesto"
-                ></textarea>
-                <div class="col-12">
-
-  
-
-
-
-
-              </div>
-
-
-              <div class="col-12">
-
-  <label
-    for="imagenUrl"
-    class="form-label"
-  >
-    Imagen del repuesto
-  </label>
-
-  <input
-    type="url"
-    class="form-control"
-    id="imagenUrl"
-    placeholder="Pega el enlace compartido de Google Drive"
-  >
-
-  <div class="form-text">
-    La imagen debe estar compartida como
-    "Cualquier persona con el enlace".
-  </div>
-
-</div>
-
-
-<div
-  class="col-12 d-none"
-  id="vistaPreviaNueva"
->
-
-  <label class="form-label">
-    Vista previa
-  </label>
-
-  <div class="border rounded p-3 text-center">
-
-    <img
-      id="imagenPreviaNueva"
-      alt="Vista previa del repuesto"
-      class="img-fluid"
-      style="max-height: 250px;"
-    >
-
-  </div>
-
-</div>
-
-            </div>
-
-          </div>
-
-
-          <div class="modal-footer">
-
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cancelar
-            </button>
-
-            <button
-              type="submit"
-              class="btn btn-primary"
-            >
-              <i class="bi bi-check-lg"></i>
-              Guardar repuesto
-            </button>
-
-          </div>
-
-        </form>
-
-      </div>
-
-    </div>
-
-  </div>
-  <!-- MODAL EDITAR REPUESTO -->
 <div
   class="modal fade"
-  id="modalEditarRepuesto"
+  id="modalNuevoRepuesto"
   tabindex="-1"
   aria-hidden="true"
 >
-
   <div class="modal-dialog modal-lg">
 
     <div class="modal-content">
@@ -434,6 +239,215 @@
       <div class="modal-header">
 
         <h5 class="modal-title">
+          <i class="bi bi-tools me-2"></i>
+          Nuevo repuesto
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Cerrar"
+        ></button>
+
+      </div>
+
+
+      <form id="formNuevoRepuesto">
+
+        <div class="modal-body">
+
+          <div class="row g-3">
+
+
+            <!-- NOMBRE -->
+            <div class="col-12 col-md-6">
+
+              <label
+                for="nombreRepuesto"
+                class="form-label"
+              >
+                Nombre de parte *
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="nombreRepuesto"
+                placeholder="Ej. TOP MODULE"
+                required
+              >
+
+            </div>
+
+
+            <!-- NUMERO DE PARTE -->
+            <div class="col-12 col-md-6">
+
+              <label
+                for="numeroParte"
+                class="form-label"
+              >
+                Número de parte / Modelo *
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="numeroParte"
+                placeholder="Ej. 497-0522696"
+                required
+              >
+
+            </div>
+
+
+            <!-- TIPO EQUIPO -->
+            <div class="col-12">
+
+              <label
+                for="tipoEquipo"
+                class="form-label"
+              >
+                Tipo de equipo
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="tipoEquipo"
+                placeholder="Opcional"
+              >
+
+            </div>
+
+
+            <!-- DESCRIPCION -->
+            <div class="col-12">
+
+              <label
+                for="descripcionRepuesto"
+                class="form-label"
+              >
+                Descripción
+              </label>
+
+              <textarea
+                class="form-control"
+                id="descripcionRepuesto"
+                rows="3"
+                placeholder="Descripción opcional del repuesto"
+              ></textarea>
+
+            </div>
+
+
+            <!-- IMAGEN -->
+            <div class="col-12">
+
+              <label
+                for="imagenUrl"
+                class="form-label"
+              >
+                Imagen del repuesto
+              </label>
+
+              <input
+                type="url"
+                class="form-control"
+                id="imagenUrl"
+                placeholder="Pega el enlace compartido de Google Drive"
+              >
+
+              <div class="form-text">
+                La imagen debe estar compartida como
+                "Cualquier persona con el enlace".
+              </div>
+
+            </div>
+
+
+            <!-- VISTA PREVIA -->
+            <div
+              class="col-12 d-none"
+              id="vistaPreviaNueva"
+            >
+
+              <label class="form-label">
+                Vista previa
+              </label>
+
+              <div
+                class="border rounded p-3 text-center"
+              >
+
+                <img
+                  id="imagenPreviaNueva"
+                  class="img-fluid"
+                  style="max-height: 250px;"
+                  alt="Vista previa del repuesto"
+                >
+
+              </div>
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+          >
+            <i class="bi bi-check-lg"></i>
+            Guardar repuesto
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ====================================== -->
+<!-- MODAL EDITAR REPUESTO -->
+<!-- ====================================== -->
+
+<div
+  class="modal fade"
+  id="modalEditarRepuesto"
+  tabindex="-1"
+  aria-labelledby="tituloModalEditarRepuesto"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5
+          class="modal-title"
+          id="tituloModalEditarRepuesto"
+        >
           <i class="bi bi-pencil-square me-2"></i>
           Editar repuesto
         </h5>
@@ -454,6 +468,8 @@
 
           <div class="row g-3">
 
+
+            <!-- NOMBRE -->
             <div class="col-12 col-md-6">
 
               <label
@@ -473,6 +489,7 @@
             </div>
 
 
+            <!-- NUMERO DE PARTE -->
             <div class="col-12 col-md-6">
 
               <label
@@ -492,6 +509,7 @@
             </div>
 
 
+            <!-- TIPO EQUIPO -->
             <div class="col-12">
 
               <label
@@ -511,6 +529,7 @@
             </div>
 
 
+            <!-- DESCRIPCION -->
             <div class="col-12">
 
               <label
@@ -528,55 +547,58 @@
               ></textarea>
 
             </div>
-            <!-- IMAGEN DEL REPUESTO -->
-<div class="col-12">
-
-  <label
-    for="editarImagenUrl"
-    class="form-label"
-  >
-    Imagen del repuesto
-  </label>
-
-  <input
-    type="url"
-    class="form-control"
-    id="editarImagenUrl"
-    placeholder="Pega el enlace compartido de Google Drive"
-  >
-
-  <div class="form-text">
-    La imagen debe estar compartida como
-    "Cualquier persona con el enlace".
-  </div>
-
-</div>
 
 
-<!-- VISTA PREVIA -->
-<div
-  class="col-12 d-none"
-  id="vistaPreviaEditar"
->
+            <!-- IMAGEN -->
+            <div class="col-12">
 
-  <label class="form-label">
-    Vista previa
-  </label>
+              <label
+                for="editarImagenUrl"
+                class="form-label"
+              >
+                Imagen del repuesto
+              </label>
 
-  <div class="border rounded p-3 text-center">
+              <input
+                type="url"
+                class="form-control"
+                id="editarImagenUrl"
+                placeholder="Pega el enlace compartido de Google Drive"
+              >
 
-    <img
-      id="imagenPreviaEditar"
-      alt="Vista previa del repuesto"
-      class="img-fluid"
-      style="max-height: 250px;"
-    >
+              <div class="form-text">
+                La imagen debe estar compartida como
+                "Cualquier persona con el enlace".
+              </div>
 
-  </div>
+            </div>
 
-</div>
 
-            
+            <!-- VISTA PREVIA -->
+            <div
+              class="col-12 d-none"
+              id="vistaPreviaEditar"
+            >
+
+              <label class="form-label">
+                Vista previa
+              </label>
+
+              <div
+                class="border rounded p-3 text-center"
+              >
+
+                <img
+                  id="imagenPreviaEditar"
+                  class="img-fluid"
+                  style="max-height: 250px;"
+                  alt="Vista previa del repuesto"
+                >
+
+              </div>
+
+            </div>
+
 
           </div>
 
