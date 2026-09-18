@@ -7,9 +7,14 @@ import tiendaRoutes from "./routes/tiendaRoutes.js";
 import servicioRoutes from "./routes/servicioRoutes.js";
 import liquidacionRoutes
   from "./routes/liquidacionRoutes.js";
+  import repuestoRoutes
+  from "./routes/repuestoRoutes.js";
   
 const app = express();
-
+app.use(
+  "/api/repuestos",
+  repuestoRoutes
+);
 app.use(cors());
 app.use(express.json());
 

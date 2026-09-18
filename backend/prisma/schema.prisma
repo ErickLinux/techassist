@@ -6,44 +6,57 @@ datasource db {
   provider = "postgresql"
 }
 
+// ========================================
+// USUARIOS
+// ========================================
+
 model Usuario {
-  id                String             @id @default(uuid())
-  nombre            String
-  correo            String             @unique
-  passwordHash      String
-  bodega            String?
-  activo            Boolean            @default(true)
-  rol               String             @default("TECNICO")
-  fechaRegistro     DateTime           @default(now())
-  registrosServicio RegistroServicio[]
+  id            String   @id @default(uuid())
+  nombre        String
+  correo        String   @unique
+  passwordHash  String
+  bodega        String?
+  activo        Boolean  @default(true)
+  rol           String   @default("TECNICO")
+  fechaRegistro DateTime @default(now())
+
+  registrosServicio   RegistroServicio[]
+  solicitudesRepuesto SolicitudRepuesto[]
 
   @@map("usuarios")
 }
 
+// ========================================
+// REGISTROS DE SERVICIO
+// ========================================
+
 model RegistroServicio {
-  id                   String    @id @default(uuid())
-  dia                  String
-  fecha                DateTime  @default(now())
-  numeroTicket         String
-  numeroCaf            String?
-  horaIngreso          DateTime?
-  horaEgreso           DateTime?
-  totalMinutosAtencion Int @default(0)
-  totalKilometros      Int       @default(0)
-  inicioViaje          DateTime?
-  finViaje             DateTime?
-  totalMinutosViaje    Int       @default(0)
+  id                      String    @id @default(uuid())
+  dia                     String
+  fecha                   DateTime  @default(now())
+  numeroTicket            String
+  numeroCaf               String?
+  horaIngreso             DateTime?
+  horaEgreso              DateTime?
+  totalMinutosAtencion    Int       @default(0)
+  totalKilometros         Int       @default(0)
+  inicioViaje             DateTime?
+  finViaje                DateTime?
+  totalMinutosViaje       Int       @default(0)
   inicioRegresoCasa       DateTime?
-finRegresoCasa          DateTime?
-totalMinutosRegresoCasa Int       @default(0)
-  trabajoRealizado     String
-  fechaRegistro        DateTime  @default(now())
-  fechaActualizacion   DateTime  @updatedAt
-  usuarioId            String
-  tiendaId             String
-  lugarSalida          String?
-  tienda               Tienda    @relation(fields: [tiendaId], references: [id])
-  usuario              Usuario   @relation(fields: [usuarioId], references: [id])
+  finRegresoCasa          DateTime?
+  totalMinutosRegresoCasa Int       @default(0)
+  trabajoRealizado        String
+  fechaRegistro           DateTime  @default(now())
+  fechaActualizacion      DateTime  @updatedAt
+  usuarioId               String
+  tiendaId                String
+  lugarSalida             String?
+
+  tienda  Tienda  @relation(fields: [tiendaId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  solicitudesRepuesto SolicitudRepuesto[]
 
   @@index([usuarioId])
   @@index([tiendaId])
@@ -51,17 +64,99 @@ totalMinutosRegresoCasa Int       @default(0)
   @@index([fecha])
 }
 
+// ========================================
+// TIENDAS
+// ========================================
+
 model Tienda {
-  id            String             @id @default(uuid())
+  id            String   @id @default(uuid())
   nombre        String
   departamento  String
   municipio     String
-  activa        Boolean            @default(true)
-  fechaRegistro DateTime           @default(now())
-  codigo        Int                @unique
-  registros     RegistroServicio[]
+  activa        Boolean  @default(true)
+  fechaRegistro DateTime @default(now())
+  codigo        Int      @unique
+
+  registros           RegistroServicio[]
+  solicitudesRepuesto SolicitudRepuesto[]
 
   @@index([codigo])
   @@index([departamento])
   @@index([municipio])
+}
+
+// ========================================
+// CATÁLOGO DE REPUESTOS
+// ========================================
+
+model Repuesto {
+  id String @id @default(uuid())
+
+  nombre      String
+  numeroParte String  @unique
+  descripcion String?
+  tipoEquipo  String?
+  imagenUrl   String?
+
+  activo             Boolean  @default(true)
+  fechaRegistro      DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+
+  detallesSolicitud DetalleSolicitudRepuesto[]
+
+  @@index([nombre])
+  @@index([numeroParte])
+  @@map("repuestos")
+}
+
+// ========================================
+// SOLICITUDES DE REPUESTOS
+// ========================================
+
+model SolicitudRepuesto {
+  id                 String   @id @default(uuid())
+  pais               String   @default("Guatemala")
+  fechaSolicitud     DateTime @default(now())
+  soporte            String   @default("L2 PBS")
+  descripcion        String
+  estado             String   @default("PENDIENTE")
+  fechaRegistro      DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+
+  usuarioId          String
+  tiendaId           String
+  registroServicioId String
+
+  usuario          Usuario          @relation(fields: [usuarioId], references: [id])
+  tienda           Tienda           @relation(fields: [tiendaId], references: [id])
+  registroServicio RegistroServicio @relation(fields: [registroServicioId], references: [id])
+
+  detalles DetalleSolicitudRepuesto[]
+
+  @@index([usuarioId])
+  @@index([tiendaId])
+  @@index([registroServicioId])
+  @@index([fechaSolicitud])
+  @@index([estado])
+  @@map("solicitudes_repuesto")
+}
+
+// ========================================
+// DETALLE DE SOLICITUD
+// ========================================
+
+model DetalleSolicitudRepuesto {
+  id          String  @id @default(uuid())
+  cantidad    Int     @default(1)
+  observacion String?
+
+  solicitudId String
+  repuestoId  String
+
+  solicitud SolicitudRepuesto @relation(fields: [solicitudId], references: [id], onDelete: Cascade)
+  repuesto  Repuesto          @relation(fields: [repuestoId], references: [id])
+
+  @@index([solicitudId])
+  @@index([repuestoId])
+  @@map("detalles_solicitud_repuesto")
 }
