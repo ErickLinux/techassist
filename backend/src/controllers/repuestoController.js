@@ -654,13 +654,17 @@ export const editarRepuesto =
       }
 
 
+      // OBTENER ID DEL REPUESTO DESDE LA URL
+      const { id } = req.params;
+
+
       const {
-  nombre,
-  numeroParte,
-  tipoEquipo,
-  descripcion,
-  imagenUrl
-} = req.body;
+        nombre,
+        numeroParte,
+        tipoEquipo,
+        descripcion,
+        imagenUrl
+      } = req.body;
 
 
       if (!nombre?.trim()) {
@@ -731,21 +735,21 @@ export const editarRepuesto =
 
           data: {
 
-  nombre:
-    nombre.trim(),
+            nombre:
+              nombre.trim(),
 
-  numeroParte:
-    numeroParte.trim(),
+            numeroParte:
+              numeroParte.trim(),
 
-  tipoEquipo:
-    tipoEquipo?.trim() || null,
+            tipoEquipo:
+              tipoEquipo?.trim() || null,
 
-  descripcion:
-    descripcion?.trim() || null,
+            descripcion:
+              descripcion?.trim() || null,
 
-  imagenUrl:
-    imagenUrl?.trim() || null
-}
+            imagenUrl:
+              imagenUrl?.trim() || null
+          }
         });
 
 
