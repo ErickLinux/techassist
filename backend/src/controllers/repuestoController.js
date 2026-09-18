@@ -547,3 +547,228 @@ export const crearSolicitudRepuesto =
       });
     }
   };
+
+
+  // ========================================
+// CAMBIAR ESTADO DE REPUESTO
+// ========================================
+
+export const cambiarEstadoRepuesto =
+  async (req, res) => {
+
+    try {
+
+      if (req.usuario.rol !== "ADMIN") {
+
+        return res.status(403).json({
+          mensaje:
+            "No tienes permisos para modificar repuestos"
+        });
+      }
+
+
+      const { id } = req.params;
+      const { activo } = req.body;
+
+
+      if (typeof activo !== "boolean") {
+
+        return res.status(400).json({
+          mensaje:
+            "El estado del repuesto no es válido"
+        });
+      }
+
+
+      const repuestoExistente =
+        await prisma.repuesto.findUnique({
+          where: {
+            id
+          }
+        });
+
+
+      if (!repuestoExistente) {
+
+        return res.status(404).json({
+          mensaje:
+            "El repuesto no existe"
+        });
+      }
+
+
+      const repuesto =
+        await prisma.repuesto.update({
+
+          where: {
+            id
+          },
+
+          data: {
+            activo
+          }
+        });
+
+
+      return res.status(200).json({
+
+        mensaje:
+          activo
+            ? "Repuesto activado correctamente"
+            : "Repuesto desactivado correctamente",
+
+        repuesto
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        "Error cambiando estado del repuesto:",
+        error
+      );
+
+
+      return res.status(500).json({
+        mensaje:
+          "Error interno al modificar el estado del repuesto"
+      });
+    }
+  };
+
+  // ========================================
+// EDITAR REPUESTO
+// ========================================
+
+export const editarRepuesto =
+  async (req, res) => {
+
+    try {
+
+      if (req.usuario.rol !== "ADMIN") {
+
+        return res.status(403).json({
+          mensaje:
+            "No tienes permisos para editar repuestos"
+        });
+      }
+
+
+      const {
+  nombre,
+  numeroParte,
+  tipoEquipo,
+  descripcion,
+  imagenUrl
+} = req.body;
+
+
+      if (!nombre?.trim()) {
+
+        return res.status(400).json({
+          mensaje:
+            "El nombre del repuesto es obligatorio"
+        });
+      }
+
+
+      if (!numeroParte?.trim()) {
+
+        return res.status(400).json({
+          mensaje:
+            "El número de parte es obligatorio"
+        });
+      }
+
+
+      const repuestoExistente =
+        await prisma.repuesto.findUnique({
+          where: {
+            id
+          }
+        });
+
+
+      if (!repuestoExistente) {
+
+        return res.status(404).json({
+          mensaje:
+            "El repuesto no existe"
+        });
+      }
+
+
+      const numeroDuplicado =
+        await prisma.repuesto.findFirst({
+
+          where: {
+
+            numeroParte:
+              numeroParte.trim(),
+
+            NOT: {
+              id
+            }
+          }
+        });
+
+
+      if (numeroDuplicado) {
+
+        return res.status(400).json({
+          mensaje:
+            "Ya existe otro repuesto con ese número de parte"
+        });
+      }
+
+
+      const repuesto =
+        await prisma.repuesto.update({
+
+          where: {
+            id
+          },
+
+          data: {
+
+  nombre:
+    nombre.trim(),
+
+  numeroParte:
+    numeroParte.trim(),
+
+  tipoEquipo:
+    tipoEquipo?.trim() || null,
+
+  descripcion:
+    descripcion?.trim() || null,
+
+  imagenUrl:
+    imagenUrl?.trim() || null
+}
+        });
+
+
+      return res.status(200).json({
+
+        mensaje:
+          "Repuesto actualizado correctamente",
+
+        repuesto
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        "Error editando repuesto:",
+        error
+      );
+
+
+      return res.status(500).json({
+        mensaje:
+          "Error interno al editar el repuesto"
+      });
+    }
+  };

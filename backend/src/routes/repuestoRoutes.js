@@ -5,7 +5,9 @@ import {
   buscarRepuestos,
   crearRepuesto,
   listarRepuestos,
-  crearSolicitudRepuesto
+  crearSolicitudRepuesto,
+  editarRepuesto,
+  cambiarEstadoRepuesto
 } from "../controllers/repuestoController.js";
 
 import {
@@ -41,6 +43,18 @@ router.post(
   "/solicitudes",
   verificarToken,
   crearSolicitudRepuesto
+);
+
+router.put(
+  "/admin/:id",
+  verificarToken,
+  editarRepuesto
+);
+
+router.patch(
+  "/admin/:id/estado",
+  verificarToken,
+  cambiarEstadoRepuesto
 );
 
 export default router;
