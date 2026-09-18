@@ -11,15 +11,7 @@ import {
   verificarToken
 } from "../middleware/authMiddleware.js";
 
-
-
-
 const router = Router();
-
-
-// ========================================
-// BUSCAR TICKETS
-// ========================================
 
 router.get(
   "/buscar-ticket",
@@ -27,28 +19,22 @@ router.get(
   buscarTickets
 );
 
-// ========================================
-// CREAR REPUESTO - SOLO ADMIN
-// ========================================
+router.get(
+  "/buscar",
+  verificarToken,
+  buscarRepuestos
+);
+
+router.get(
+  "/admin/listar",
+  verificarToken,
+  listarRepuestos
+);
 
 router.post(
   "/",
   verificarToken,
   crearRepuesto
 );
+
 export default router;
-
-// ========================================
-// BUSCAR REPUESTOS
-// ========================================
-
-router.get(
-  "/buscar",
-  verificarToken,
-  buscarRepuestos
-);
-router.get(
-  "/admin/listar",
-  verificarToken,
-  listarRepuestos
-);
