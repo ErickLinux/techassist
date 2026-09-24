@@ -336,18 +336,34 @@ btnAnalizarFoto.addEventListener(
         "d-none"
       );
 
-
       progresoOCR.style.width =
         "0%";
 
+      textoEstadoOCR.textContent =
+        "Preparando imagen...";
+
+
+      // =====================================
+      // MEJORAR IMAGEN
+      // =====================================
+
+      const imagenProcesada =
+        await prepararImagenOCR(
+          vistaFoto
+        );
+
 
       textoEstadoOCR.textContent =
-        "Preparando reconocimiento...";
+        "Iniciando reconocimiento...";
 
+
+      // =====================================
+      // OCR
+      // =====================================
 
       const resultado =
         await Tesseract.recognize(
-          vistaFoto.src,
+          imagenProcesada,
           "eng",
           {
             logger: mensaje => {
@@ -365,16 +381,30 @@ btnAnalizarFoto.addEventListener(
 
 
       console.log(
-        "Texto OCR detectado:"
+        "=============================="
+      );
+
+      console.log(
+        "TEXTO OCR DETECTADO:"
       );
 
       console.log(texto);
+
+      console.log(
+        "=============================="
+      );
 
 
       const datos =
         extraerDatosEtiqueta(
           texto
         );
+
+
+      console.log(
+        "DATOS EXTRAÍDOS:",
+        datos
+      );
 
 
       if (datos.modelo) {
@@ -402,23 +432,30 @@ btnAnalizarFoto.addEventListener(
       ) {
 
         await Swal.fire({
+
           icon: "success",
-          title: "Etiqueta detectada",
+
+          title:
+            "Datos detectados",
+
           html: `
             <div class="text-start">
 
               <p>
-                Revisa los datos antes
-                de agregar el equipo.
+                TechAssist detectó los siguientes
+                datos. Revísalos antes de agregar
+                el equipo.
               </p>
 
-              <strong>Modelo:</strong>
-              ${datos.modelo}
+              <div class="mb-2">
+                <strong>Modelo:</strong>
+                ${datos.modelo}
+              </div>
 
-              <br>
-
-              <strong>Serie:</strong>
-              ${datos.serie}
+              <div>
+                <strong>Serie:</strong>
+                ${datos.serie}
+              </div>
 
             </div>
           `
@@ -427,13 +464,23 @@ btnAnalizarFoto.addEventListener(
       } else {
 
         await Swal.fire({
+
           icon: "warning",
 
           title:
             "Detección incompleta",
 
-          text:
-            "No fue posible identificar automáticamente todos los datos. Revisa o completa los campos manualmente."
+          html: `
+            <p>
+              TechAssist no pudo identificar
+              automáticamente todos los datos.
+            </p>
+
+            <p class="mb-0">
+              Intenta acercar más la cámara
+              a la etiqueta.
+            </p>
+          `
         });
       }
 
@@ -452,13 +499,14 @@ btnAnalizarFoto.addEventListener(
 
 
       await Swal.fire({
+
         icon: "error",
 
         title:
           "No fue posible analizar la imagen",
 
         text:
-          "Intenta tomar una fotografía más clara de la etiqueta."
+          "Intenta tomar una fotografía más cercana y clara de la etiqueta."
       });
 
 
@@ -475,6 +523,176 @@ btnAnalizarFoto.addEventListener(
     }
   }
 );
+
+
+// ========================================
+// PREPARAR IMAGEN PARA OCR
+// ========================================
+
+function prepararImagenOCR(
+  imagen
+) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      try {
+
+        const canvas =
+          document.createElement(
+            "canvas"
+          );
+
+        const contexto =
+          canvas.getContext(
+            "2d",
+            {
+              willReadFrequently: true
+            }
+          );
+
+
+        // =====================================
+        // AUMENTAR RESOLUCIÓN
+        // =====================================
+
+        let escala = 2;
+
+
+        // Evitar imágenes exageradamente grandes
+
+        if (
+          imagen.naturalWidth >
+          2000
+        ) {
+
+          escala = 1.5;
+        }
+
+
+        canvas.width =
+          imagen.naturalWidth *
+          escala;
+
+        canvas.height =
+          imagen.naturalHeight *
+          escala;
+
+
+        contexto.drawImage(
+          imagen,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+
+        // =====================================
+        // OBTENER PIXELES
+        // =====================================
+
+        const datosImagen =
+          contexto.getImageData(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+
+
+        const pixeles =
+          datosImagen.data;
+
+
+        // =====================================
+        // ESCALA DE GRISES + CONTRASTE
+        // =====================================
+
+        for (
+          let i = 0;
+          i < pixeles.length;
+          i += 4
+        ) {
+
+          const rojo =
+            pixeles[i];
+
+          const verde =
+            pixeles[i + 1];
+
+          const azul =
+            pixeles[i + 2];
+
+
+          // Conversión ponderada a gris
+
+          let gris =
+            (
+              rojo * 0.299 +
+              verde * 0.587 +
+              azul * 0.114
+            );
+
+
+          // =================================
+          // CONTRASTE
+          // =================================
+
+          gris =
+            (
+              (gris - 128) *
+              1.8
+            ) + 128;
+
+
+          gris =
+            Math.max(
+              0,
+              Math.min(
+                255,
+                gris
+              )
+            );
+
+
+          pixeles[i] =
+            gris;
+
+          pixeles[i + 1] =
+            gris;
+
+          pixeles[i + 2] =
+            gris;
+        }
+
+
+        contexto.putImageData(
+          datosImagen,
+          0,
+          0
+        );
+
+
+        // =====================================
+        // DEVOLVER IMAGEN PROCESADA
+        // =====================================
+
+        resolve(
+          canvas.toDataURL(
+            "image/jpeg",
+            0.95
+          )
+        );
+
+
+      } catch (error) {
+
+        reject(error);
+      }
+    }
+  );
+}
 
 
 // ========================================
@@ -511,38 +729,14 @@ function actualizarProgresoOCR(
   ) {
 
     textoEstadoOCR.textContent =
-      "Cargando reconocimiento de texto...";
+      "Cargando reconocimiento...";
   }
 
-  else if (
-    mensaje.status ===
-    "initializing api"
-  ) {
+  else {
 
     textoEstadoOCR.textContent =
-      "Preparando OCR...";
+      "Procesando etiqueta...";
   }
-}
-
-
-// ========================================
-// LIMPIAR TEXTO OCR
-// ========================================
-
-function limpiarValorOCR(
-  valor
-) {
-
-  if (!valor) {
-    return "";
-  }
-
-
-  return valor
-    .trim()
-    .replace(/^[\s:=#-]+/, "")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 
@@ -558,84 +752,147 @@ function extraerDatosEtiqueta(
   let serie = "";
 
 
+  // =====================================
+  // NORMALIZAR TEXTO
+  // =====================================
+
   const lineas =
     texto
       .split(/\r?\n/)
       .map(
         linea =>
-          linea.trim()
+          linea
+            .replace(/\s+/g, " ")
+            .trim()
       )
       .filter(Boolean);
 
 
+  console.log(
+    "LÍNEAS OCR:",
+    lineas
+  );
+
+
   // =====================================
-  // BUSCAR POR LÍNEAS
+  // RECORRER LÍNEAS
   // =====================================
 
-  for (const linea of lineas) {
+  for (
+    let i = 0;
+    i < lineas.length;
+    i++
+  ) {
 
-    const lineaNormalizada =
-      linea.replace(/\s+/g, " ");
+    const linea =
+      lineas[i];
 
 
+    // ===================================
     // MODELO
+    // ===================================
 
     if (!modelo) {
 
-      const coincidenciaModelo =
-        lineaNormalizada.match(
-          /\b(?:MODEL|MODEL\s*NO|MODEL\s*NUMBER|MODELO)\b[\s.:#-]*(.+)$/i
+      let coincidencia =
+        linea.match(
+          /(?:MODEL\s*ID|MODEL\s*NO|MODEL\s*NUMBER|MODEL|MODELO)\s*[:.#-]?\s*([A-Z0-9][A-Z0-9._\/-]{2,})/i
         );
 
 
       if (
-        coincidenciaModelo &&
-        coincidenciaModelo[1]
+        coincidencia &&
+        coincidencia[1]
       ) {
 
         modelo =
-          limpiarValorOCR(
-            coincidenciaModelo[1]
-          );
+          coincidencia[1];
+      }
+
+
+      // Puede ocurrir:
+      //
+      // MODEL ID
+      // 278M1R/00
+
+      else if (
+        /MODEL|MODELO/i.test(
+          linea
+        )
+      ) {
+
+        const siguiente =
+          lineas[i + 1];
+
+
+        if (
+          siguiente &&
+          /^[A-Z0-9._\/-]{3,}$/i.test(
+            siguiente
+          )
+        ) {
+
+          modelo =
+            siguiente;
+        }
       }
     }
 
 
+    // ===================================
     // SERIE
+    // ===================================
 
     if (!serie) {
 
-      const coincidenciaSerie =
-        lineaNormalizada.match(
-          /\b(?:S\/N|SN|SERIAL|SERIAL\s*NO|SERIAL\s*NUMBER|SERIE)\b[\s.:#-]*(.+)$/i
+      let coincidencia =
+        linea.match(
+          /(?:SERIAL\s*NUMBER|SERIAL\s*NO|SERIAL|S\/N|SN|SERIE)\s*[:.#-]?\s*([A-Z0-9][A-Z0-9._\/-]{4,})/i
         );
 
 
       if (
-        coincidenciaSerie &&
-        coincidenciaSerie[1]
+        coincidencia &&
+        coincidencia[1]
       ) {
 
         serie =
-          limpiarValorOCR(
-            coincidenciaSerie[1]
-          );
+          coincidencia[1];
       }
-    }
 
 
-    if (
-      modelo &&
-      serie
-    ) {
+      // Puede ocurrir:
+      //
+      // SERIAL NUMBER
+      // UK82124000064
 
-      break;
+      else if (
+        /SERIAL|SERIE|S\/N/i.test(
+          linea
+        )
+      ) {
+
+        const siguiente =
+          lineas[i + 1];
+
+
+        if (
+          siguiente &&
+          /^[A-Z0-9._\/-]{5,}$/i.test(
+            siguiente
+          )
+        ) {
+
+          serie =
+            siguiente;
+        }
+      }
     }
   }
 
 
   // =====================================
-  // LIMPIEZA FINAL
+  // LIMPIEZA
   // =====================================
 
   modelo =
@@ -657,7 +914,7 @@ function extraerDatosEtiqueta(
 
 
 // ========================================
-// LIMPIAR MODELO / SERIE
+// LIMPIAR DATO
 // ========================================
 
 function limpiarDatoDetectado(
@@ -669,34 +926,20 @@ function limpiarDatoDetectado(
   }
 
 
-  let limpio =
-    valor.trim();
-
-
-  // Quitar caracteres comunes
-  // que OCR puede colocar al final
-
-  limpio =
-    limpio.replace(
-      /[|;,]+$/g,
+  return valor
+    .trim()
+    .replace(
+      /^[=:;#\s-]+/,
       ""
-    );
-
-
-  // Limitar textos absurdamente largos
-
-  if (limpio.length > 60) {
-
-    limpio =
-      limpio.substring(
-        0,
-        60
-      );
-  }
-
-
-  return limpio.trim();
+    )
+    .replace(
+      /[|,;]+$/,
+      ""
+    )
+    .trim();
 }
+
+
 
 
 // ========================================
