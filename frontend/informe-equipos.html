@@ -10,31 +10,189 @@
     content="width=device-width, initial-scale=1.0"
   >
 
-  <title>Informe de Equipos | TechAssist</title>
+  <title>
+    Informe de Equipos | TechAssist
+  </title>
 
+  <!-- Bootstrap -->
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     rel="stylesheet"
   >
 
+  <!-- Bootstrap Icons -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
   >
 
-  <link
-    rel="stylesheet"
-    href="./css/dashboard.css"
-  >
+  <style>
+
+    body {
+      background-color: #f5f6f8;
+    }
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: #111827;
+      color: white;
+      overflow-y: auto;
+      z-index: 1040;
+      transition: all .3s ease;
+    }
+
+    .sidebar-header {
+      padding: 24px 20px;
+      border-bottom:
+        1px solid rgba(255,255,255,.1);
+    }
+
+    .sidebar-header h4 {
+      margin: 0;
+      font-weight: 700;
+    }
+
+    .sidebar-header small {
+      color: #9ca3af;
+    }
+
+    .sidebar-menu {
+      padding: 18px 12px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin-bottom: 5px;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #d1d5db;
+      transition: all .2s ease;
+    }
+
+    .menu-item:hover {
+      background: #1f2937;
+      color: white;
+    }
+
+    .menu-item.active {
+      background: #0d6efd;
+      color: white;
+    }
+
+    .menu-item i {
+      font-size: 1.1rem;
+    }
+
+    /* =========================
+       CONTENIDO
+    ========================= */
+
+    .main-content {
+      margin-left: 260px;
+      min-height: 100vh;
+      transition: all .3s ease;
+    }
+
+    .topbar {
+      background: white;
+      padding: 16px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1030;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .card {
+      border: 0;
+      border-radius: 14px;
+      box-shadow:
+        0 2px 8px rgba(0,0,0,.06);
+    }
+
+    .card-header {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 600;
+      padding: 18px 20px;
+    }
+
+    .preview-foto {
+      max-height: 280px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .miniatura-equipo {
+      width: 80px;
+      height: 65px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+    }
+
+    .preview-envio {
+      max-height: 350px;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .resumen-cantidad {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .total-equipos {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 991.98px) {
+
+      .sidebar {
+        left: -260px;
+      }
+
+      .sidebar.show {
+        left: 0;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+    }
+
+  </style>
 
 </head>
 
 <body>
 
-
-  <!-- ====================================== -->
-  <!-- MENÚ LATERAL -->
-  <!-- ====================================== -->
+  <!-- =========================
+       SIDEBAR
+  ========================== -->
 
   <aside
     class="sidebar"
@@ -42,27 +200,36 @@
   >
 
     <div class="sidebar-header">
-      <h2>TechAssist</h2>
+
+      <h4>
+        <i class="bi bi-tools me-2"></i>
+        TechAssist
+      </h4>
+
+      <small>
+        Gestión Técnica
+      </small>
+
     </div>
 
 
-    <nav class="sidebar-menu">
+    <div class="sidebar-menu">
 
       <a
         href="./dashboard.html"
         class="menu-item"
       >
-        <i class="bi bi-house-door"></i>
-        <span>Inicio</span>
+        <i class="bi bi-speedometer2"></i>
+        Dashboard
       </a>
 
 
       <a
-        href="./registro-servicio.html"
+        href="./registro.html"
         class="menu-item"
       >
-        <i class="bi bi-clipboard-plus"></i>
-        <span>Nuevo servicio</span>
+        <i class="bi bi-plus-circle"></i>
+        Nuevo Servicio
       </a>
 
 
@@ -71,7 +238,7 @@
         class="menu-item"
       >
         <i class="bi bi-clock-history"></i>
-        <span>Horas extras</span>
+        Horas Extras
       </a>
 
 
@@ -79,8 +246,8 @@
         href="./liquidaciones.html"
         class="menu-item"
       >
-        <i class="bi bi-receipt"></i>
-        <span>Liquidaciones</span>
+        <i class="bi bi-cash-coin"></i>
+        Liquidaciones
       </a>
 
 
@@ -89,153 +256,139 @@
         class="menu-item"
       >
         <i class="bi bi-box-seam"></i>
-        <span>Petición de repuestos</span>
+        Petición de Repuesto
       </a>
 
 
-      <!-- NUEVO -->
       <a
         href="./informe-equipos.html"
         class="menu-item active"
       >
-        <i class="bi bi-camera"></i>
-        <span>Informe de equipos</span>
+        <i class="bi bi-truck"></i>
+        Informe de Equipos
       </a>
 
 
       <a
         href="./administrar-repuestos.html"
         class="menu-item d-none"
-        id="menuAdministrarRepuestos"
+        id="menuAdminRepuestos"
       >
-        <i class="bi bi-tools"></i>
-        <span>Administrar repuestos</span>
-      </a>
-
-
-      <a
-        href="#"
-        class="menu-item"
-      >
-        <i class="bi bi-file-earmark-bar-graph"></i>
-        <span>Reportes</span>
+        <i class="bi bi-gear"></i>
+        Administrar Repuestos
       </a>
 
 
       <a
         href="./usuarios.html"
         class="menu-item d-none"
-        id="menuAdministrarUsuarios"
+        id="menuAdminUsuarios"
       >
         <i class="bi bi-people"></i>
-        <span>Administrar usuarios</span>
+        Usuarios
       </a>
-
-
-      <a
-        href="#"
-        class="menu-item"
-      >
-        <i class="bi bi-person-circle"></i>
-        <span>Perfil</span>
-      </a>
-
-    </nav>
-
-
-    <div class="sidebar-footer">
-
-      <button
-        type="button"
-        class="btn btn-outline-light w-100"
-        id="btnCerrarSesion"
-      >
-        <i class="bi bi-box-arrow-left"></i>
-        Cerrar sesión
-      </button>
 
     </div>
 
   </aside>
 
 
-
-  <!-- ====================================== -->
-  <!-- CONTENIDO -->
-  <!-- ====================================== -->
+  <!-- =========================
+       CONTENIDO PRINCIPAL
+  ========================== -->
 
   <main class="main-content">
-
 
     <!-- TOPBAR -->
 
     <header class="topbar">
 
-      <button
-        type="button"
-        class="btn btn-light menu-button"
-        id="btnMenu"
-      >
-        <i class="bi bi-list"></i>
-      </button>
+      <div class="d-flex align-items-center">
+
+        <button
+          class="btn btn-outline-secondary d-lg-none me-3"
+          id="btnMenu"
+          type="button"
+        >
+          <i class="bi bi-list"></i>
+        </button>
 
 
-      <div>
+        <div>
 
-        <span class="text-secondary">
-          Técnico:
-        </span>
+          <h5 class="mb-0">
+            Informe de Equipos
+          </h5>
 
-        <strong id="nombreUsuario">
-          Usuario
-        </strong>
+          <small class="text-secondary">
+            Registro de equipos enviados a bodega
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="d-flex align-items-center gap-3">
+
+        <div class="text-end d-none d-sm-block">
+
+          <div
+            class="fw-semibold"
+            id="nombreUsuarioTop"
+          >
+            Usuario
+          </div>
+
+          <small
+            class="text-secondary"
+            id="rolUsuarioTop"
+          >
+            Técnico
+          </small>
+
+        </div>
+
+
+        <button
+          class="btn btn-outline-danger btn-sm"
+          id="btnCerrarSesion"
+          type="button"
+        >
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
 
       </div>
 
     </header>
 
 
+    <div class="content">
 
-    <section class="content">
+      <!-- =========================
+           INFORMACIÓN GENERAL
+      ========================== -->
 
+      <div class="card mb-4">
 
-      <!-- ENCABEZADO -->
+        <div class="card-header">
 
-      <div class="welcome-section">
+          <i class="bi bi-info-circle me-2"></i>
+          Información del envío
 
-        <h1>Informe de equipos</h1>
+        </div>
 
-        <p>
-          Registra los equipos enviados y genera
-          el informe fotográfico para bodega.
-        </p>
-
-      </div>
-
-
-
-      <!-- ====================================== -->
-      <!-- DATOS GENERALES -->
-      <!-- ====================================== -->
-
-      <div class="card mt-4">
 
         <div class="card-body">
 
-          <h5 class="card-title mb-4">
-
-            <i class="bi bi-info-circle me-2"></i>
-            Datos del informe
-
-          </h5>
-
-
           <div class="row g-3">
 
+            <div class="col-md-4">
 
-            <div class="col-12 col-md-4">
-
-              <label class="form-label">
+              <label
+                class="form-label"
+                for="fechaInforme"
+              >
                 Fecha
               </label>
 
@@ -248,9 +401,12 @@
             </div>
 
 
-            <div class="col-12 col-md-4">
+            <div class="col-md-4">
 
-              <label class="form-label">
+              <label
+                class="form-label"
+                for="nombreTecnico"
+              >
                 Técnico
               </label>
 
@@ -264,9 +420,12 @@
             </div>
 
 
-            <div class="col-12 col-md-4">
+            <div class="col-md-4">
 
-              <label class="form-label">
+              <label
+                class="form-label"
+                for="bodegaTecnico"
+              >
                 Bodega
               </label>
 
@@ -279,7 +438,6 @@
 
             </div>
 
-
           </div>
 
         </div>
@@ -287,44 +445,34 @@
       </div>
 
 
+      <!-- =========================
+           AGREGAR EQUIPO
+      ========================== -->
 
-      <!-- ====================================== -->
-      <!-- FOTOGRAFÍA DEL EQUIPO -->
-      <!-- ====================================== -->
+      <div class="card mb-4">
 
-      <div class="card mt-4">
+        <div class="card-header">
+
+          <i class="bi bi-plus-circle me-2"></i>
+          Agregar equipo
+
+        </div>
+
 
         <div class="card-body">
 
-          <h5 class="card-title">
-
-            <i class="bi bi-camera me-2"></i>
-            Registrar equipo
-
-          </h5>
-
-
-          <p class="text-secondary">
-
-            Toma una fotografía clara de la etiqueta
-            donde aparezcan el modelo y número de serie.
-
-          </p>
-
-
-
           <div class="row g-3">
 
+            <!-- TIPO -->
 
-            <!-- TIPO EQUIPO -->
-
-            <div class="col-12 col-md-6">
+            <div class="col-md-6">
 
               <label
-                for="tipoEquipo"
                 class="form-label"
+                for="tipoEquipo"
               >
-                Tipo de equipo *
+                Tipo de equipo
+                <span class="text-danger">*</span>
               </label>
 
               <select
@@ -333,7 +481,7 @@
               >
 
                 <option value="">
-                  Seleccionar
+                  Seleccione...
                 </option>
 
                 <option value="Monitor">
@@ -344,8 +492,12 @@
                   HHC
                 </option>
 
-                <option value="POS">
-                  POS
+                <option value="Teclado">
+                  Teclado
+                </option>
+
+                <option value="Mouse">
+                  Mouse
                 </option>
 
                 <option value="Impresora">
@@ -354,6 +506,14 @@
 
                 <option value="UPS">
                   UPS
+                </option>
+
+                <option value="CPU">
+                  CPU
+                </option>
+
+                <option value="Scanner">
+                  Scanner
                 </option>
 
                 <option value="Otro">
@@ -365,16 +525,41 @@
             </div>
 
 
+            <!-- OTRO TIPO -->
+
+            <div
+              class="col-md-6 d-none"
+              id="contenedorOtroTipo"
+            >
+
+              <label
+                class="form-label"
+                for="otroTipoEquipo"
+              >
+                Especifique el equipo
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="otroTipoEquipo"
+                placeholder="Ej. Router"
+              >
+
+            </div>
+
 
             <!-- FOTO -->
 
-            <div class="col-12 col-md-6">
+            <div class="col-12">
 
               <label
-                for="fotoEquipo"
                 class="form-label"
+                for="fotoEquipo"
               >
-                Fotografía de etiqueta *
+                Fotografía del equipo
+                <span class="text-danger">*</span>
               </label>
 
               <input
@@ -385,209 +570,99 @@
                 capture="environment"
               >
 
-            </div>
-
-
-
-            <!-- VISTA PREVIA -->
-
-            <!-- VISTA PREVIA -->
-
-<div
-  class="col-12 d-none"
-  id="contenedorFoto"
->
-
-  <div class="border rounded p-3 text-center">
-
-    <img
-      id="vistaFoto"
-      class="img-fluid"
-      style="max-height: 350px;"
-      alt="Fotografía del equipo"
-    >
-
-    <div class="mt-3">
-
-      <button
-        type="button"
-        class="btn btn-outline-primary"
-        id="btnAnalizarFoto"
-      >
-        <i class="bi bi-search me-1"></i>
-        Detectar modelo y serie
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-<!-- ESTADO DEL OCR -->
-
-<div
-  class="col-12 d-none"
-  id="estadoOCR"
->
-
-  <div class="alert alert-info mb-0">
-
-    <div
-      class="d-flex align-items-center gap-2"
-    >
-
-      <div
-        class="spinner-border spinner-border-sm"
-        role="status"
-      ></div>
-
-      <div>
-
-        <strong>
-          Analizando etiqueta...
-        </strong>
-
-        <div
-          class="small"
-          id="textoEstadoOCR"
-        >
-          Preparando reconocimiento.
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div
-      class="progress mt-2"
-      style="height: 6px;"
-    >
-
-      <div
-        id="progresoOCR"
-        class="progress-bar"
-        style="width: 0%;"
-      ></div>
-
-    </div>
-
-  </div>
-
-</div>
-<!-- VISTA PREVIA DE IMAGEN PROCESADA PARA OCR -->
-<div
-  class="col-12 d-none"
-  id="contenedorImagenOCR"
->
-  <div class="card bg-light border">
-
-    <div class="card-body">
-
-      <div
-        class="d-flex justify-content-between align-items-center mb-2"
-      >
-        <strong>
-          Imagen procesada para reconocimiento
-        </strong>
-
-        <span class="badge text-bg-secondary">
-          Diagnóstico OCR
-        </span>
-      </div>
-
-      <p class="small text-secondary">
-        Esta es exactamente la imagen que TechAssist
-        enviará al reconocimiento de texto.
-      </p>
-
-      <div class="text-center">
-
-        <img
-          id="vistaImagenOCR"
-          class="img-fluid border rounded bg-white"
-          style="max-height: 400px;"
-          alt="Imagen procesada para OCR"
-        >
-
-      </div>
-
-    </div>
-
-  </div>
-</div>
-
-
-
-            <!-- MODELO -->
-
-            <div class="col-12 col-md-6">
-
-              <label
-                for="modeloEquipo"
-                class="form-label"
-              >
-                Modelo *
-              </label>
-
-              <input
-                type="text"
-                class="form-control"
-                id="modeloEquipo"
-                placeholder="Se completará al analizar la fotografía"
-              >
+              <div class="form-text">
+                Puedes tomar la fotografía directamente
+                desde el teléfono o seleccionar una imagen.
+              </div>
 
             </div>
 
 
+            <!-- PREVIEW -->
 
-            <!-- SERIE -->
-
-            <div class="col-12 col-md-6">
-
-              <label
-                for="serieEquipo"
-                class="form-label"
-              >
-                Número de serie *
-              </label>
-
-              <input
-                type="text"
-                class="form-control"
-                id="serieEquipo"
-                placeholder="Se completará al analizar la fotografía"
-              >
-
-            </div>
-
-
-
-            <!-- BOTÓN -->
-
-            <div class="col-12">
+            <div
+              class="col-12 d-none"
+              id="contenedorVistaFoto"
+            >
 
               <div
-                class="d-flex justify-content-end"
+                class="border rounded p-3 text-center bg-light"
               >
 
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  id="btnAgregarEquipo"
+                <img
+                  id="vistaFoto"
+                  class="preview-foto"
+                  alt="Vista previa del equipo"
                 >
-
-                  <i class="bi bi-plus-circle me-1"></i>
-                  Agregar equipo
-
-                </button>
 
               </div>
 
             </div>
 
 
+            <!-- MODELO -->
+
+            <div class="col-md-6">
+
+              <label
+                class="form-label"
+                for="modeloEquipo"
+              >
+                Modelo
+                <span class="text-secondary">
+                  (opcional)
+                </span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="modeloEquipo"
+                placeholder="Ej. 278M1R/00"
+              >
+
+            </div>
+
+
+            <!-- SERIE -->
+
+            <div class="col-md-6">
+
+              <label
+                class="form-label"
+                for="serieEquipo"
+              >
+                Número de serie
+                <span class="text-secondary">
+                  (opcional)
+                </span>
+              </label>
+
+              <input
+                type="text"
+                class="form-control"
+                id="serieEquipo"
+                placeholder="Ej. UK82124000064"
+              >
+
+            </div>
+
+
+            <div class="col-12">
+
+              <button
+                type="button"
+                class="btn btn-primary"
+                id="btnAgregarEquipo"
+              >
+
+                <i class="bi bi-plus-circle me-1"></i>
+                Agregar equipo
+
+              </button>
+
+            </div>
+
           </div>
 
         </div>
@@ -595,41 +670,62 @@
       </div>
 
 
+      <!-- =========================
+           EQUIPOS AGREGADOS
+      ========================== -->
 
-      <!-- ====================================== -->
-      <!-- EQUIPOS REGISTRADOS -->
-      <!-- ====================================== -->
+      <div class="card mb-4">
 
-      <div class="card mt-4">
-
-        <div class="card-body">
+        <div class="card-header">
 
           <div
-            class="d-flex justify-content-between align-items-center mb-3"
+            class="d-flex justify-content-between align-items-center"
           >
 
-            <h5 class="card-title mb-0">
+            <span>
 
               <i class="bi bi-list-check me-2"></i>
-              Equipos registrados
+              Equipos agregados
 
-            </h5>
+            </span>
 
 
             <span
-              class="badge text-bg-primary fs-6"
-              id="cantidadRegistrados"
+              class="badge text-bg-primary"
+              id="badgeTotalEquipos"
             >
-              0
+              0 equipos
             </span>
 
           </div>
 
+        </div>
 
-          <div class="table-responsive">
+
+        <div class="card-body">
+
+          <div
+            class="alert alert-light border text-center mb-0"
+            id="mensajeSinEquipos"
+          >
+
+            <i
+              class="bi bi-inbox d-block mb-2"
+              style="font-size: 2rem;"
+            ></i>
+
+            Todavía no has agregado equipos.
+
+          </div>
+
+
+          <div
+            class="table-responsive d-none"
+            id="contenedorTablaEquipos"
+          >
 
             <table
-              class="table table-hover align-middle"
+              class="table table-hover align-middle mb-0"
             >
 
               <thead>
@@ -637,11 +733,22 @@
                 <tr>
 
                   <th>#</th>
-                  <th>Tipo</th>
+
+                  <th>Fotografía</th>
+
+                  <th>
+                    Tipo de equipo
+                  </th>
+
                   <th>Modelo</th>
-                  <th>Serie</th>
-                  <th>Foto</th>
-                  <th>Acción</th>
+
+                  <th>
+                    Número de serie
+                  </th>
+
+                  <th class="text-center">
+                    Acción
+                  </th>
 
                 </tr>
 
@@ -649,18 +756,6 @@
 
 
               <tbody id="tablaEquipos">
-
-                <tr id="filaSinEquipos">
-
-                  <td
-                    colspan="6"
-                    class="text-center text-secondary py-4"
-                  >
-                    Todavía no has agregado equipos.
-                  </td>
-
-                </tr>
-
               </tbody>
 
             </table>
@@ -672,75 +767,94 @@
       </div>
 
 
+      <!-- =========================
+           INFORME GENERAL
+      ========================== -->
 
-      <!-- ====================================== -->
-      <!-- INFORME GENERAL -->
-      <!-- ====================================== -->
+      <div class="card mb-4">
 
-      <div class="card mt-4">
+        <div class="card-header">
+
+          <i class="bi bi-bar-chart me-2"></i>
+          Informe general automático
+
+        </div>
+
 
         <div class="card-body">
 
-          <h5 class="card-title">
-
-            <i class="bi bi-boxes me-2"></i>
-            Informe general
-
-          </h5>
-
-
           <p class="text-secondary">
 
-            Ingresa la cantidad total enviada
-            de cada tipo de equipo.
+            Las cantidades se calculan automáticamente
+            según los equipos que vayas agregando.
 
           </p>
 
 
           <div
-            id="contenedorResumen"
-            class="row g-3"
+            class="alert alert-light border text-center"
+            id="mensajeResumenVacio"
           >
 
-            <!-- FILAS GENERADAS POR JS -->
+            El resumen aparecerá cuando agregues
+            el primer equipo.
 
           </div>
-
-
-          <div class="mt-3">
-
-            <button
-              type="button"
-              class="btn btn-outline-primary"
-              id="btnAgregarTipo"
-            >
-
-              <i class="bi bi-plus-lg me-1"></i>
-              Agregar tipo de equipo
-
-            </button>
-
-          </div>
-
-
-
-          <hr class="my-4">
 
 
           <div
-            class="d-flex justify-content-between align-items-center"
+            class="table-responsive d-none"
+            id="contenedorResumen"
           >
 
-            <h5 class="mb-0">
-              Total de equipos enviados
-            </h5>
-
-            <span
-              class="badge text-bg-primary fs-5"
-              id="totalEquipos"
+            <table
+              class="table table-bordered align-middle"
             >
-              0
-            </span>
+
+              <thead class="table-light">
+
+                <tr>
+
+                  <th>
+                    Tipo de equipo
+                  </th>
+
+                  <th
+                    class="text-center"
+                    style="width: 180px;"
+                  >
+                    Cantidad
+                  </th>
+
+                </tr>
+
+              </thead>
+
+
+              <tbody id="tablaResumen">
+              </tbody>
+
+
+              <tfoot>
+
+                <tr>
+
+                  <th>
+                    TOTAL DE EQUIPOS
+                  </th>
+
+                  <th
+                    class="text-center total-equipos"
+                    id="totalEquipos"
+                  >
+                    0
+                  </th>
+
+                </tr>
+
+              </tfoot>
+
+            </table>
 
           </div>
 
@@ -749,47 +863,180 @@
       </div>
 
 
+      <!-- =========================
+           EVIDENCIAS DEL ENVÍO
+      ========================== -->
 
-      <!-- ====================================== -->
-      <!-- GENERAR INFORME -->
-      <!-- ====================================== -->
+      <div class="card mb-4">
 
-      <div
-        class="d-flex justify-content-end my-4"
-      >
+        <div class="card-header">
 
-        <button
-          type="button"
-          class="btn btn-success btn-lg"
-          id="btnGenerarInforme"
-          disabled
-        >
+          <i class="bi bi-images me-2"></i>
+          Evidencias del envío
 
-          <i class="bi bi-file-earmark-pdf me-2"></i>
-          Generar PDF
+        </div>
 
-        </button>
+
+        <div class="card-body">
+
+          <div class="row g-4">
+
+            <!-- GUÍA -->
+
+            <div class="col-lg-6">
+
+              <label
+                class="form-label"
+                for="fotoGuiaEnvio"
+              >
+                Imagen de la guía de envío
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="file"
+                class="form-control"
+                id="fotoGuiaEnvio"
+                accept="image/*"
+                capture="environment"
+              >
+
+              <div class="form-text">
+                Fotografía de la guía con la que
+                se enviarán los equipos.
+              </div>
+
+
+              <div
+                class="border rounded p-3 text-center bg-light mt-3 d-none"
+                id="contenedorFotoGuia"
+              >
+
+                <img
+                  id="vistaFotoGuia"
+                  class="preview-envio"
+                  alt="Guía de envío"
+                >
+
+              </div>
+
+            </div>
+
+
+            <!-- FOTO GENERAL -->
+
+            <div class="col-lg-6">
+
+              <label
+                class="form-label"
+                for="fotoGeneralEnvio"
+              >
+                Imagen general del envío
+                <span class="text-danger">*</span>
+              </label>
+
+              <input
+                type="file"
+                class="form-control"
+                id="fotoGeneralEnvio"
+                accept="image/*"
+                capture="environment"
+              >
+
+              <div class="form-text">
+                Fotografía general de las cajas o
+                equipos preparados para el envío.
+              </div>
+
+
+              <div
+                class="border rounded p-3 text-center bg-light mt-3 d-none"
+                id="contenedorFotoGeneral"
+              >
+
+                <img
+                  id="vistaFotoGeneral"
+                  class="preview-envio"
+                  alt="Fotografía general del envío"
+                >
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
 
       </div>
 
 
-    </section>
+      <!-- =========================
+           GENERAR INFORME
+      ========================== -->
+
+      <div class="card mb-4">
+
+        <div class="card-body">
+
+          <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3"
+          >
+
+            <div>
+
+              <h5 class="mb-1">
+                Generar informe
+              </h5>
+
+              <p class="text-secondary mb-0">
+
+                El PDF incluirá los equipos,
+                fotografías, guía, evidencia general
+                y el resumen automático.
+
+              </p>
+
+            </div>
+
+
+            <button
+              type="button"
+              class="btn btn-danger btn-lg"
+              id="btnGenerarPDF"
+            >
+
+              <i class="bi bi-file-earmark-pdf me-1"></i>
+              Generar PDF
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </main>
 
 
+  <!-- Bootstrap -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
 
- <script
-  src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
-></script>
+  <!-- SweetAlert2 -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+  ></script>
 
-<!-- OCR -->
-<script
-  src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"
-></script>
+  <!-- Configuración API -->
+  <script src="./js/config.js"></script>
 
-<script src="./js/config.js"></script>
-<script src="./js/informe-equipos.js"></script>
+  <!-- Informe -->
+  <script src="./js/informe-equipos.js"></script>
 
 </body>
 
