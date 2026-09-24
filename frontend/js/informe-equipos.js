@@ -1552,45 +1552,6 @@ btnGenerarPDF.addEventListener(
 
     }
 
-
-    if (!fotoGuiaActual) {
-
-      await Swal.fire({
-
-        icon: "warning",
-
-        title:
-          "Guía requerida",
-
-        text:
-          "Toma una foto o selecciona una imagen de la guía de envío."
-
-      });
-
-      return;
-
-    }
-
-
-    if (!fotoGeneralActual) {
-
-      await Swal.fire({
-
-        icon: "warning",
-
-        title:
-          "Fotografía requerida",
-
-        text:
-          "Agrega la fotografía general del envío."
-
-      });
-
-      return;
-
-    }
-
-
     if (
       !window.jspdf ||
       !window.jspdf.jsPDF
@@ -1851,103 +1812,108 @@ btnGenerarPDF.addEventListener(
       }
 
 
-      // =====================================
-      // GUÍA DE ENVÍO
-      // =====================================
-
-      pdf.addPage();
-
-      agregarEncabezadoPDF(
-        pdf
-      );
-
-      y = 43;
-
-
-      pdf.setFont(
-        "helvetica",
-        "bold"
-      );
-
-      pdf.setFontSize(13);
-
-      pdf.text(
-        "GUÍA DE ENVÍO",
-        18,
-        y
-      );
-
-      y += 8;
-
-
-      const dimensionesGuia =
-        await obtenerDimensionesImagen(
-          fotoGuiaActual,
-          170,
-          190
-        );
-
-
-      pdf.addImage(
-        fotoGuiaActual,
-        "JPEG",
-        20,
-        y,
-        dimensionesGuia.ancho,
-        dimensionesGuia.alto,
-        undefined,
-        "FAST"
-      );
-
 
       // =====================================
-      // EVIDENCIA GENERAL
+// GUÍA DE ENVÍO - OPCIONAL
+// =====================================
+
+if (fotoGuiaActual) {
+
+  pdf.addPage();
+
+  agregarEncabezadoPDF(
+    pdf
+  );
+
+  y = 43;
+
+  pdf.setFont(
+    "helvetica",
+    "bold"
+  );
+
+  pdf.setFontSize(13);
+
+  pdf.text(
+    "GUÍA DE ENVÍO",
+    18,
+    y
+  );
+
+  y += 8;
+
+
+  const dimensionesGuia =
+    await obtenerDimensionesImagen(
+      fotoGuiaActual,
+      170,
+      190
+    );
+
+
+  pdf.addImage(
+    fotoGuiaActual,
+    "JPEG",
+    20,
+    y,
+    dimensionesGuia.ancho,
+    dimensionesGuia.alto,
+    undefined,
+    "FAST"
+  );
+
+}
+
       // =====================================
+// EVIDENCIA GENERAL - OPCIONAL
+// =====================================
 
-      pdf.addPage();
+if (fotoGeneralActual) {
 
-      agregarEncabezadoPDF(
-        pdf
-      );
+  pdf.addPage();
 
-      y = 43;
+  agregarEncabezadoPDF(
+    pdf
+  );
 
+  y = 43;
 
-      pdf.setFont(
-        "helvetica",
-        "bold"
-      );
+  pdf.setFont(
+    "helvetica",
+    "bold"
+  );
 
-      pdf.setFontSize(13);
+  pdf.setFontSize(13);
 
+  pdf.text(
+    "EVIDENCIA GENERAL DEL ENVÍO",
+    18,
+    y
+  );
 
-      pdf.text(
-        "EVIDENCIA GENERAL DEL ENVÍO",
-        18,
-        y
-      );
-
-      y += 8;
-
-
-      const dimensionesGeneral =
-        await obtenerDimensionesImagen(
-          fotoGeneralActual,
-          170,
-          190
-        );
+  y += 8;
 
 
-      pdf.addImage(
-        fotoGeneralActual,
-        "JPEG",
-        20,
-        y,
-        dimensionesGeneral.ancho,
-        dimensionesGeneral.alto,
-        undefined,
-        "FAST"
-      );
+  const dimensionesGeneral =
+    await obtenerDimensionesImagen(
+      fotoGeneralActual,
+      170,
+      190
+    );
+
+
+  pdf.addImage(
+    fotoGeneralActual,
+    "JPEG",
+    20,
+    y,
+    dimensionesGeneral.ancho,
+    dimensionesGeneral.alto,
+    undefined,
+    "FAST"
+  );
+
+}
 
 
       // =====================================
