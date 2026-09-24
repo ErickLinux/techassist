@@ -1,31 +1,8 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-
-// ========================================
-// CONFIGURACIÓN DEL CORREO
-// ========================================
-
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_APP_PASSWORD
-  },
-
-  tls: {
-    servername: "smtp.gmail.com"
-  },
-
-  family: 4
-});
-
-
-// ========================================
-// ENVIAR CÓDIGO DE RECUPERACIÓN
-// ========================================
+const resend = new Resend(
+  process.env.RESEND_API_KEY
+);
 
 export const enviarCodigoRecuperacion = async ({
   correo,
@@ -33,12 +10,9 @@ export const enviarCodigoRecuperacion = async ({
   codigo
 }) => {
 
-  await transporter.sendMail({
-
-    from: `"TechAssist" <${process.env.EMAIL_USER}>`,
-
-    to: correo,
-
+  const { data, error } = await resend.emails.send({
+    from: "TechAssist <onboarding@resend.dev>",
+    to: [correo],
     subject:
       "Recuperación de contraseña - TechAssist",
 
@@ -47,95 +21,105 @@ export const enviarCodigoRecuperacion = async ({
         style="
           font-family: Arial, sans-serif;
           max-width: 600px;
-          margin: auto;
-          padding: 25px;
-          border: 1px solid #e5e5e5;
-          border-radius: 10px;
+          margin: 0 auto;
+          padding: 30px;
+          background: #f5f7fb;
         "
       >
 
-        <h2
-          style="
-            text-align: center;
-            margin-bottom: 25px;
-          "
-        >
-          TechAssist
-        </h2>
-
-
-        <h3>
-          Recuperación de contraseña
-        </h3>
-
-
-        <p>
-          Hola ${nombre || "usuario"},
-        </p>
-
-
-        <p>
-          Recibimos una solicitud para
-          restablecer la contraseña de tu
-          cuenta de TechAssist.
-        </p>
-
-
-        <p>
-          Tu código de verificación es:
-        </p>
-
-
         <div
           style="
-            font-size: 32px;
-            font-weight: bold;
-            letter-spacing: 8px;
-            text-align: center;
-            padding: 20px;
-            margin: 25px 0;
-            background: #f5f5f5;
-            border-radius: 8px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
           "
         >
-          ${codigo}
+
+          <h2
+            style="
+              margin-top: 0;
+              color: #212529;
+            "
+          >
+            TechAssist
+          </h2>
+
+          <h3>
+            Recuperación de contraseña
+          </h3>
+
+          <p>
+            Hola ${nombre},
+          </p>
+
+          <p>
+            Recibimos una solicitud para
+            restablecer tu contraseña de
+            TechAssist.
+          </p>
+
+          <p>
+            Tu código de recuperación es:
+          </p>
+
+          <div
+            style="
+              font-size: 32px;
+              font-weight: bold;
+              letter-spacing: 8px;
+              text-align: center;
+              padding: 20px;
+              margin: 20px 0;
+              background: #f1f3f5;
+              border-radius: 8px;
+            "
+          >
+            ${codigo}
+          </div>
+
+          <p>
+            Este código tiene una validez
+            de <strong>10 minutos</strong>.
+          </p>
+
+          <p>
+            Si no solicitaste este cambio,
+            puedes ignorar este correo.
+          </p>
+
+          <hr
+            style="
+              border: 0;
+              border-top: 1px solid #ddd;
+              margin: 25px 0;
+            "
+          >
+
+          <small style="color: #6c757d;">
+            TechAssist
+          </small>
+
         </div>
-
-
-        <p>
-          Este código vencerá en
-          <strong>10 minutos</strong>.
-        </p>
-
-
-        <p>
-          Si no solicitaste este cambio,
-          puedes ignorar este correo.
-        </p>
-
-
-        <hr
-          style="
-            margin-top: 30px;
-            border: none;
-            border-top: 1px solid #e5e5e5;
-          "
-        >
-
-
-        <p
-          style="
-            color: #777;
-            font-size: 13px;
-            text-align: center;
-          "
-        >
-          TechAssist
-        </p>
 
       </div>
     `
-
   });
 
+  if (error) {
+    console.error(
+      "Error enviando correo con Resend:",
+      error
+    );
+
+    throw new Error(
+      "No fue posible enviar el correo de recuperación"
+    );
+  }
+
+  console.log(
+    "Correo de recuperación enviado:",
+    data?.id
+  );
+
+  return data;
 };
