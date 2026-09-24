@@ -77,6 +77,15 @@ const progresoOCR =
   document.getElementById(
     "progresoOCR"
   );
+  const contenedorImagenOCR =
+  document.getElementById(
+    "contenedorImagenOCR"
+  );
+
+const vistaImagenOCR =
+  document.getElementById(
+    "vistaImagenOCR"
+  );
 
 const modeloEquipo =
   document.getElementById("modeloEquipo");
@@ -245,6 +254,13 @@ fotoEquipo.addEventListener(
 
     const archivo =
       fotoEquipo.files[0];
+      contenedorImagenOCR.classList.add(
+  "d-none"
+);
+
+vistaImagenOCR.removeAttribute(
+  "src"
+);
 
     if (!archivo) {
 
@@ -538,13 +554,17 @@ function prepararImagenOCR(
 
       try {
 
-        const canvas =
+        // =====================================
+        // CANVAS ORIGINAL
+        // =====================================
+
+        const canvasOriginal =
           document.createElement(
             "canvas"
           );
 
-        const contexto =
-          canvas.getContext(
+        const ctxOriginal =
+          canvasOriginal.getContext(
             "2d",
             {
               willReadFrequently: true
@@ -552,97 +572,321 @@ function prepararImagenOCR(
           );
 
 
-        // =====================================
-        // AUMENTAR RESOLUCIÓN
-        // =====================================
+        canvasOriginal.width =
+          imagen.naturalWidth;
 
-        let escala = 2;
-
-
-        // Evitar imágenes exageradamente grandes
-
-        if (
-          imagen.naturalWidth >
-          2000
-        ) {
-
-          escala = 1.5;
-        }
+        canvasOriginal.height =
+          imagen.naturalHeight;
 
 
-        canvas.width =
-          imagen.naturalWidth *
-          escala;
-
-        canvas.height =
-          imagen.naturalHeight *
-          escala;
-
-
-        contexto.drawImage(
+        ctxOriginal.drawImage(
           imagen,
           0,
-          0,
-          canvas.width,
-          canvas.height
+          0
         );
 
 
+        const ancho =
+          canvasOriginal.width;
+
+        const alto =
+          canvasOriginal.height;
+
+
         // =====================================
-        // OBTENER PIXELES
+        // BUSCAR ZONA CLARA
         // =====================================
 
-        const datosImagen =
-          contexto.getImageData(
+        const datosOriginales =
+          ctxOriginal.getImageData(
             0,
             0,
-            canvas.width,
-            canvas.height
+            ancho,
+            alto
           );
 
 
         const pixeles =
-          datosImagen.data;
+          datosOriginales.data;
+
+
+        let minX = ancho;
+        let minY = alto;
+
+        let maxX = 0;
+        let maxY = 0;
+
+        let encontrados = 0;
+
+
+        // Analizamos bloques en vez de
+        // cada píxel para mejorar rendimiento.
+
+        const salto = 4;
+
+
+        for (
+          let y = 0;
+          y < alto;
+          y += salto
+        ) {
+
+          for (
+            let x = 0;
+            x < ancho;
+            x += salto
+          ) {
+
+            const indice =
+              (
+                y * ancho +
+                x
+              ) * 4;
+
+
+            const r =
+              pixeles[indice];
+
+            const g =
+              pixeles[indice + 1];
+
+            const b =
+              pixeles[indice + 2];
+
+
+            const brillo =
+              (
+                r +
+                g +
+                b
+              ) / 3;
+
+
+            // Buscamos zonas bastante claras.
+            // La etiqueta del ejemplo tiene
+            // fondo blanco/gris claro.
+
+            if (brillo > 165) {
+
+              minX =
+                Math.min(
+                  minX,
+                  x
+                );
+
+              minY =
+                Math.min(
+                  minY,
+                  y
+                );
+
+              maxX =
+                Math.max(
+                  maxX,
+                  x
+                );
+
+              maxY =
+                Math.max(
+                  maxY,
+                  y
+                );
+
+              encontrados++;
+            }
+          }
+        }
 
 
         // =====================================
-        // ESCALA DE GRISES + CONTRASTE
+        // DEFINIR RECORTE
         // =====================================
+
+        let recorteX = 0;
+        let recorteY = 0;
+
+        let recorteAncho =
+          ancho;
+
+        let recorteAlto =
+          alto;
+
+
+        if (
+          encontrados > 50 &&
+          maxX > minX &&
+          maxY > minY
+        ) {
+
+          // Margen alrededor de la zona
+          // detectada.
+
+          const margenX =
+            Math.round(
+              ancho * 0.025
+            );
+
+          const margenY =
+            Math.round(
+              alto * 0.04
+            );
+
+
+          recorteX =
+            Math.max(
+              0,
+              minX - margenX
+            );
+
+          recorteY =
+            Math.max(
+              0,
+              minY - margenY
+            );
+
+
+          const limiteX =
+            Math.min(
+              ancho,
+              maxX + margenX
+            );
+
+          const limiteY =
+            Math.min(
+              alto,
+              maxY + margenY
+            );
+
+
+          recorteAncho =
+            limiteX -
+            recorteX;
+
+          recorteAlto =
+            limiteY -
+            recorteY;
+        }
+
+
+        console.log(
+          "RECORTE OCR:",
+          {
+            x: recorteX,
+            y: recorteY,
+            ancho: recorteAncho,
+            alto: recorteAlto
+          }
+        );
+
+
+        // =====================================
+        // AMPLIAR RECORTE
+        // =====================================
+
+        const escala = 3;
+
+
+        const canvasOCR =
+          document.createElement(
+            "canvas"
+          );
+
+
+        canvasOCR.width =
+          Math.round(
+            recorteAncho *
+            escala
+          );
+
+        canvasOCR.height =
+          Math.round(
+            recorteAlto *
+            escala
+          );
+
+
+        const ctxOCR =
+          canvasOCR.getContext(
+            "2d",
+            {
+              willReadFrequently: true
+            }
+          );
+
+
+        // Suavizado al ampliar
+
+        ctxOCR.imageSmoothingEnabled =
+          true;
+
+        ctxOCR.imageSmoothingQuality =
+          "high";
+
+
+        ctxOCR.drawImage(
+          canvasOriginal,
+
+          recorteX,
+          recorteY,
+          recorteAncho,
+          recorteAlto,
+
+          0,
+          0,
+          canvasOCR.width,
+          canvasOCR.height
+        );
+
+
+        // =====================================
+        // ESCALA DE GRISES
+        // =====================================
+
+        const datosOCR =
+          ctxOCR.getImageData(
+            0,
+            0,
+            canvasOCR.width,
+            canvasOCR.height
+          );
+
+
+        const pixelesOCR =
+          datosOCR.data;
+
 
         for (
           let i = 0;
-          i < pixeles.length;
+          i < pixelesOCR.length;
           i += 4
         ) {
 
-          const rojo =
-            pixeles[i];
+          const r =
+            pixelesOCR[i];
 
-          const verde =
-            pixeles[i + 1];
+          const g =
+            pixelesOCR[i + 1];
 
-          const azul =
-            pixeles[i + 2];
+          const b =
+            pixelesOCR[i + 2];
 
-
-          // Conversión ponderada a gris
 
           let gris =
             (
-              rojo * 0.299 +
-              verde * 0.587 +
-              azul * 0.114
+              r * 0.299 +
+              g * 0.587 +
+              b * 0.114
             );
 
 
           // =================================
-          // CONTRASTE
+          // AUMENTAR CONTRASTE
           // =================================
 
           gris =
             (
               (gris - 128) *
-              1.8
+              1.7
             ) + 128;
 
 
@@ -656,33 +900,48 @@ function prepararImagenOCR(
             );
 
 
-          pixeles[i] =
+          pixelesOCR[i] =
             gris;
 
-          pixeles[i + 1] =
+          pixelesOCR[i + 1] =
             gris;
 
-          pixeles[i + 2] =
+          pixelesOCR[i + 2] =
             gris;
         }
 
 
-        contexto.putImageData(
-          datosImagen,
+        ctxOCR.putImageData(
+          datosOCR,
           0,
           0
         );
 
 
         // =====================================
-        // DEVOLVER IMAGEN PROCESADA
+        // GENERAR IMAGEN
         // =====================================
 
+        const imagenProcesada =
+          canvasOCR.toDataURL(
+            "image/png"
+          );
+
+
+        // Mostrar exactamente lo que
+        // recibirá Tesseract.
+
+        vistaImagenOCR.src =
+          imagenProcesada;
+
+        contenedorImagenOCR
+          .classList.remove(
+            "d-none"
+          );
+
+
         resolve(
-          canvas.toDataURL(
-            "image/jpeg",
-            0.95
-          )
+          imagenProcesada
         );
 
 
