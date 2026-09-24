@@ -1,6 +1,8 @@
 import {
   crearUsuario,
-  iniciarSesion
+  iniciarSesion,
+  obtenerPerfilUsuario,
+  cambiarPasswordUsuario
 } from "../services/usuarioService.js";
 
 export const registrarUsuario = async (req, res) => {
@@ -41,9 +43,80 @@ export const loginUsuario = async (req, res) => {
     });
   }
 };
+// ========================================
+// OBTENER PERFIL
+// ========================================
+
 export const obtenerPerfil = async (req, res) => {
-  return res.status(200).json({
-    mensaje: "Acceso autorizado",
-    usuarioToken: req.usuario
-  });
+
+  try {
+
+    const usuario = await obtenerPerfilUsuario(
+      req.usuario.id
+    );
+
+    return res.status(200).json({
+      usuario
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Error al obtener perfil:",
+      error
+    );
+
+    return res.status(
+      error.statusCode || 500
+    ).json({
+
+      mensaje:
+        error.statusCode
+          ? error.message
+          : "Error interno al obtener el perfil"
+
+    });
+
+  }
+
+};
+
+// ========================================
+// CAMBIAR CONTRASEÑA
+// ========================================
+
+export const cambiarPassword = async (req, res) => {
+
+  try {
+
+    const resultado =
+      await cambiarPasswordUsuario(
+        req.usuario.id,
+        req.body
+      );
+
+    return res.status(200).json({
+      mensaje: resultado.mensaje
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Error al cambiar contraseña:",
+      error
+    );
+
+    return res.status(
+      error.statusCode || 500
+    ).json({
+
+      mensaje:
+        error.statusCode
+          ? error.message
+          : "Error interno al cambiar la contraseña"
+
+    });
+
+  }
+
 };

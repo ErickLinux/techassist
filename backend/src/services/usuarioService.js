@@ -134,3 +134,169 @@ const token = jwt.sign(
   }
 };
 };
+
+// ========================================
+// OBTENER PERFIL DEL USUARIO
+// ========================================
+
+export const obtenerPerfilUsuario = async (usuarioId) => {
+
+  const usuario = await prisma.usuario.findUnique({
+    where: {
+      id: usuarioId
+    },
+
+    select: {
+      id: true,
+      nombre: true,
+      correo: true,
+      bodega: true,
+      rol: true,
+      activo: true,
+      fechaRegistro: true
+    }
+  });
+
+
+  if (!usuario) {
+
+    const error = new Error(
+      "Usuario no encontrado"
+    );
+
+    error.statusCode = 404;
+
+    throw error;
+  }
+
+
+  return usuario;
+};
+
+
+// ========================================
+// CAMBIAR CONTRASEÑA
+// ========================================
+
+export const cambiarPasswordUsuario = async (
+  usuarioId,
+  {
+    passwordActual,
+    passwordNueva
+  }
+) => {
+
+  // Validar campos
+
+  if (!passwordActual || !passwordNueva) {
+
+    const error = new Error(
+      "La contraseña actual y la nueva contraseña son obligatorias"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // Validar longitud
+
+  if (passwordNueva.length < 6) {
+
+    const error = new Error(
+      "La nueva contraseña debe contener al menos 6 caracteres"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // Buscar usuario
+
+  const usuario = await prisma.usuario.findUnique({
+    where: {
+      id: usuarioId
+    }
+  });
+
+
+  if (!usuario) {
+
+    const error = new Error(
+      "Usuario no encontrado"
+    );
+
+    error.statusCode = 404;
+
+    throw error;
+  }
+
+
+  // Validar contraseña actual
+
+  const passwordCorrecta = await bcrypt.compare(
+    passwordActual,
+    usuario.passwordHash
+  );
+
+
+  if (!passwordCorrecta) {
+
+    const error = new Error(
+      "La contraseña actual es incorrecta"
+    );
+
+    error.statusCode = 401;
+
+    throw error;
+  }
+
+
+  // Evitar usar la misma contraseña
+
+  const mismaPassword = await bcrypt.compare(
+    passwordNueva,
+    usuario.passwordHash
+  );
+
+
+  if (mismaPassword) {
+
+    const error = new Error(
+      "La nueva contraseña debe ser diferente a la contraseña actual"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // Encriptar nueva contraseña
+
+  const nuevoPasswordHash = await bcrypt.hash(
+    passwordNueva,
+    10
+  );
+
+
+  // Actualizar usuario
+
+  await prisma.usuario.update({
+    where: {
+      id: usuarioId
+    },
+
+    data: {
+      passwordHash: nuevoPasswordHash
+    }
+  });
+
+
+  return {
+    mensaje: "Contraseña actualizada correctamente"
+  };
+};
