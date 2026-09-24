@@ -24,7 +24,6 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
   >
 
-  <!-- MISMO DISEÑO DE TECHASSIST -->
   <link
     rel="stylesheet"
     href="./css/dashboard.css"
@@ -47,7 +46,6 @@
       <h2>TechAssist</h2>
     </div>
 
-
     <nav class="sidebar-menu">
 
       <a
@@ -58,7 +56,6 @@
         <span>Inicio</span>
       </a>
 
-
       <a
         href="./registro-servicio.html"
         class="menu-item"
@@ -66,7 +63,6 @@
         <i class="bi bi-clipboard-plus"></i>
         <span>Nuevo servicio</span>
       </a>
-
 
       <a
         href="./horas-extras.html"
@@ -76,7 +72,6 @@
         <span>Horas extras</span>
       </a>
 
-
       <a
         href="./liquidaciones.html"
         class="menu-item"
@@ -84,7 +79,6 @@
         <i class="bi bi-receipt"></i>
         <span>Liquidaciones</span>
       </a>
-
 
       <a
         href="./peticion-repuesto.html"
@@ -94,7 +88,6 @@
         <span>Petición de repuestos</span>
       </a>
 
-
       <a
         href="./informe-equipos.html"
         class="menu-item active"
@@ -102,7 +95,6 @@
         <i class="bi bi-camera"></i>
         <span>Informe de equipos</span>
       </a>
-
 
       <a
         href="./administrar-repuestos.html"
@@ -113,7 +105,6 @@
         <span>Administrar repuestos</span>
       </a>
 
-
       <a
         href="#"
         class="menu-item"
@@ -121,7 +112,6 @@
         <i class="bi bi-file-earmark-bar-graph"></i>
         <span>Reportes</span>
       </a>
-
 
       <a
         href="./usuarios.html"
@@ -132,7 +122,6 @@
         <span>Administrar usuarios</span>
       </a>
 
-
       <a
         href="#"
         class="menu-item"
@@ -142,7 +131,6 @@
       </a>
 
     </nav>
-
 
     <div class="sidebar-footer">
 
@@ -166,8 +154,6 @@
 
   <main class="main-content">
 
-    <!-- TOPBAR -->
-
     <header class="topbar">
 
       <button
@@ -178,9 +164,7 @@
         <i class="bi bi-list"></i>
       </button>
 
-
       <div>
-
         <span class="text-secondary">
           Técnico:
         </span>
@@ -188,17 +172,12 @@
         <strong id="nombreUsuario">
           Usuario
         </strong>
-
       </div>
 
     </header>
 
 
     <section class="content">
-
-      <!-- ========================================
-           ENCABEZADO
-      ========================================= -->
 
       <div class="welcome-section">
 
@@ -215,7 +194,7 @@
 
 
       <!-- ========================================
-           INFORMACIÓN GENERAL
+           INFORMACIÓN DEL ENVÍO
       ========================================= -->
 
       <div class="card mt-4">
@@ -223,12 +202,9 @@
         <div class="card-body">
 
           <h5 class="card-title mb-4">
-
             <i class="bi bi-info-circle me-1"></i>
             Información del envío
-
           </h5>
-
 
           <div class="row g-3">
 
@@ -250,7 +226,6 @@
 
             </div>
 
-
             <div class="col-12 col-md-4">
 
               <label class="form-label">
@@ -265,7 +240,6 @@
               >
 
             </div>
-
 
             <div class="col-12 col-md-4">
 
@@ -298,16 +272,11 @@
         <div class="card-body">
 
           <h5 class="card-title mb-4">
-
             <i class="bi bi-plus-circle me-1"></i>
             Agregar equipo
-
           </h5>
 
-
           <div class="row g-3">
-
-            <!-- TIPO DE EQUIPO -->
 
             <div class="col-12 col-md-6">
 
@@ -368,8 +337,6 @@
             </div>
 
 
-            <!-- OTRO -->
-
             <div
               class="col-12 col-md-6 d-none"
               id="contenedorOtroTipo"
@@ -392,34 +359,69 @@
             </div>
 
 
-            <!-- FOTO -->
+            <!-- ==================================
+                 FOTO DEL EQUIPO
+            =================================== -->
 
             <div class="col-12">
 
-              <label
-                for="fotoEquipo"
-                class="form-label"
-              >
+              <label class="form-label">
                 Fotografía del equipo *
               </label>
 
-              <!-- FOTO DEL EQUIPO -->
-                <input
-                type="file"
-                class="form-control"
-                id="fotoEquipo"
-                accept="image/*"
-                >
+              <div class="row g-2">
+
+                <div class="col-12 col-sm-6">
+
+                  <label
+                    for="camaraEquipo"
+                    class="btn btn-outline-primary w-100"
+                  >
+                    <i class="bi bi-camera me-1"></i>
+                    Tomar foto
+                  </label>
+
+                  <input
+                    type="file"
+                    id="camaraEquipo"
+                    accept="image/*"
+                    capture="environment"
+                    class="d-none"
+                  >
+
+                </div>
+
+
+                <div class="col-12 col-sm-6">
+
+                  <label
+                    for="galeriaEquipo"
+                    class="btn btn-outline-secondary w-100"
+                  >
+                    <i class="bi bi-images me-1"></i>
+                    Seleccionar imagen
+                  </label>
+
+                  <input
+                    type="file"
+                    id="galeriaEquipo"
+                    accept="image/*"
+                    class="d-none"
+                  >
+
+                </div>
+
+              </div>
 
               <div class="form-text">
-                Puedes tomar una fotografía
-                o seleccionar una imagen existente.
+                Puedes tomar una fotografía nueva
+                o seleccionar una imagen guardada.
               </div>
 
             </div>
 
 
-            <!-- PREVIEW FOTO -->
+            <!-- PREVISUALIZACIÓN -->
 
             <div
               class="col-12 d-none"
@@ -490,13 +492,9 @@
             </div>
 
 
-            <!-- BOTÓN -->
-
             <div class="col-12">
 
-              <div
-                class="d-flex justify-content-end mt-2"
-              >
+              <div class="d-flex justify-content-end mt-2">
 
                 <button
                   type="button"
@@ -531,12 +529,9 @@
           >
 
             <h5 class="card-title mb-0">
-
               <i class="bi bi-list-check me-1"></i>
               Equipos agregados
-
             </h5>
-
 
             <span
               class="badge bg-primary"
@@ -570,32 +565,23 @@
             id="contenedorTablaEquipos"
           >
 
-            <table
-              class="table table-hover align-middle"
-            >
+            <table class="table table-hover align-middle">
 
               <thead>
 
                 <tr>
-
                   <th>#</th>
-
                   <th>Foto</th>
-
                   <th>Tipo</th>
-
                   <th>Modelo</th>
-
                   <th>Serie</th>
 
                   <th class="text-center">
                     Acción
                   </th>
-
                 </tr>
 
               </thead>
-
 
               <tbody id="tablaEquipos">
               </tbody>
@@ -610,7 +596,7 @@
 
 
       <!-- ========================================
-           RESUMEN AUTOMÁTICO
+           INFORME GENERAL
       ========================================= -->
 
       <div class="card mt-4">
@@ -618,18 +604,13 @@
         <div class="card-body">
 
           <h5 class="card-title mb-3">
-
             <i class="bi bi-bar-chart me-1"></i>
             Informe general
-
           </h5>
 
-
           <p class="text-secondary">
-
             El conteo se genera automáticamente
             conforme agregas los equipos.
-
           </p>
 
 
@@ -646,9 +627,7 @@
             id="contenedorResumen"
           >
 
-            <table
-              class="table table-bordered"
-            >
+            <table class="table table-bordered">
 
               <thead class="table-light">
 
@@ -669,10 +648,8 @@
 
               </thead>
 
-
               <tbody id="tablaResumen">
               </tbody>
-
 
               <tfoot>
 
@@ -703,7 +680,7 @@
 
 
       <!-- ========================================
-           EVIDENCIAS
+           EVIDENCIAS DEL ENVÍO
       ========================================= -->
 
       <div class="card mt-4">
@@ -711,33 +688,68 @@
         <div class="card-body">
 
           <h5 class="card-title mb-4">
-
             <i class="bi bi-images me-1"></i>
             Evidencias del envío
-
           </h5>
 
 
           <div class="row g-4">
 
-            <!-- GUÍA -->
+            <!-- ==================================
+                 GUÍA DE ENVÍO
+            =================================== -->
 
             <div class="col-12 col-lg-6">
 
-              <label
-                for="fotoGuiaEnvio"
-                class="form-label"
-              >
+              <label class="form-label">
                 Imagen de la guía de envío *
               </label>
 
-              <!-- FOTO DE LA GUÍA -->
-                <input
-                type="file"
-                class="form-control"
-                id="fotoGuiaEnvio"
-                accept="image/*"
-                >
+
+              <div class="row g-2">
+
+                <div class="col-12 col-sm-6">
+
+                  <label
+                    for="camaraGuia"
+                    class="btn btn-outline-primary w-100"
+                  >
+                    <i class="bi bi-camera me-1"></i>
+                    Tomar foto
+                  </label>
+
+                  <input
+                    type="file"
+                    id="camaraGuia"
+                    accept="image/*"
+                    capture="environment"
+                    class="d-none"
+                  >
+
+                </div>
+
+
+                <div class="col-12 col-sm-6">
+
+                  <label
+                    for="galeriaGuia"
+                    class="btn btn-outline-secondary w-100"
+                  >
+                    <i class="bi bi-images me-1"></i>
+                    Seleccionar imagen
+                  </label>
+
+                  <input
+                    type="file"
+                    id="galeriaGuia"
+                    accept="image/*"
+                    class="d-none"
+                  >
+
+                </div>
+
+              </div>
+
 
               <div class="form-text">
                 Fotografía de la guía con la
@@ -762,24 +774,61 @@
             </div>
 
 
-            <!-- FOTO GENERAL -->
+            <!-- ==================================
+                 FOTO GENERAL
+            =================================== -->
 
             <div class="col-12 col-lg-6">
 
-              <label
-                for="fotoGeneralEnvio"
-                class="form-label"
-              >
+              <label class="form-label">
                 Imagen general del envío *
               </label>
 
-              <!-- FOTO GENERAL DEL ENVÍO -->
-                <input
-                type="file"
-                class="form-control"
-                id="fotoGeneralEnvio"
-                accept="image/*"
-                >
+
+              <div class="row g-2">
+
+                <div class="col-12 col-sm-6">
+
+                  <label
+                    for="camaraGeneral"
+                    class="btn btn-outline-primary w-100"
+                  >
+                    <i class="bi bi-camera me-1"></i>
+                    Tomar foto
+                  </label>
+
+                  <input
+                    type="file"
+                    id="camaraGeneral"
+                    accept="image/*"
+                    capture="environment"
+                    class="d-none"
+                  >
+
+                </div>
+
+
+                <div class="col-12 col-sm-6">
+
+                  <label
+                    for="galeriaGeneral"
+                    class="btn btn-outline-secondary w-100"
+                  >
+                    <i class="bi bi-images me-1"></i>
+                    Seleccionar imagen
+                  </label>
+
+                  <input
+                    type="file"
+                    id="galeriaGeneral"
+                    accept="image/*"
+                    class="d-none"
+                  >
+
+                </div>
+
+              </div>
+
 
               <div class="form-text">
                 Fotografía de las cajas o equipos
@@ -818,9 +867,7 @@
 
         <div class="card-body">
 
-          <div
-            class="d-flex justify-content-end"
-          >
+          <div class="d-flex justify-content-end">
 
             <button
               type="button"
@@ -842,33 +889,19 @@
   </main>
 
 
-  <!-- BOOTSTRAP -->
-
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   ></script>
-
-
-  <!-- SWEETALERT -->
 
   <script
     src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
   ></script>
 
-
-  <!-- JSPDF -->
-
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
   ></script>
 
-
-  <!-- CONFIGURACIÓN -->
-
   <script src="./js/config.js"></script>
-
-
-  <!-- INFORME -->
 
   <script src="./js/informe-equipos.js"></script>
 

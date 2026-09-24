@@ -19,99 +19,66 @@ const usuarioGuardado =
 // ========================================
 
 const nombreUsuario =
-  document.getElementById(
-    "nombreUsuario"
-  );
+  document.getElementById("nombreUsuario");
 
 const nombreTecnico =
-  document.getElementById(
-    "nombreTecnico"
-  );
+  document.getElementById("nombreTecnico");
 
 const bodegaTecnico =
-  document.getElementById(
-    "bodegaTecnico"
-  );
+  document.getElementById("bodegaTecnico");
 
 const fechaInforme =
-  document.getElementById(
-    "fechaInforme"
-  );
+  document.getElementById("fechaInforme");
 
 const btnMenu =
-  document.getElementById(
-    "btnMenu"
-  );
+  document.getElementById("btnMenu");
 
 const sidebar =
-  document.getElementById(
-    "sidebar"
-  );
+  document.getElementById("sidebar");
 
 const btnCerrarSesion =
-  document.getElementById(
-    "btnCerrarSesion"
-  );
+  document.getElementById("btnCerrarSesion");
 
 const menuAdministrarUsuarios =
-  document.getElementById(
-    "menuAdministrarUsuarios"
-  );
+  document.getElementById("menuAdministrarUsuarios");
 
 const menuAdministrarRepuestos =
-  document.getElementById(
-    "menuAdministrarRepuestos"
-  );
+  document.getElementById("menuAdministrarRepuestos");
 
 
 // ========================================
-// ELEMENTOS EQUIPO
+// EQUIPO
 // ========================================
 
 const tipoEquipo =
-  document.getElementById(
-    "tipoEquipo"
-  );
+  document.getElementById("tipoEquipo");
 
 const contenedorOtroTipo =
-  document.getElementById(
-    "contenedorOtroTipo"
-  );
+  document.getElementById("contenedorOtroTipo");
 
 const otroTipoEquipo =
-  document.getElementById(
-    "otroTipoEquipo"
-  );
+  document.getElementById("otroTipoEquipo");
 
-const fotoEquipo =
-  document.getElementById(
-    "fotoEquipo"
-  );
+const camaraEquipo =
+  document.getElementById("camaraEquipo");
+
+const galeriaEquipo =
+  document.getElementById("galeriaEquipo");
 
 const contenedorVistaFoto =
-  document.getElementById(
-    "contenedorVistaFoto"
-  );
+  document.getElementById("contenedorVistaFoto");
 
 const vistaFoto =
-  document.getElementById(
-    "vistaFoto"
-  );
+  document.getElementById("vistaFoto");
 
 const modeloEquipo =
-  document.getElementById(
-    "modeloEquipo"
-  );
+  document.getElementById("modeloEquipo");
 
 const serieEquipo =
-  document.getElementById(
-    "serieEquipo"
-  );
+  document.getElementById("serieEquipo");
 
 const btnAgregarEquipo =
-  document.getElementById(
-    "btnAgregarEquipo"
-  );
+  document.getElementById("btnAgregarEquipo");
 
 
 // ========================================
@@ -119,24 +86,16 @@ const btnAgregarEquipo =
 // ========================================
 
 const tablaEquipos =
-  document.getElementById(
-    "tablaEquipos"
-  );
+  document.getElementById("tablaEquipos");
 
 const contenedorTablaEquipos =
-  document.getElementById(
-    "contenedorTablaEquipos"
-  );
+  document.getElementById("contenedorTablaEquipos");
 
 const mensajeSinEquipos =
-  document.getElementById(
-    "mensajeSinEquipos"
-  );
+  document.getElementById("mensajeSinEquipos");
 
 const badgeTotalEquipos =
-  document.getElementById(
-    "badgeTotalEquipos"
-  );
+  document.getElementById("badgeTotalEquipos");
 
 
 // ========================================
@@ -144,66 +103,58 @@ const badgeTotalEquipos =
 // ========================================
 
 const tablaResumen =
-  document.getElementById(
-    "tablaResumen"
-  );
+  document.getElementById("tablaResumen");
 
 const contenedorResumen =
-  document.getElementById(
-    "contenedorResumen"
-  );
+  document.getElementById("contenedorResumen");
 
 const mensajeResumenVacio =
-  document.getElementById(
-    "mensajeResumenVacio"
-  );
+  document.getElementById("mensajeResumenVacio");
 
 const totalEquipos =
-  document.getElementById(
-    "totalEquipos"
-  );
+  document.getElementById("totalEquipos");
 
 
 // ========================================
-// EVIDENCIAS
+// GUÍA
 // ========================================
 
-const fotoGuiaEnvio =
-  document.getElementById(
-    "fotoGuiaEnvio"
-  );
+const camaraGuia =
+  document.getElementById("camaraGuia");
+
+const galeriaGuia =
+  document.getElementById("galeriaGuia");
 
 const vistaFotoGuia =
-  document.getElementById(
-    "vistaFotoGuia"
-  );
+  document.getElementById("vistaFotoGuia");
 
 const contenedorFotoGuia =
-  document.getElementById(
-    "contenedorFotoGuia"
-  );
+  document.getElementById("contenedorFotoGuia");
 
 
-const fotoGeneralEnvio =
-  document.getElementById(
-    "fotoGeneralEnvio"
-  );
+// ========================================
+// FOTO GENERAL
+// ========================================
+
+const camaraGeneral =
+  document.getElementById("camaraGeneral");
+
+const galeriaGeneral =
+  document.getElementById("galeriaGeneral");
 
 const vistaFotoGeneral =
-  document.getElementById(
-    "vistaFotoGeneral"
-  );
+  document.getElementById("vistaFotoGeneral");
 
 const contenedorFotoGeneral =
-  document.getElementById(
-    "contenedorFotoGeneral"
-  );
+  document.getElementById("contenedorFotoGeneral");
 
+
+// ========================================
+// BOTÓN PDF
+// ========================================
 
 const btnGenerarPDF =
-  document.getElementById(
-    "btnGenerarPDF"
-  );
+  document.getElementById("btnGenerarPDF");
 
 
 // ========================================
@@ -223,10 +174,7 @@ let fotoGeneralActual = "";
 // VALIDAR SESIÓN
 // ========================================
 
-if (
-  !token ||
-  !usuarioGuardado
-) {
+if (!token || !usuarioGuardado) {
 
   window.location.href =
     "./login.html";
@@ -236,53 +184,31 @@ if (
   try {
 
     const usuario =
-      JSON.parse(
-        usuarioGuardado
-      );
-
+      JSON.parse(usuarioGuardado);
 
     nombreUsuario.textContent =
-      usuario.nombre ||
-      "Usuario";
-
+      usuario.nombre || "Usuario";
 
     nombreTecnico.value =
-      usuario.nombre ||
-      "";
-
+      usuario.nombre || "";
 
     bodegaTecnico.value =
-      usuario.bodega ||
-      "";
+      usuario.bodega || "";
 
 
-    // OPCIONES ADMIN
+    if (usuario.rol === "ADMIN") {
 
-    if (
-      usuario.rol ===
-      "ADMIN"
-    ) {
-
-      if (
-        menuAdministrarUsuarios
-      ) {
+      if (menuAdministrarUsuarios) {
 
         menuAdministrarUsuarios
-          .classList.remove(
-            "d-none"
-          );
+          .classList.remove("d-none");
 
       }
 
-
-      if (
-        menuAdministrarRepuestos
-      ) {
+      if (menuAdministrarRepuestos) {
 
         menuAdministrarRepuestos
-          .classList.remove(
-            "d-none"
-          );
+          .classList.remove("d-none");
 
       }
 
@@ -295,15 +221,8 @@ if (
       error
     );
 
-
-    localStorage.removeItem(
-      "token"
-    );
-
-    localStorage.removeItem(
-      "usuario"
-    );
-
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
 
     window.location.href =
       "./login.html";
@@ -326,7 +245,6 @@ const hoy =
     }
   );
 
-
 fechaInforme.value =
   hoy;
 
@@ -335,10 +253,7 @@ fechaInforme.value =
 // MENÚ RESPONSIVE
 // ========================================
 
-if (
-  btnMenu &&
-  sidebar
-) {
+if (btnMenu && sidebar) {
 
   btnMenu.addEventListener(
     "click",
@@ -372,7 +287,6 @@ if (btnCerrarSesion) {
         "usuario"
       );
 
-
       window.location.href =
         "./login.html";
 
@@ -383,130 +297,27 @@ if (btnCerrarSesion) {
 
 
 // ========================================
-// MOSTRAR CAMPO "OTRO"
+// CAMPO OTRO
 // ========================================
 
 tipoEquipo.addEventListener(
   "change",
   () => {
 
-    if (
-      tipoEquipo.value ===
-      "Otro"
-    ) {
+    if (tipoEquipo.value === "Otro") {
 
       contenedorOtroTipo
-        .classList.remove(
-          "d-none"
-        );
-
+        .classList.remove("d-none");
 
       otroTipoEquipo.focus();
 
     } else {
 
       contenedorOtroTipo
-        .classList.add(
-          "d-none"
-        );
-
+        .classList.add("d-none");
 
       otroTipoEquipo.value =
         "";
-
-    }
-
-  }
-);
-
-
-// ========================================
-// FOTO DEL EQUIPO
-// ========================================
-
-fotoEquipo.addEventListener(
-  "change",
-  async () => {
-
-    const archivo =
-      fotoEquipo.files[0];
-
-
-    if (!archivo) {
-
-      limpiarFotoEquipo();
-
-      return;
-
-    }
-
-
-    if (
-      !archivo.type.startsWith(
-        "image/"
-      )
-    ) {
-
-      await Swal.fire({
-
-        icon: "warning",
-
-        title:
-          "Archivo no válido",
-
-        text:
-          "Debes seleccionar una imagen."
-
-      });
-
-
-      fotoEquipo.value =
-        "";
-
-      limpiarFotoEquipo();
-
-      return;
-
-    }
-
-
-    try {
-
-      fotoEquipoActual =
-        await comprimirImagen(
-          archivo
-        );
-
-
-      vistaFoto.src =
-        fotoEquipoActual;
-
-
-      contenedorVistaFoto
-        .classList.remove(
-          "d-none"
-        );
-
-
-    } catch (error) {
-
-      console.error(
-        "Error procesando imagen:",
-        error
-      );
-
-
-      await Swal.fire({
-
-        icon: "error",
-
-        title:
-          "No se pudo cargar la imagen",
-
-        text:
-          "Intenta seleccionar otra fotografía."
-
-      });
 
     }
 
@@ -530,13 +341,11 @@ function comprimirImagen(
       const lector =
         new FileReader();
 
-
       lector.onload =
         evento => {
 
           const imagen =
             new Image();
-
 
           imagen.onload =
             () => {
@@ -549,33 +358,24 @@ function comprimirImagen(
 
 
               if (
-                ancho >
-                maxDimension ||
-                alto >
-                maxDimension
+                ancho > maxDimension ||
+                alto > maxDimension
               ) {
 
                 const proporcion =
                   Math.min(
-                    maxDimension /
-                      ancho,
-
-                    maxDimension /
-                      alto
+                    maxDimension / ancho,
+                    maxDimension / alto
                   );
-
 
                 ancho =
                   Math.round(
-                    ancho *
-                    proporcion
+                    ancho * proporcion
                   );
-
 
                 alto =
                   Math.round(
-                    alto *
-                    proporcion
+                    alto * proporcion
                   );
 
               }
@@ -586,7 +386,6 @@ function comprimirImagen(
                   "canvas"
                 );
 
-
               canvas.width =
                 ancho;
 
@@ -595,9 +394,21 @@ function comprimirImagen(
 
 
               const contexto =
-                canvas.getContext(
-                  "2d"
-                );
+                canvas.getContext("2d");
+
+
+              // Fondo blanco para evitar problemas
+              // con imágenes transparentes.
+
+              contexto.fillStyle =
+                "#ffffff";
+
+              contexto.fillRect(
+                0,
+                0,
+                ancho,
+                alto
+              );
 
 
               contexto.drawImage(
@@ -609,15 +420,11 @@ function comprimirImagen(
               );
 
 
-              const resultado =
+              resolve(
                 canvas.toDataURL(
                   "image/jpeg",
                   calidad
-                );
-
-
-              resolve(
-                resultado
+                )
               );
 
             };
@@ -625,7 +432,6 @@ function comprimirImagen(
 
           imagen.onerror =
             reject;
-
 
           imagen.src =
             evento.target.result;
@@ -636,7 +442,6 @@ function comprimirImagen(
       lector.onerror =
         reject;
 
-
       lector.readAsDataURL(
         archivo
       );
@@ -645,6 +450,126 @@ function comprimirImagen(
   );
 
 }
+
+
+// ========================================
+// PROCESAR FOTO DEL EQUIPO
+// ========================================
+
+async function procesarFotoEquipo(
+  input
+) {
+
+  const archivo =
+    input.files[0];
+
+  if (!archivo) {
+    return;
+  }
+
+
+  if (
+    !archivo.type.startsWith("image/")
+  ) {
+
+    await Swal.fire({
+
+      icon: "warning",
+
+      title:
+        "Archivo no válido",
+
+      text:
+        "Debes seleccionar una imagen."
+
+    });
+
+    input.value = "";
+
+    return;
+
+  }
+
+
+  try {
+
+    fotoEquipoActual =
+      await comprimirImagen(
+        archivo
+      );
+
+    vistaFoto.src =
+      fotoEquipoActual;
+
+    contenedorVistaFoto
+      .classList.remove("d-none");
+
+
+    // Si utilizó cámara, limpiamos galería.
+    // Si utilizó galería, limpiamos cámara.
+
+    if (input === camaraEquipo) {
+
+      galeriaEquipo.value =
+        "";
+
+    } else {
+
+      camaraEquipo.value =
+        "";
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Error procesando foto:",
+      error
+    );
+
+    await Swal.fire({
+
+      icon: "error",
+
+      title:
+        "No se pudo cargar la imagen",
+
+      text:
+        "Intenta nuevamente."
+
+    });
+
+  }
+
+}
+
+
+// ========================================
+// EVENTOS FOTO EQUIPO
+// ========================================
+
+camaraEquipo.addEventListener(
+  "change",
+  () => {
+
+    procesarFotoEquipo(
+      camaraEquipo
+    );
+
+  }
+);
+
+
+galeriaEquipo.addEventListener(
+  "change",
+  () => {
+
+    procesarFotoEquipo(
+      galeriaEquipo
+    );
+
+  }
+);
 
 
 // ========================================
@@ -678,16 +603,12 @@ btnAgregarEquipo.addEventListener(
     }
 
 
-    if (
-      tipo ===
-      "Otro"
-    ) {
+    if (tipo === "Otro") {
 
       tipo =
         otroTipoEquipo
           .value
           .trim();
-
 
       if (!tipo) {
 
@@ -702,7 +623,6 @@ btnAgregarEquipo.addEventListener(
             "Indica qué tipo de equipo estás agregando."
 
         });
-
 
         otroTipoEquipo.focus();
 
@@ -723,7 +643,7 @@ btnAgregarEquipo.addEventListener(
           "Fotografía requerida",
 
         text:
-          "Toma o selecciona una fotografía del equipo."
+          "Toma una fotografía o selecciona una imagen del equipo."
 
       });
 
@@ -738,9 +658,7 @@ btnAgregarEquipo.addEventListener(
         generarId(),
 
       tipo:
-        normalizarTipo(
-          tipo
-        ),
+        normalizarTipo(tipo),
 
       modelo:
         modeloEquipo
@@ -806,7 +724,6 @@ function generarId() {
 
   }
 
-
   return (
     Date.now().toString() +
     Math.random()
@@ -828,11 +745,7 @@ function normalizarTipo(
   const limpio =
     texto
       .trim()
-      .replace(
-        /\s+/g,
-        " "
-      );
-
+      .replace(/\s+/g, " ");
 
   return (
     limpio.charAt(0)
@@ -853,25 +766,16 @@ function renderizarEquipos() {
     "";
 
 
-  if (
-    equipos.length === 0
-  ) {
+  if (equipos.length === 0) {
 
     mensajeSinEquipos
-      .classList.remove(
-        "d-none"
-      );
-
+      .classList.remove("d-none");
 
     contenedorTablaEquipos
-      .classList.add(
-        "d-none"
-      );
-
+      .classList.add("d-none");
 
     badgeTotalEquipos.textContent =
       "0 equipos";
-
 
     return;
 
@@ -879,54 +783,34 @@ function renderizarEquipos() {
 
 
   mensajeSinEquipos
-    .classList.add(
-      "d-none"
-    );
-
+    .classList.add("d-none");
 
   contenedorTablaEquipos
-    .classList.remove(
-      "d-none"
-    );
+    .classList.remove("d-none");
 
 
   equipos.forEach(
     (equipo, indice) => {
 
       const fila =
-        document.createElement(
-          "tr"
-        );
+        document.createElement("tr");
 
-
-      // NÚMERO
 
       const numero =
-        document.createElement(
-          "td"
-        );
+        document.createElement("td");
 
       numero.textContent =
         indice + 1;
 
 
-      // FOTO
-
       const foto =
-        document.createElement(
-          "td"
-        );
-
+        document.createElement("td");
 
       const imagen =
-        document.createElement(
-          "img"
-        );
-
+        document.createElement("img");
 
       imagen.src =
         equipo.foto;
-
 
       imagen.style.width =
         "70px";
@@ -940,71 +824,47 @@ function renderizarEquipos() {
       imagen.style.borderRadius =
         "6px";
 
-
       foto.appendChild(
         imagen
       );
 
 
-      // TIPO
-
       const tipo =
-        document.createElement(
-          "td"
-        );
+        document.createElement("td");
 
       tipo.textContent =
         equipo.tipo;
 
 
-      // MODELO
-
       const modelo =
-        document.createElement(
-          "td"
-        );
+        document.createElement("td");
 
       modelo.textContent =
-        equipo.modelo ||
-        "—";
+        equipo.modelo || "—";
 
-
-      // SERIE
 
       const serie =
-        document.createElement(
-          "td"
-        );
+        document.createElement("td");
 
       serie.textContent =
-        equipo.serie ||
-        "—";
+        equipo.serie || "—";
 
-
-      // ACCIÓN
 
       const accion =
-        document.createElement(
-          "td"
-        );
+        document.createElement("td");
 
       accion.className =
         "text-center";
 
 
       const boton =
-        document.createElement(
-          "button"
-        );
-
+        document.createElement("button");
 
       boton.type =
         "button";
 
-
       boton.className =
         "btn btn-outline-danger btn-sm";
-
 
       boton.innerHTML =
         '<i class="bi bi-trash"></i>';
@@ -1027,30 +887,12 @@ function renderizarEquipos() {
       );
 
 
-      fila.appendChild(
-        numero
-      );
-
-      fila.appendChild(
-        foto
-      );
-
-      fila.appendChild(
-        tipo
-      );
-
-      fila.appendChild(
-        modelo
-      );
-
-      fila.appendChild(
-        serie
-      );
-
-      fila.appendChild(
-        accion
-      );
-
+      fila.appendChild(numero);
+      fila.appendChild(foto);
+      fila.appendChild(tipo);
+      fila.appendChild(modelo);
+      fila.appendChild(serie);
+      fila.appendChild(accion);
 
       tablaEquipos.appendChild(
         fila
@@ -1081,7 +923,6 @@ async function eliminarEquipo(
       elemento =>
         elemento.id === id
     );
-
 
   if (!equipo) {
     return;
@@ -1114,12 +955,8 @@ async function eliminarEquipo(
     });
 
 
-  if (
-    !resultado.isConfirmed
-  ) {
-
+  if (!resultado.isConfirmed) {
     return;
-
   }
 
 
@@ -1138,7 +975,7 @@ async function eliminarEquipo(
 
 
 // ========================================
-// RESUMEN AUTOMÁTICO
+// OBTENER RESUMEN
 // ========================================
 
 function obtenerResumen() {
@@ -1170,8 +1007,7 @@ function obtenerResumen() {
       }
 
 
-      resumen[clave]
-        .cantidad++;
+      resumen[clave].cantidad++;
 
     }
   );
@@ -1200,25 +1036,16 @@ function actualizarResumen() {
     "";
 
 
-  if (
-    equipos.length === 0
-  ) {
+  if (equipos.length === 0) {
 
     mensajeResumenVacio
-      .classList.remove(
-        "d-none"
-      );
-
+      .classList.remove("d-none");
 
     contenedorResumen
-      .classList.add(
-        "d-none"
-      );
-
+      .classList.add("d-none");
 
     totalEquipos.textContent =
       "0";
-
 
     return;
 
@@ -1226,15 +1053,10 @@ function actualizarResumen() {
 
 
   mensajeResumenVacio
-    .classList.add(
-      "d-none"
-    );
-
+    .classList.add("d-none");
 
   contenedorResumen
-    .classList.remove(
-      "d-none"
-    );
+    .classList.remove("d-none");
 
 
   const resumen =
@@ -1245,44 +1067,27 @@ function actualizarResumen() {
     item => {
 
       const fila =
-        document.createElement(
-          "tr"
-        );
-
+        document.createElement("tr");
 
       const tipo =
-        document.createElement(
-          "td"
-        );
-
+        document.createElement("td");
 
       tipo.textContent =
         item.nombre;
 
 
       const cantidad =
-        document.createElement(
-          "td"
-        );
-
+        document.createElement("td");
 
       cantidad.className =
         "text-center fw-bold";
-
 
       cantidad.textContent =
         item.cantidad;
 
 
-      fila.appendChild(
-        tipo
-      );
-
-
-      fila.appendChild(
-        cantidad
-      );
-
+      fila.appendChild(tipo);
+      fila.appendChild(cantidad);
 
       tablaResumen.appendChild(
         fila
@@ -1299,7 +1104,7 @@ function actualizarResumen() {
 
 
 // ========================================
-// LIMPIAR FORMULARIO
+// LIMPIAR FORMULARIO DEL EQUIPO
 // ========================================
 
 function limpiarFormularioEquipo() {
@@ -1307,93 +1112,35 @@ function limpiarFormularioEquipo() {
   tipoEquipo.value =
     "";
 
-
   otroTipoEquipo.value =
     "";
 
-
   contenedorOtroTipo
-    .classList.add(
-      "d-none"
-    );
-
+    .classList.add("d-none");
 
   modeloEquipo.value =
     "";
 
-
   serieEquipo.value =
     "";
 
-
-  fotoEquipo.value =
+  camaraEquipo.value =
     "";
 
-
-  limpiarFotoEquipo();
-
-}
-
-
-// ========================================
-// LIMPIAR FOTO
-// ========================================
-
-function limpiarFotoEquipo() {
+  galeriaEquipo.value =
+    "";
 
   fotoEquipoActual =
     "";
-
 
   vistaFoto.removeAttribute(
     "src"
   );
 
-
   contenedorVistaFoto
-    .classList.add(
-      "d-none"
-    );
+    .classList.add("d-none");
 
 }
-
-
-// ========================================
-// FOTO GUÍA
-// ========================================
-
-fotoGuiaEnvio.addEventListener(
-  "change",
-  async () => {
-
-    fotoGuiaActual =
-      await procesarEvidencia(
-        fotoGuiaEnvio,
-        vistaFotoGuia,
-        contenedorFotoGuia
-      );
-
-  }
-);
-
-
-// ========================================
-// FOTO GENERAL
-// ========================================
-
-fotoGeneralEnvio.addEventListener(
-  "change",
-  async () => {
-
-    fotoGeneralActual =
-      await procesarEvidencia(
-        fotoGeneralEnvio,
-        vistaFotoGeneral,
-        contenedorFotoGeneral
-      );
-
-  }
-);
 
 
 // ========================================
@@ -1409,28 +1156,13 @@ async function procesarEvidencia(
   const archivo =
     input.files[0];
 
-
   if (!archivo) {
-
-    vista.removeAttribute(
-      "src"
-    );
-
-
-    contenedor.classList.add(
-      "d-none"
-    );
-
-
     return "";
-
   }
 
 
   if (
-    !archivo.type.startsWith(
-      "image/"
-    )
+    !archivo.type.startsWith("image/")
   ) {
 
     await Swal.fire({
@@ -1445,10 +1177,8 @@ async function procesarEvidencia(
 
     });
 
-
     input.value =
       "";
-
 
     return "";
 
@@ -1462,18 +1192,13 @@ async function procesarEvidencia(
         archivo
       );
 
-
     vista.src =
       imagen;
 
-
-    contenedor.classList.remove(
-      "d-none"
-    );
-
+    contenedor
+      .classList.remove("d-none");
 
     return imagen;
-
 
   } catch (error) {
 
@@ -1481,7 +1206,6 @@ async function procesarEvidencia(
       "Error procesando evidencia:",
       error
     );
-
 
     await Swal.fire({
 
@@ -1491,16 +1215,131 @@ async function procesarEvidencia(
         "No se pudo cargar la imagen",
 
       text:
-        "Intenta seleccionar otra fotografía."
+        "Intenta nuevamente."
 
     });
-
 
     return "";
 
   }
 
 }
+
+
+// ========================================
+// GUÍA - CÁMARA
+// ========================================
+
+camaraGuia.addEventListener(
+  "change",
+  async () => {
+
+    const imagen =
+      await procesarEvidencia(
+        camaraGuia,
+        vistaFotoGuia,
+        contenedorFotoGuia
+      );
+
+    if (imagen) {
+
+      fotoGuiaActual =
+        imagen;
+
+      galeriaGuia.value =
+        "";
+
+    }
+
+  }
+);
+
+
+// ========================================
+// GUÍA - GALERÍA
+// ========================================
+
+galeriaGuia.addEventListener(
+  "change",
+  async () => {
+
+    const imagen =
+      await procesarEvidencia(
+        galeriaGuia,
+        vistaFotoGuia,
+        contenedorFotoGuia
+      );
+
+    if (imagen) {
+
+      fotoGuiaActual =
+        imagen;
+
+      camaraGuia.value =
+        "";
+
+    }
+
+  }
+);
+
+
+// ========================================
+// GENERAL - CÁMARA
+// ========================================
+
+camaraGeneral.addEventListener(
+  "change",
+  async () => {
+
+    const imagen =
+      await procesarEvidencia(
+        camaraGeneral,
+        vistaFotoGeneral,
+        contenedorFotoGeneral
+      );
+
+    if (imagen) {
+
+      fotoGeneralActual =
+        imagen;
+
+      galeriaGeneral.value =
+        "";
+
+    }
+
+  }
+);
+
+
+// ========================================
+// GENERAL - GALERÍA
+// ========================================
+
+galeriaGeneral.addEventListener(
+  "change",
+  async () => {
+
+    const imagen =
+      await procesarEvidencia(
+        galeriaGeneral,
+        vistaFotoGeneral,
+        contenedorFotoGeneral
+      );
+
+    if (imagen) {
+
+      fotoGeneralActual =
+        imagen;
+
+      camaraGeneral.value =
+        "";
+
+    }
+
+  }
+);
 
 
 // ========================================
@@ -1515,19 +1354,12 @@ function formatearFecha(
     return "";
   }
 
-
   const partes =
     fecha.split("-");
 
-
-  if (
-    partes.length !== 3
-  ) {
-
+  if (partes.length !== 3) {
     return fecha;
-
   }
-
 
   return (
     `${partes[2]}/` +
@@ -1539,8 +1371,7 @@ function formatearFecha(
 
 
 // ========================================
-// CALCULAR DIMENSIONES DE IMAGEN
-// PARA EL PDF
+// DIMENSIONES IMAGEN PDF
 // ========================================
 
 function obtenerDimensionesImagen(
@@ -1555,7 +1386,6 @@ function obtenerDimensionesImagen(
       const imagen =
         new Image();
 
-
       imagen.onload =
         () => {
 
@@ -1567,7 +1397,6 @@ function obtenerDimensionesImagen(
               maxAlto /
                 imagen.height
             );
-
 
           resolve({
 
@@ -1583,10 +1412,8 @@ function obtenerDimensionesImagen(
 
         };
 
-
       imagen.onerror =
         reject;
-
 
       imagen.src =
         imagenBase64;
@@ -1598,7 +1425,7 @@ function obtenerDimensionesImagen(
 
 
 // ========================================
-// AGREGAR ENCABEZADO PDF
+// ENCABEZADO PDF
 // ========================================
 
 function agregarEncabezadoPDF(
@@ -1610,11 +1437,7 @@ function agregarEncabezadoPDF(
     "bold"
   );
 
-
-  pdf.setFontSize(
-    17
-  );
-
+  pdf.setFontSize(17);
 
   pdf.text(
     "TECHASSIST",
@@ -1626,10 +1449,7 @@ function agregarEncabezadoPDF(
   );
 
 
-  pdf.setFontSize(
-    14
-  );
-
+  pdf.setFontSize(14);
 
   pdf.text(
     "INFORME DE EQUIPOS ENVIADOS A BODEGA",
@@ -1641,10 +1461,7 @@ function agregarEncabezadoPDF(
   );
 
 
-  pdf.setDrawColor(
-    180
-  );
-
+  pdf.setDrawColor(180);
 
   pdf.line(
     15,
@@ -1657,7 +1474,7 @@ function agregarEncabezadoPDF(
 
 
 // ========================================
-// NUEVA PÁGINA SI ES NECESARIO
+// VERIFICAR ESPACIO PDF
 // ========================================
 
 function verificarEspacioPDF(
@@ -1667,8 +1484,7 @@ function verificarEspacioPDF(
 ) {
 
   if (
-    y +
-    espacioNecesario >
+    y + espacioNecesario >
     280
   ) {
 
@@ -1678,11 +1494,9 @@ function verificarEspacioPDF(
       pdf
     );
 
-
     return 42;
 
   }
-
 
   return y;
 
@@ -1690,7 +1504,7 @@ function verificarEspacioPDF(
 
 
 // ========================================
-// GENERAR PDF REAL
+// GENERAR PDF
 // ========================================
 
 btnGenerarPDF.addEventListener(
@@ -1720,9 +1534,7 @@ btnGenerarPDF.addEventListener(
     }
 
 
-    if (
-      equipos.length === 0
-    ) {
+    if (equipos.length === 0) {
 
       await Swal.fire({
 
@@ -1751,7 +1563,7 @@ btnGenerarPDF.addEventListener(
           "Guía requerida",
 
         text:
-          "Agrega la fotografía de la guía de envío."
+          "Toma una foto o selecciona una imagen de la guía de envío."
 
       });
 
@@ -1779,10 +1591,6 @@ btnGenerarPDF.addEventListener(
     }
 
 
-    // =====================================
-    // VERIFICAR JSPDF
-    // =====================================
-
     if (
       !window.jspdf ||
       !window.jspdf.jsPDF
@@ -1808,10 +1616,8 @@ btnGenerarPDF.addEventListener(
     const botonOriginal =
       btnGenerarPDF.innerHTML;
 
-
     btnGenerarPDF.disabled =
       true;
-
 
     btnGenerarPDF.innerHTML = `
       <span
@@ -1847,7 +1653,7 @@ btnGenerarPDF.addEventListener(
 
 
       // =====================================
-      // PORTADA / DATOS
+      // DATOS GENERALES
       // =====================================
 
       agregarEncabezadoPDF(
@@ -1863,10 +1669,7 @@ btnGenerarPDF.addEventListener(
         "normal"
       );
 
-
-      pdf.setFontSize(
-        11
-      );
+      pdf.setFontSize(11);
 
 
       pdf.text(
@@ -1874,7 +1677,6 @@ btnGenerarPDF.addEventListener(
         18,
         y
       );
-
 
       y += 7;
 
@@ -1885,7 +1687,6 @@ btnGenerarPDF.addEventListener(
         y
       );
 
-
       y += 7;
 
 
@@ -1895,7 +1696,6 @@ btnGenerarPDF.addEventListener(
         y
       );
 
-
       y += 12;
 
 
@@ -1904,18 +1704,13 @@ btnGenerarPDF.addEventListener(
         "bold"
       );
 
-
-      pdf.setFontSize(
-        13
-      );
-
+      pdf.setFontSize(13);
 
       pdf.text(
         "DETALLE DE EQUIPOS",
         18,
         y
       );
-
 
       y += 9;
 
@@ -1947,10 +1742,7 @@ btnGenerarPDF.addEventListener(
           "bold"
         );
 
-
-        pdf.setFontSize(
-          11
-        );
+        pdf.setFontSize(11);
 
 
         pdf.text(
@@ -1958,7 +1750,6 @@ btnGenerarPDF.addEventListener(
           18,
           y
         );
-
 
         y += 6;
 
@@ -1968,10 +1759,7 @@ btnGenerarPDF.addEventListener(
           "normal"
         );
 
-
-        pdf.setFontSize(
-          10
-        );
+        pdf.setFontSize(10);
 
 
         pdf.text(
@@ -1982,7 +1770,6 @@ btnGenerarPDF.addEventListener(
           22,
           y
         );
-
 
         y += 5;
 
@@ -1996,11 +1783,8 @@ btnGenerarPDF.addEventListener(
           y
         );
 
-
         y += 7;
 
-
-        // IMAGEN EQUIPO
 
         try {
 
@@ -2016,8 +1800,7 @@ btnGenerarPDF.addEventListener(
             verificarEspacioPDF(
               pdf,
               y,
-              dimensiones.alto +
-                12
+              dimensiones.alto + 12
             );
 
 
@@ -2034,17 +1817,14 @@ btnGenerarPDF.addEventListener(
 
 
           y +=
-            dimensiones.alto +
-            7;
-
+            dimensiones.alto + 7;
 
         } catch (error) {
 
           console.error(
-            "Error agregando imagen del equipo:",
+            "Error agregando imagen:",
             error
           );
-
 
           pdf.text(
             "No fue posible insertar la fotografía.",
@@ -2052,16 +1832,12 @@ btnGenerarPDF.addEventListener(
             y
           );
 
-
           y += 7;
 
         }
 
 
-        pdf.setDrawColor(
-          220
-        );
-
+        pdf.setDrawColor(220);
 
         pdf.line(
           18,
@@ -2069,7 +1845,6 @@ btnGenerarPDF.addEventListener(
           192,
           y
         );
-
 
         y += 8;
 
@@ -2082,11 +1857,9 @@ btnGenerarPDF.addEventListener(
 
       pdf.addPage();
 
-
       agregarEncabezadoPDF(
         pdf
       );
-
 
       y = 43;
 
@@ -2096,11 +1869,7 @@ btnGenerarPDF.addEventListener(
         "bold"
       );
 
-
-      pdf.setFontSize(
-        13
-      );
-
+      pdf.setFontSize(13);
 
       pdf.text(
         "GUÍA DE ENVÍO",
@@ -2108,58 +1877,38 @@ btnGenerarPDF.addEventListener(
         y
       );
 
-
       y += 8;
 
 
-      try {
-
-        const dimensionesGuia =
-          await obtenerDimensionesImagen(
-            fotoGuiaActual,
-            170,
-            190
-          );
-
-
-        pdf.addImage(
+      const dimensionesGuia =
+        await obtenerDimensionesImagen(
           fotoGuiaActual,
-          "JPEG",
-          20,
-          y,
-          dimensionesGuia.ancho,
-          dimensionesGuia.alto,
-          undefined,
-          "FAST"
+          170,
+          190
         );
 
 
-        y +=
-          dimensionesGuia.alto +
-          10;
-
-
-      } catch (error) {
-
-        console.error(
-          "Error agregando guía:",
-          error
-        );
-
-      }
+      pdf.addImage(
+        fotoGuiaActual,
+        "JPEG",
+        20,
+        y,
+        dimensionesGuia.ancho,
+        dimensionesGuia.alto,
+        undefined,
+        "FAST"
+      );
 
 
       // =====================================
-      // FOTO GENERAL
+      // EVIDENCIA GENERAL
       // =====================================
 
       pdf.addPage();
 
-
       agregarEncabezadoPDF(
         pdf
       );
-
 
       y = 43;
 
@@ -2169,10 +1918,7 @@ btnGenerarPDF.addEventListener(
         "bold"
       );
 
-
-      pdf.setFontSize(
-        13
-      );
+      pdf.setFontSize(13);
 
 
       pdf.text(
@@ -2181,53 +1927,38 @@ btnGenerarPDF.addEventListener(
         y
       );
 
-
       y += 8;
 
 
-      try {
-
-        const dimensionesGeneral =
-          await obtenerDimensionesImagen(
-            fotoGeneralActual,
-            170,
-            190
-          );
-
-
-        pdf.addImage(
+      const dimensionesGeneral =
+        await obtenerDimensionesImagen(
           fotoGeneralActual,
-          "JPEG",
-          20,
-          y,
-          dimensionesGeneral.ancho,
-          dimensionesGeneral.alto,
-          undefined,
-          "FAST"
+          170,
+          190
         );
 
 
-      } catch (error) {
-
-        console.error(
-          "Error agregando evidencia general:",
-          error
-        );
-
-      }
+      pdf.addImage(
+        fotoGeneralActual,
+        "JPEG",
+        20,
+        y,
+        dimensionesGeneral.ancho,
+        dimensionesGeneral.alto,
+        undefined,
+        "FAST"
+      );
 
 
       // =====================================
-      // RESUMEN FINAL
+      // INFORME GENERAL AL FINAL
       // =====================================
 
       pdf.addPage();
 
-
       agregarEncabezadoPDF(
         pdf
       );
-
 
       y = 45;
 
@@ -2237,10 +1968,7 @@ btnGenerarPDF.addEventListener(
         "bold"
       );
 
-
-      pdf.setFontSize(
-        14
-      );
+      pdf.setFontSize(14);
 
 
       pdf.text(
@@ -2252,15 +1980,12 @@ btnGenerarPDF.addEventListener(
         }
       );
 
-
       y += 12;
 
 
       const resumen =
         obtenerResumen();
 
-
-      // ENCABEZADO TABLA
 
       pdf.setFillColor(
         240,
@@ -2283,10 +2008,7 @@ btnGenerarPDF.addEventListener(
         "bold"
       );
 
-
-      pdf.setFontSize(
-        11
-      );
+      pdf.setFontSize(11);
 
 
       pdf.text(
@@ -2309,8 +2031,6 @@ btnGenerarPDF.addEventListener(
       y += 10;
 
 
-      // FILAS
-
       resumen.forEach(
         item => {
 
@@ -2328,9 +2048,7 @@ btnGenerarPDF.addEventListener(
 
 
           pdf.text(
-            String(
-              item.cantidad
-            ),
+            String(item.cantidad),
             175,
             y + 7,
             {
@@ -2339,10 +2057,7 @@ btnGenerarPDF.addEventListener(
           );
 
 
-          pdf.setDrawColor(
-            220
-          );
-
+          pdf.setDrawColor(220);
 
           pdf.line(
             25,
@@ -2358,8 +2073,6 @@ btnGenerarPDF.addEventListener(
       );
 
 
-      // TOTAL
-
       y += 3;
 
 
@@ -2368,10 +2081,7 @@ btnGenerarPDF.addEventListener(
         "bold"
       );
 
-
-      pdf.setFontSize(
-        12
-      );
+      pdf.setFontSize(12);
 
 
       pdf.text(
@@ -2382,9 +2092,7 @@ btnGenerarPDF.addEventListener(
 
 
       pdf.text(
-        String(
-          equipos.length
-        ),
+        String(equipos.length),
         175,
         y + 7,
         {
@@ -2393,10 +2101,7 @@ btnGenerarPDF.addEventListener(
       );
 
 
-      pdf.setDrawColor(
-        100
-      );
-
+      pdf.setDrawColor(100);
 
       pdf.line(
         25,
@@ -2407,7 +2112,7 @@ btnGenerarPDF.addEventListener(
 
 
       // =====================================
-      // NUMERAR PÁGINAS
+      // NUMERACIÓN DE PÁGINAS
       // =====================================
 
       const cantidadPaginas =
@@ -2424,21 +2129,14 @@ btnGenerarPDF.addEventListener(
           pagina
         );
 
-
         pdf.setFont(
           "helvetica",
           "normal"
         );
 
+        pdf.setFontSize(8);
 
-        pdf.setFontSize(
-          8
-        );
-
-
-        pdf.setTextColor(
-          120
-        );
+        pdf.setTextColor(120);
 
 
         pdf.text(
@@ -2451,15 +2149,13 @@ btnGenerarPDF.addEventListener(
         );
 
 
-        pdf.setTextColor(
-          0
-        );
+        pdf.setTextColor(0);
 
       }
 
 
       // =====================================
-      // NOMBRE DEL ARCHIVO
+      // DESCARGAR
       // =====================================
 
       const fechaArchivo =
@@ -2470,10 +2166,6 @@ btnGenerarPDF.addEventListener(
       const nombreArchivo =
         `Informe_Equipos_${fechaArchivo}.pdf`;
 
-
-      // =====================================
-      // DESCARGAR PDF
-      // =====================================
 
       pdf.save(
         nombreArchivo
@@ -2508,7 +2200,6 @@ btnGenerarPDF.addEventListener(
 
       });
 
-
     } catch (error) {
 
       console.error(
@@ -2536,12 +2227,10 @@ btnGenerarPDF.addEventListener(
 
       });
 
-
     } finally {
 
       btnGenerarPDF.disabled =
         false;
-
 
       btnGenerarPDF.innerHTML =
         botonOriginal;
