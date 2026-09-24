@@ -131,83 +131,73 @@ export const cambiarPassword = async (req, res) => {
 // SOLICITAR RECUPERACIÓN DE CONTRASEÑA
 // ========================================
 
-export const solicitarRecuperacion = async (
-  req,
-  res
-) => {
-
+export const solicitarRecuperacion = async (req, res) => {
   try {
+    const { correo } = req.body;
 
-    const {
+    console.log(
+      "=== INICIO RECUPERACION PASSWORD ==="
+    );
+
+    console.log(
+      "Correo recibido:",
       correo
-    } = req.body;
-
+    );
 
     const resultado =
-      await solicitarRecuperacionPassword(
-        correo
-      );
+      await solicitarRecuperacionPassword(correo);
 
-
-    // =====================================
-    // DESPUÉS ENVIAREMOS AQUÍ EL CORREO
-    // =====================================
+    console.log(
+      "Resultado recuperación:",
+      {
+        enviado: resultado.enviado,
+        correo: resultado.correo
+      }
+    );
 
     if (resultado.enviado) {
 
       console.log(
-  "Correo destinatario recuperación:",
-  resultado.correo
-);
-  await enviarCodigoRecuperacion({
+        "Intentando enviar correo a:",
+        resultado.correo
+      );
 
-    correo:
-      resultado.correo,
+      await enviarCodigoRecuperacion({
+        correo: resultado.correo,
+        nombre: resultado.nombre,
+        codigo: resultado.codigo
+      });
 
-    nombre:
-      resultado.nombre,
+      console.log(
+        "Correo enviado correctamente a:",
+        resultado.correo
+      );
+    }
 
-    codigo:
-      resultado.codigo
-
-  });
-
-}
-
-
-    // =====================================
-    // RESPUESTA GENÉRICA
-    // =====================================
+    console.log(
+      "=== FIN RECUPERACION PASSWORD ==="
+    );
 
     return res.status(200).json({
-
       mensaje:
         "Si el correo está registrado, recibirás un código de recuperación."
-
     });
-
 
   } catch (error) {
 
     console.error(
-      "Error solicitando recuperación:",
+      "ERROR RECUPERACION PASSWORD:",
       error
     );
 
-
     return res.status(
-      error.statusCode || 500
+      error.status || 500
     ).json({
-
       mensaje:
-        error.statusCode
-          ? error.message
-          : "Error interno al solicitar la recuperación"
-
+        error.message ||
+        "Error interno al solicitar la recuperación"
     });
-
   }
-
 };
 
 // ========================================
