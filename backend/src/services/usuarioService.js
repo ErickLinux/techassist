@@ -300,3 +300,472 @@ export const cambiarPasswordUsuario = async (
     mensaje: "Contraseña actualizada correctamente"
   };
 };
+
+
+
+// ========================================
+// SOLICITAR RECUPERACIÓN DE CONTRASEÑA
+// ========================================
+
+export const solicitarRecuperacionPassword = async (
+  correo
+) => {
+
+  if (!correo) {
+
+    const error = new Error(
+      "El correo es obligatorio"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  const correoNormalizado =
+    correo.trim().toLowerCase();
+
+
+  // Buscar usuario
+
+  const usuario =
+    await prisma.usuario.findUnique({
+      where: {
+        correo: correoNormalizado
+      }
+    });
+
+
+  // ========================================
+  // IMPORTANTE:
+  // No indicamos si el correo existe o no.
+  // ========================================
+
+  if (!usuario || !usuario.activo) {
+
+    return {
+      enviado: false
+    };
+
+  }
+
+
+  // ========================================
+  // GENERAR CÓDIGO DE 6 DÍGITOS
+  // ========================================
+
+  const codigo =
+    Math.floor(
+      100000 +
+      Math.random() * 900000
+    ).toString();
+
+
+  // ========================================
+  // GUARDAR HASH DEL CÓDIGO
+  // ========================================
+
+  const codigoHash =
+    await bcrypt.hash(
+      codigo,
+      10
+    );
+
+
+  // ========================================
+  // EXPIRACIÓN: 10 MINUTOS
+  // ========================================
+
+  const expiracion =
+    new Date(
+      Date.now() +
+      10 * 60 * 1000
+    );
+
+
+  // ========================================
+  // GUARDAR EN BASE DE DATOS
+  // ========================================
+
+  await prisma.usuario.update({
+
+    where: {
+      id: usuario.id
+    },
+
+    data: {
+
+      codigoRecuperacionHash:
+        codigoHash,
+
+      codigoRecuperacionExpira:
+        expiracion
+
+    }
+
+  });
+
+
+  return {
+
+  enviado: true,
+
+  correo:
+    usuario.correo,
+
+  nombre:
+    usuario.nombre,
+
+  codigo
+
+};
+
+};
+
+// ========================================
+// VERIFICAR CÓDIGO DE RECUPERACIÓN
+// ========================================
+
+export const verificarCodigoRecuperacion = async (
+  correo,
+  codigo
+) => {
+
+  // ========================================
+  // VALIDAR CAMPOS
+  // ========================================
+
+  if (!correo || !codigo) {
+
+    const error = new Error(
+      "El correo y el código son obligatorios"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  const correoNormalizado =
+    correo.trim().toLowerCase();
+
+
+  // ========================================
+  // BUSCAR USUARIO
+  // ========================================
+
+  const usuario =
+    await prisma.usuario.findUnique({
+
+      where: {
+        correo: correoNormalizado
+      }
+
+    });
+
+
+  if (
+    !usuario ||
+    !usuario.codigoRecuperacionHash ||
+    !usuario.codigoRecuperacionExpira
+  ) {
+
+    const error = new Error(
+      "El código es inválido o ha expirado"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // VALIDAR EXPIRACIÓN
+  // ========================================
+
+  const ahora =
+    new Date();
+
+
+  if (
+    ahora >
+    usuario.codigoRecuperacionExpira
+  ) {
+
+    // Limpiar código vencido
+
+    await prisma.usuario.update({
+
+      where: {
+        id: usuario.id
+      },
+
+      data: {
+
+        codigoRecuperacionHash:
+          null,
+
+        codigoRecuperacionExpira:
+          null
+
+      }
+
+    });
+
+
+    const error = new Error(
+      "El código es inválido o ha expirado"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // COMPARAR CÓDIGO
+  // ========================================
+
+  const codigoCorrecto =
+    await bcrypt.compare(
+      codigo.toString(),
+      usuario.codigoRecuperacionHash
+    );
+
+
+  if (!codigoCorrecto) {
+
+    const error = new Error(
+      "El código es inválido o ha expirado"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // CÓDIGO CORRECTO
+  // ========================================
+
+  return {
+    valido: true
+  };
+
+};
+
+// ========================================
+// RESTABLECER CONTRASEÑA
+// ========================================
+
+export const restablecerPasswordUsuario = async (
+  correo,
+  codigo,
+  nuevaPassword
+) => {
+
+  // ========================================
+  // VALIDAR CAMPOS
+  // ========================================
+
+  if (!correo || !codigo || !nuevaPassword) {
+
+    const error = new Error(
+      "El correo, código y nueva contraseña son obligatorios"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // VALIDAR LONGITUD
+  // ========================================
+
+  if (nuevaPassword.length < 6) {
+
+    const error = new Error(
+      "La nueva contraseña debe contener al menos 6 caracteres"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  const correoNormalizado =
+    correo.trim().toLowerCase();
+
+
+  // ========================================
+  // BUSCAR USUARIO
+  // ========================================
+
+  const usuario =
+    await prisma.usuario.findUnique({
+
+      where: {
+        correo: correoNormalizado
+      }
+
+    });
+
+
+  if (
+    !usuario ||
+    !usuario.codigoRecuperacionHash ||
+    !usuario.codigoRecuperacionExpira
+  ) {
+
+    const error = new Error(
+      "El código es inválido o ha expirado"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // VALIDAR EXPIRACIÓN
+  // ========================================
+
+  const ahora =
+    new Date();
+
+
+  if (
+    ahora >
+    usuario.codigoRecuperacionExpira
+  ) {
+
+    await prisma.usuario.update({
+
+      where: {
+        id: usuario.id
+      },
+
+      data: {
+
+        codigoRecuperacionHash:
+          null,
+
+        codigoRecuperacionExpira:
+          null
+
+      }
+
+    });
+
+
+    const error = new Error(
+      "El código es inválido o ha expirado"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // VALIDAR CÓDIGO NUEVAMENTE
+  // ========================================
+
+  const codigoCorrecto =
+    await bcrypt.compare(
+      codigo.toString(),
+      usuario.codigoRecuperacionHash
+    );
+
+
+  if (!codigoCorrecto) {
+
+    const error = new Error(
+      "El código es inválido o ha expirado"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // EVITAR LA MISMA CONTRASEÑA
+  // ========================================
+
+  const mismaPassword =
+    await bcrypt.compare(
+      nuevaPassword,
+      usuario.passwordHash
+    );
+
+
+  if (mismaPassword) {
+
+    const error = new Error(
+      "La nueva contraseña debe ser diferente a la contraseña anterior"
+    );
+
+    error.statusCode = 400;
+
+    throw error;
+  }
+
+
+  // ========================================
+  // ENCRIPTAR NUEVA CONTRASEÑA
+  // ========================================
+
+  const nuevoPasswordHash =
+    await bcrypt.hash(
+      nuevaPassword,
+      10
+    );
+
+
+  // ========================================
+  // ACTUALIZAR CONTRASEÑA
+  // Y ELIMINAR CÓDIGO
+  // ========================================
+
+  await prisma.usuario.update({
+
+    where: {
+      id: usuario.id
+    },
+
+    data: {
+
+      passwordHash:
+        nuevoPasswordHash,
+
+      codigoRecuperacionHash:
+        null,
+
+      codigoRecuperacionExpira:
+        null
+
+    }
+
+  });
+
+
+  return {
+
+    mensaje:
+      "Contraseña restablecida correctamente"
+
+  };
+
+};

@@ -4,7 +4,10 @@ import {
   registrarUsuario,
   loginUsuario,
   obtenerPerfil,
-  cambiarPassword
+  cambiarPassword,
+  solicitarRecuperacion,
+  verificarCodigo,
+  restablecerPassword
 } from "../controllers/usuarioController.js";
 
 import {
@@ -16,6 +19,18 @@ const router = Router();
 router.post("/registro", registrarUsuario);
 
 router.post("/login", loginUsuario);
+router.post(
+  "/recuperar-password",
+  solicitarRecuperacion
+);
+router.post(
+  "/verificar-codigo",
+  verificarCodigo
+);
+router.put(
+  "/restablecer-password",
+  restablecerPassword
+);
 
 router.get(
   "/perfil",

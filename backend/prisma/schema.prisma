@@ -22,6 +22,8 @@ model Usuario {
 
   registrosServicio   RegistroServicio[]
   solicitudesRepuesto SolicitudRepuesto[]
+  codigoRecuperacionHash   String?
+  codigoRecuperacionExpira DateTime?
 
   @@map("usuarios")
 }
