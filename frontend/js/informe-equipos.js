@@ -174,7 +174,10 @@ btnLimpiarInforme.id =
 btnLimpiarInforme.className =
   "btn btn-outline-danger me-2";
 
-
+btnLimpiarInforme.innerHTML = `
+  <i class="bi bi-trash"></i>
+  Limpiar informe
+`;
 
 if (btnGenerarPDF?.parentElement) {
 
