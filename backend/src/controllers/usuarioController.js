@@ -155,6 +155,10 @@ export const solicitarRecuperacion = async (
 
     if (resultado.enviado) {
 
+      console.log(
+  "Correo destinatario recuperación:",
+  resultado.correo
+);
   await enviarCodigoRecuperacion({
 
     correo:
