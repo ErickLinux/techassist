@@ -58,6 +58,25 @@ const contenedorFoto =
 
 const vistaFoto =
   document.getElementById("vistaFoto");
+  const btnAnalizarFoto =
+  document.getElementById(
+    "btnAnalizarFoto"
+  );
+
+const estadoOCR =
+  document.getElementById(
+    "estadoOCR"
+  );
+
+const textoEstadoOCR =
+  document.getElementById(
+    "textoEstadoOCR"
+  );
+
+const progresoOCR =
+  document.getElementById(
+    "progresoOCR"
+  );
 
 const modeloEquipo =
   document.getElementById("modeloEquipo");
@@ -279,6 +298,405 @@ fotoEquipo.addEventListener(
     );
   }
 );
+
+// ========================================
+// ANALIZAR ETIQUETA CON OCR
+// ========================================
+
+btnAnalizarFoto.addEventListener(
+  "click",
+  async () => {
+
+    if (!fotoActual) {
+
+      await Swal.fire({
+        icon: "warning",
+        title: "Fotografía requerida",
+        text:
+          "Primero toma o selecciona una fotografía."
+      });
+
+      return;
+    }
+
+
+    try {
+
+      btnAnalizarFoto.disabled = true;
+
+      btnAnalizarFoto.innerHTML = `
+        <span
+          class="spinner-border spinner-border-sm me-1"
+        ></span>
+        Analizando...
+      `;
+
+
+      estadoOCR.classList.remove(
+        "d-none"
+      );
+
+
+      progresoOCR.style.width =
+        "0%";
+
+
+      textoEstadoOCR.textContent =
+        "Preparando reconocimiento...";
+
+
+      const resultado =
+        await Tesseract.recognize(
+          vistaFoto.src,
+          "eng",
+          {
+            logger: mensaje => {
+
+              actualizarProgresoOCR(
+                mensaje
+              );
+            }
+          }
+        );
+
+
+      const texto =
+        resultado.data.text;
+
+
+      console.log(
+        "Texto OCR detectado:"
+      );
+
+      console.log(texto);
+
+
+      const datos =
+        extraerDatosEtiqueta(
+          texto
+        );
+
+
+      if (datos.modelo) {
+
+        modeloEquipo.value =
+          datos.modelo;
+      }
+
+
+      if (datos.serie) {
+
+        serieEquipo.value =
+          datos.serie;
+      }
+
+
+      estadoOCR.classList.add(
+        "d-none"
+      );
+
+
+      if (
+        datos.modelo &&
+        datos.serie
+      ) {
+
+        await Swal.fire({
+          icon: "success",
+          title: "Etiqueta detectada",
+          html: `
+            <div class="text-start">
+
+              <p>
+                Revisa los datos antes
+                de agregar el equipo.
+              </p>
+
+              <strong>Modelo:</strong>
+              ${datos.modelo}
+
+              <br>
+
+              <strong>Serie:</strong>
+              ${datos.serie}
+
+            </div>
+          `
+        });
+
+      } else {
+
+        await Swal.fire({
+          icon: "warning",
+
+          title:
+            "Detección incompleta",
+
+          text:
+            "No fue posible identificar automáticamente todos los datos. Revisa o completa los campos manualmente."
+        });
+      }
+
+
+    } catch (error) {
+
+      console.error(
+        "Error OCR:",
+        error
+      );
+
+
+      estadoOCR.classList.add(
+        "d-none"
+      );
+
+
+      await Swal.fire({
+        icon: "error",
+
+        title:
+          "No fue posible analizar la imagen",
+
+        text:
+          "Intenta tomar una fotografía más clara de la etiqueta."
+      });
+
+
+    } finally {
+
+      btnAnalizarFoto.disabled =
+        false;
+
+
+      btnAnalizarFoto.innerHTML = `
+        <i class="bi bi-search me-1"></i>
+        Detectar modelo y serie
+      `;
+    }
+  }
+);
+
+
+// ========================================
+// PROGRESO OCR
+// ========================================
+
+function actualizarProgresoOCR(
+  mensaje
+) {
+
+  if (
+    mensaje.status ===
+    "recognizing text"
+  ) {
+
+    const porcentaje =
+      Math.round(
+        (mensaje.progress || 0) *
+        100
+      );
+
+
+    progresoOCR.style.width =
+      `${porcentaje}%`;
+
+
+    textoEstadoOCR.textContent =
+      `Reconociendo texto: ${porcentaje}%`;
+  }
+
+  else if (
+    mensaje.status ===
+    "loading language traineddata"
+  ) {
+
+    textoEstadoOCR.textContent =
+      "Cargando reconocimiento de texto...";
+  }
+
+  else if (
+    mensaje.status ===
+    "initializing api"
+  ) {
+
+    textoEstadoOCR.textContent =
+      "Preparando OCR...";
+  }
+}
+
+
+// ========================================
+// LIMPIAR TEXTO OCR
+// ========================================
+
+function limpiarValorOCR(
+  valor
+) {
+
+  if (!valor) {
+    return "";
+  }
+
+
+  return valor
+    .trim()
+    .replace(/^[\s:=#-]+/, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+
+// ========================================
+// EXTRAER MODELO Y SERIE
+// ========================================
+
+function extraerDatosEtiqueta(
+  texto
+) {
+
+  let modelo = "";
+  let serie = "";
+
+
+  const lineas =
+    texto
+      .split(/\r?\n/)
+      .map(
+        linea =>
+          linea.trim()
+      )
+      .filter(Boolean);
+
+
+  // =====================================
+  // BUSCAR POR LÍNEAS
+  // =====================================
+
+  for (const linea of lineas) {
+
+    const lineaNormalizada =
+      linea.replace(/\s+/g, " ");
+
+
+    // MODELO
+
+    if (!modelo) {
+
+      const coincidenciaModelo =
+        lineaNormalizada.match(
+          /\b(?:MODEL|MODEL\s*NO|MODEL\s*NUMBER|MODELO)\b[\s.:#-]*(.+)$/i
+        );
+
+
+      if (
+        coincidenciaModelo &&
+        coincidenciaModelo[1]
+      ) {
+
+        modelo =
+          limpiarValorOCR(
+            coincidenciaModelo[1]
+          );
+      }
+    }
+
+
+    // SERIE
+
+    if (!serie) {
+
+      const coincidenciaSerie =
+        lineaNormalizada.match(
+          /\b(?:S\/N|SN|SERIAL|SERIAL\s*NO|SERIAL\s*NUMBER|SERIE)\b[\s.:#-]*(.+)$/i
+        );
+
+
+      if (
+        coincidenciaSerie &&
+        coincidenciaSerie[1]
+      ) {
+
+        serie =
+          limpiarValorOCR(
+            coincidenciaSerie[1]
+          );
+      }
+    }
+
+
+    if (
+      modelo &&
+      serie
+    ) {
+
+      break;
+    }
+  }
+
+
+  // =====================================
+  // LIMPIEZA FINAL
+  // =====================================
+
+  modelo =
+    limpiarDatoDetectado(
+      modelo
+    );
+
+  serie =
+    limpiarDatoDetectado(
+      serie
+    );
+
+
+  return {
+    modelo,
+    serie
+  };
+}
+
+
+// ========================================
+// LIMPIAR MODELO / SERIE
+// ========================================
+
+function limpiarDatoDetectado(
+  valor
+) {
+
+  if (!valor) {
+    return "";
+  }
+
+
+  let limpio =
+    valor.trim();
+
+
+  // Quitar caracteres comunes
+  // que OCR puede colocar al final
+
+  limpio =
+    limpio.replace(
+      /[|;,]+$/g,
+      ""
+    );
+
+
+  // Limitar textos absurdamente largos
+
+  if (limpio.length > 60) {
+
+    limpio =
+      limpio.substring(
+        0,
+        60
+      );
+  }
+
+
+  return limpio.trim();
+}
 
 
 // ========================================
