@@ -4,52 +4,23 @@
 
 
 // ========================================
+// SESIÓN
+// ========================================
+
+const token =
+  localStorage.getItem("token");
+
+const usuarioGuardado =
+  localStorage.getItem("usuario");
+
+
+// ========================================
 // ELEMENTOS GENERALES
 // ========================================
 
-const sidebar =
+const nombreUsuario =
   document.getElementById(
-    "sidebar"
-  );
-
-const btnMenu =
-  document.getElementById(
-    "btnMenu"
-  );
-
-const btnCerrarSesion =
-  document.getElementById(
-    "btnCerrarSesion"
-  );
-
-const nombreUsuarioTop =
-  document.getElementById(
-    "nombreUsuarioTop"
-  );
-
-const rolUsuarioTop =
-  document.getElementById(
-    "rolUsuarioTop"
-  );
-
-const menuAdminRepuestos =
-  document.getElementById(
-    "menuAdminRepuestos"
-  );
-
-const menuAdminUsuarios =
-  document.getElementById(
-    "menuAdminUsuarios"
-  );
-
-
-// ========================================
-// DATOS DEL INFORME
-// ========================================
-
-const fechaInforme =
-  document.getElementById(
-    "fechaInforme"
+    "nombreUsuario"
   );
 
 const nombreTecnico =
@@ -62,9 +33,39 @@ const bodegaTecnico =
     "bodegaTecnico"
   );
 
+const fechaInforme =
+  document.getElementById(
+    "fechaInforme"
+  );
+
+const btnMenu =
+  document.getElementById(
+    "btnMenu"
+  );
+
+const sidebar =
+  document.getElementById(
+    "sidebar"
+  );
+
+const btnCerrarSesion =
+  document.getElementById(
+    "btnCerrarSesion"
+  );
+
+const menuAdministrarUsuarios =
+  document.getElementById(
+    "menuAdministrarUsuarios"
+  );
+
+const menuAdministrarRepuestos =
+  document.getElementById(
+    "menuAdministrarRepuestos"
+  );
+
 
 // ========================================
-// EQUIPO
+// ELEMENTOS EQUIPO
 // ========================================
 
 const tipoEquipo =
@@ -114,12 +115,12 @@ const btnAgregarEquipo =
 
 
 // ========================================
-// TABLA EQUIPOS
+// TABLA
 // ========================================
 
-const mensajeSinEquipos =
+const tablaEquipos =
   document.getElementById(
-    "mensajeSinEquipos"
+    "tablaEquipos"
   );
 
 const contenedorTablaEquipos =
@@ -127,9 +128,9 @@ const contenedorTablaEquipos =
     "contenedorTablaEquipos"
   );
 
-const tablaEquipos =
+const mensajeSinEquipos =
   document.getElementById(
-    "tablaEquipos"
+    "mensajeSinEquipos"
   );
 
 const badgeTotalEquipos =
@@ -142,9 +143,9 @@ const badgeTotalEquipos =
 // RESUMEN
 // ========================================
 
-const mensajeResumenVacio =
+const tablaResumen =
   document.getElementById(
-    "mensajeResumenVacio"
+    "tablaResumen"
   );
 
 const contenedorResumen =
@@ -152,9 +153,9 @@ const contenedorResumen =
     "contenedorResumen"
   );
 
-const tablaResumen =
+const mensajeResumenVacio =
   document.getElementById(
-    "tablaResumen"
+    "mensajeResumenVacio"
   );
 
 const totalEquipos =
@@ -172,14 +173,14 @@ const fotoGuiaEnvio =
     "fotoGuiaEnvio"
   );
 
-const contenedorFotoGuia =
-  document.getElementById(
-    "contenedorFotoGuia"
-  );
-
 const vistaFotoGuia =
   document.getElementById(
     "vistaFotoGuia"
+  );
+
+const contenedorFotoGuia =
+  document.getElementById(
+    "contenedorFotoGuia"
   );
 
 
@@ -188,20 +189,16 @@ const fotoGeneralEnvio =
     "fotoGeneralEnvio"
   );
 
-const contenedorFotoGeneral =
-  document.getElementById(
-    "contenedorFotoGeneral"
-  );
-
 const vistaFotoGeneral =
   document.getElementById(
     "vistaFotoGeneral"
   );
 
+const contenedorFotoGeneral =
+  document.getElementById(
+    "contenedorFotoGeneral"
+  );
 
-// ========================================
-// PDF
-// ========================================
 
 const btnGenerarPDF =
   document.getElementById(
@@ -223,136 +220,70 @@ let fotoGeneralActual = "";
 
 
 // ========================================
-// INICIALIZACIÓN
+// VALIDAR SESIÓN
 // ========================================
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+if (
+  !token ||
+  !usuarioGuardado
+) {
 
-    verificarSesion();
+  window.location.href =
+    "./login.html";
 
-    establecerFechaActual();
-
-    renderizarEquipos();
-
-    actualizarResumen();
-
-  }
-);
-
-
-// ========================================
-// MENÚ MÓVIL
-// ========================================
-
-if (btnMenu) {
-
-  btnMenu.addEventListener(
-    "click",
-    () => {
-
-      sidebar.classList.toggle(
-        "show"
-      );
-
-    }
-  );
-
-}
-
-
-// ========================================
-// VERIFICAR SESIÓN
-// ========================================
-
-function verificarSesion() {
-
-  const token =
-    localStorage.getItem(
-      "token"
-    );
-
-  const usuarioTexto =
-    localStorage.getItem(
-      "usuario"
-    );
-
-
-  if (
-    !token ||
-    !usuarioTexto
-  ) {
-
-    window.location.href =
-      "./login.html";
-
-    return;
-  }
-
+} else {
 
   try {
 
     const usuario =
       JSON.parse(
-        usuarioTexto
+        usuarioGuardado
       );
 
 
-    const nombre =
-      obtenerNombreUsuario(
-        usuario
-      );
-
-
-    const rol =
-      usuario.rol ||
-      usuario.role ||
-      "TECNICO";
-
-
-    const bodega =
-      usuario.bodega ||
-      usuario.codigoBodega ||
-      usuario.bodegaCodigo ||
-      "";
-
-
-    nombreUsuarioTop.textContent =
-      nombre;
-
-    rolUsuarioTop.textContent =
-      rol;
+    nombreUsuario.textContent =
+      usuario.nombre ||
+      "Usuario";
 
 
     nombreTecnico.value =
-      nombre;
+      usuario.nombre ||
+      "";
+
 
     bodegaTecnico.value =
-      bodega;
+      usuario.bodega ||
+      "";
 
+
+    // OPCIONES ADMIN
 
     if (
-      String(rol)
-        .toUpperCase() ===
+      usuario.rol ===
       "ADMIN"
     ) {
 
-      if (menuAdminRepuestos) {
+      if (
+        menuAdministrarUsuarios
+      ) {
 
-        menuAdminRepuestos
+        menuAdministrarUsuarios
           .classList.remove(
             "d-none"
           );
+
       }
 
 
-      if (menuAdminUsuarios) {
+      if (
+        menuAdministrarRepuestos
+      ) {
 
-        menuAdminUsuarios
+        menuAdministrarRepuestos
           .classList.remove(
             "d-none"
           );
+
       }
 
     }
@@ -364,7 +295,18 @@ function verificarSesion() {
       error
     );
 
-    cerrarSesion();
+
+    localStorage.removeItem(
+      "token"
+    );
+
+    localStorage.removeItem(
+      "usuario"
+    );
+
+
+    window.location.href =
+      "./login.html";
 
   }
 
@@ -372,43 +314,43 @@ function verificarSesion() {
 
 
 // ========================================
-// OBTENER NOMBRE
+// FECHA ACTUAL GUATEMALA
 // ========================================
 
-function obtenerNombreUsuario(
-  usuario
+const hoy =
+  new Date().toLocaleDateString(
+    "en-CA",
+    {
+      timeZone:
+        "America/Guatemala"
+    }
+  );
+
+
+fechaInforme.value =
+  hoy;
+
+
+// ========================================
+// MENÚ RESPONSIVE
+// ========================================
+
+if (
+  btnMenu &&
+  sidebar
 ) {
 
-  if (!usuario) {
-    return "Usuario";
-  }
+  btnMenu.addEventListener(
+    "click",
+    () => {
 
+      sidebar.classList.toggle(
+        "visible"
+      );
 
-  if (usuario.nombreCompleto) {
+    }
+  );
 
-    return usuario.nombreCompleto;
-  }
-
-
-  if (usuario.nombre) {
-
-    return usuario.nombre;
-  }
-
-
-  if (usuario.username) {
-
-    return usuario.username;
-  }
-
-
-  if (usuario.usuario) {
-
-    return usuario.usuario;
-  }
-
-
-  return "Usuario";
 }
 
 
@@ -416,116 +358,32 @@ function obtenerNombreUsuario(
 // CERRAR SESIÓN
 // ========================================
 
-btnCerrarSesion.addEventListener(
-  "click",
-  async () => {
+if (btnCerrarSesion) {
 
-    const resultado =
-      await Swal.fire({
+  btnCerrarSesion.addEventListener(
+    "click",
+    () => {
 
-        icon: "question",
+      localStorage.removeItem(
+        "token"
+      );
 
-        title:
-          "¿Cerrar sesión?",
-
-        text:
-          "Se cerrará tu sesión actual.",
-
-        showCancelButton: true,
-
-        confirmButtonText:
-          "Sí, cerrar sesión",
-
-        cancelButtonText:
-          "Cancelar"
-
-      });
+      localStorage.removeItem(
+        "usuario"
+      );
 
 
-    if (
-      resultado.isConfirmed
-    ) {
-
-      cerrarSesion();
+      window.location.href =
+        "./login.html";
 
     }
-
-  }
-);
-
-
-function cerrarSesion() {
-
-  localStorage.removeItem(
-    "token"
   );
-
-  localStorage.removeItem(
-    "usuario"
-  );
-
-
-  window.location.href =
-    "./login.html";
 
 }
 
 
 // ========================================
-// FECHA GUATEMALA
-// ========================================
-
-function establecerFechaActual() {
-
-  const partes =
-    new Intl.DateTimeFormat(
-      "en-CA",
-      {
-        timeZone:
-          "America/Guatemala",
-
-        year:
-          "numeric",
-
-        month:
-          "2-digit",
-
-        day:
-          "2-digit"
-      }
-    ).formatToParts(
-      new Date()
-    );
-
-
-  const valores = {};
-
-
-  partes.forEach(
-    parte => {
-
-      if (
-        parte.type !==
-        "literal"
-      ) {
-
-        valores[parte.type] =
-          parte.value;
-
-      }
-
-    }
-  );
-
-
-  fechaInforme.value =
-    `${valores.year}-${valores.month}-${valores.day}`;
-
-}
-
-
-// ========================================
-// OTRO TIPO DE EQUIPO
+// MOSTRAR CAMPO "OTRO"
 // ========================================
 
 tipoEquipo.addEventListener(
@@ -542,6 +400,7 @@ tipoEquipo.addEventListener(
           "d-none"
         );
 
+
       otroTipoEquipo.focus();
 
     } else {
@@ -550,6 +409,7 @@ tipoEquipo.addEventListener(
         .classList.add(
           "d-none"
         );
+
 
       otroTipoEquipo.value =
         "";
@@ -566,7 +426,7 @@ tipoEquipo.addEventListener(
 
 fotoEquipo.addEventListener(
   "change",
-  () => {
+  async () => {
 
     const archivo =
       fotoEquipo.files[0];
@@ -577,6 +437,7 @@ fotoEquipo.addEventListener(
       limpiarFotoEquipo();
 
       return;
+
     }
 
 
@@ -586,7 +447,7 @@ fotoEquipo.addEventListener(
       )
     ) {
 
-      Swal.fire({
+      await Swal.fire({
 
         icon: "warning",
 
@@ -594,7 +455,7 @@ fotoEquipo.addEventListener(
           "Archivo no válido",
 
         text:
-          "Selecciona una imagen."
+          "Debes seleccionar una imagen."
 
       });
 
@@ -605,38 +466,185 @@ fotoEquipo.addEventListener(
       limpiarFotoEquipo();
 
       return;
+
     }
 
 
-    const lector =
-      new FileReader();
+    try {
+
+      fotoEquipoActual =
+        await comprimirImagen(
+          archivo
+        );
 
 
-    lector.onload =
-      evento => {
-
-        fotoEquipoActual =
-          evento.target.result;
+      vistaFoto.src =
+        fotoEquipoActual;
 
 
-        vistaFoto.src =
-          fotoEquipoActual;
+      contenedorVistaFoto
+        .classList.remove(
+          "d-none"
+        );
 
 
-        contenedorVistaFoto
-          .classList.remove(
-            "d-none"
-          );
+    } catch (error) {
 
-      };
+      console.error(
+        "Error procesando imagen:",
+        error
+      );
 
 
-    lector.readAsDataURL(
-      archivo
-    );
+      await Swal.fire({
+
+        icon: "error",
+
+        title:
+          "No se pudo cargar la imagen",
+
+        text:
+          "Intenta seleccionar otra fotografía."
+
+      });
+
+    }
 
   }
 );
+
+
+// ========================================
+// COMPRIMIR IMAGEN
+// ========================================
+
+function comprimirImagen(
+  archivo,
+  maxDimension = 1400,
+  calidad = 0.78
+) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const lector =
+        new FileReader();
+
+
+      lector.onload =
+        evento => {
+
+          const imagen =
+            new Image();
+
+
+          imagen.onload =
+            () => {
+
+              let ancho =
+                imagen.width;
+
+              let alto =
+                imagen.height;
+
+
+              if (
+                ancho >
+                maxDimension ||
+                alto >
+                maxDimension
+              ) {
+
+                const proporcion =
+                  Math.min(
+                    maxDimension /
+                      ancho,
+
+                    maxDimension /
+                      alto
+                  );
+
+
+                ancho =
+                  Math.round(
+                    ancho *
+                    proporcion
+                  );
+
+
+                alto =
+                  Math.round(
+                    alto *
+                    proporcion
+                  );
+
+              }
+
+
+              const canvas =
+                document.createElement(
+                  "canvas"
+                );
+
+
+              canvas.width =
+                ancho;
+
+              canvas.height =
+                alto;
+
+
+              const contexto =
+                canvas.getContext(
+                  "2d"
+                );
+
+
+              contexto.drawImage(
+                imagen,
+                0,
+                0,
+                ancho,
+                alto
+              );
+
+
+              const resultado =
+                canvas.toDataURL(
+                  "image/jpeg",
+                  calidad
+                );
+
+
+              resolve(
+                resultado
+              );
+
+            };
+
+
+          imagen.onerror =
+            reject;
+
+
+          imagen.src =
+            evento.target.result;
+
+        };
+
+
+      lector.onerror =
+        reject;
+
+
+      lector.readAsDataURL(
+        archivo
+      );
+
+    }
+  );
+
+}
 
 
 // ========================================
@@ -658,7 +666,7 @@ btnAgregarEquipo.addEventListener(
         icon: "warning",
 
         title:
-          "Tipo de equipo requerido",
+          "Tipo requerido",
 
         text:
           "Selecciona el tipo de equipo."
@@ -666,6 +674,7 @@ btnAgregarEquipo.addEventListener(
       });
 
       return;
+
     }
 
 
@@ -694,9 +703,11 @@ btnAgregarEquipo.addEventListener(
 
         });
 
+
         otroTipoEquipo.focus();
 
         return;
+
       }
 
     }
@@ -717,6 +728,7 @@ btnAgregarEquipo.addEventListener(
       });
 
       return;
+
     }
 
 
@@ -726,7 +738,7 @@ btnAgregarEquipo.addEventListener(
         generarId(),
 
       tipo:
-        normalizarNombreTipo(
+        normalizarTipo(
           tipo
         ),
 
@@ -768,7 +780,7 @@ btnAgregarEquipo.addEventListener(
       text:
         `${nuevoEquipo.tipo} agregado correctamente.`,
 
-      timer: 1200,
+      timer: 1000,
 
       showConfirmButton:
         false
@@ -791,6 +803,7 @@ function generarId() {
   ) {
 
     return crypto.randomUUID();
+
   }
 
 
@@ -808,7 +821,7 @@ function generarId() {
 // NORMALIZAR TIPO
 // ========================================
 
-function normalizarNombreTipo(
+function normalizarTipo(
   texto
 ) {
 
@@ -819,11 +832,6 @@ function normalizarNombreTipo(
         /\s+/g,
         " "
       );
-
-
-  if (!limpio) {
-    return "";
-  }
 
 
   return (
@@ -854,15 +862,19 @@ function renderizarEquipos() {
         "d-none"
       );
 
+
     contenedorTablaEquipos
       .classList.add(
         "d-none"
       );
 
+
     badgeTotalEquipos.textContent =
       "0 equipos";
 
+
     return;
+
   }
 
 
@@ -870,6 +882,7 @@ function renderizarEquipos() {
     .classList.add(
       "d-none"
     );
+
 
   contenedorTablaEquipos
     .classList.remove(
@@ -888,106 +901,116 @@ function renderizarEquipos() {
 
       // NÚMERO
 
-      const tdNumero =
+      const numero =
         document.createElement(
           "td"
         );
 
-      tdNumero.textContent =
+      numero.textContent =
         indice + 1;
 
 
       // FOTO
 
-      const tdFoto =
+      const foto =
         document.createElement(
           "td"
         );
+
 
       const imagen =
         document.createElement(
           "img"
         );
 
+
       imagen.src =
         equipo.foto;
 
-      imagen.alt =
-        equipo.tipo;
 
-      imagen.className =
-        "miniatura-equipo";
+      imagen.style.width =
+        "70px";
 
-      tdFoto.appendChild(
+      imagen.style.height =
+        "55px";
+
+      imagen.style.objectFit =
+        "cover";
+
+      imagen.style.borderRadius =
+        "6px";
+
+
+      foto.appendChild(
         imagen
       );
 
 
       // TIPO
 
-      const tdTipo =
+      const tipo =
         document.createElement(
           "td"
         );
 
-      tdTipo.textContent =
+      tipo.textContent =
         equipo.tipo;
 
 
       // MODELO
 
-      const tdModelo =
+      const modelo =
         document.createElement(
           "td"
         );
 
-      tdModelo.textContent =
+      modelo.textContent =
         equipo.modelo ||
         "—";
 
 
       // SERIE
 
-      const tdSerie =
+      const serie =
         document.createElement(
           "td"
         );
 
-      tdSerie.textContent =
+      serie.textContent =
         equipo.serie ||
         "—";
 
 
       // ACCIÓN
 
-      const tdAccion =
+      const accion =
         document.createElement(
           "td"
         );
 
-      tdAccion.className =
+      accion.className =
         "text-center";
 
 
-      const botonEliminar =
+      const boton =
         document.createElement(
           "button"
         );
 
-      botonEliminar.type =
+
+      boton.type =
         "button";
 
-      botonEliminar.className =
+
+      boton.className =
         "btn btn-outline-danger btn-sm";
 
-      botonEliminar.innerHTML =
+
+      boton.innerHTML =
         '<i class="bi bi-trash"></i>';
 
-      botonEliminar.title =
-        "Eliminar equipo";
 
-
-      botonEliminar.addEventListener(
+      boton.addEventListener(
         "click",
         () => {
 
@@ -999,33 +1022,33 @@ function renderizarEquipos() {
       );
 
 
-      tdAccion.appendChild(
-        botonEliminar
+      accion.appendChild(
+        boton
       );
 
 
       fila.appendChild(
-        tdNumero
+        numero
       );
 
       fila.appendChild(
-        tdFoto
+        foto
       );
 
       fila.appendChild(
-        tdTipo
+        tipo
       );
 
       fila.appendChild(
-        tdModelo
+        modelo
       );
 
       fila.appendChild(
-        tdSerie
+        serie
       );
 
       fila.appendChild(
-        tdAccion
+        accion
       );
 
 
@@ -1038,11 +1061,9 @@ function renderizarEquipos() {
 
 
   badgeTotalEquipos.textContent =
-    `${equipos.length} ${
-      equipos.length === 1
-        ? "equipo"
-        : "equipos"
-    }`;
+    equipos.length === 1
+      ? "1 equipo"
+      : `${equipos.length} equipos`;
 
 }
 
@@ -1057,8 +1078,8 @@ async function eliminarEquipo(
 
   const equipo =
     equipos.find(
-      item =>
-        item.id === id
+      elemento =>
+        elemento.id === id
     );
 
 
@@ -1081,14 +1102,14 @@ async function eliminarEquipo(
       showCancelButton:
         true,
 
-      confirmButtonColor:
-        "#dc3545",
-
       confirmButtonText:
         "Sí, eliminar",
 
       cancelButtonText:
-        "Cancelar"
+        "Cancelar",
+
+      confirmButtonColor:
+        "#dc3545"
 
     });
 
@@ -1098,13 +1119,14 @@ async function eliminarEquipo(
   ) {
 
     return;
+
   }
 
 
   equipos =
     equipos.filter(
-      item =>
-        item.id !== id
+      elemento =>
+        elemento.id !== id
     );
 
 
@@ -1119,43 +1141,7 @@ async function eliminarEquipo(
 // RESUMEN AUTOMÁTICO
 // ========================================
 
-function actualizarResumen() {
-
-  tablaResumen.innerHTML =
-    "";
-
-
-  if (
-    equipos.length === 0
-  ) {
-
-    mensajeResumenVacio
-      .classList.remove(
-        "d-none"
-      );
-
-    contenedorResumen
-      .classList.add(
-        "d-none"
-      );
-
-    totalEquipos.textContent =
-      "0";
-
-    return;
-  }
-
-
-  mensajeResumenVacio
-    .classList.add(
-      "d-none"
-    );
-
-  contenedorResumen
-    .classList.remove(
-      "d-none"
-    );
-
+function obtenerResumen() {
 
   const resumen = {};
 
@@ -1184,19 +1170,16 @@ function actualizarResumen() {
       }
 
 
-      resumen[clave].cantidad++;
+      resumen[clave]
+        .cantidad++;
 
     }
   );
 
 
-  const tipos =
-    Object.values(
-      resumen
-    );
-
-
-  tipos.sort(
+  return Object.values(
+    resumen
+  ).sort(
     (a, b) =>
       a.nombre.localeCompare(
         b.nombre,
@@ -1204,8 +1187,61 @@ function actualizarResumen() {
       )
   );
 
+}
 
-  tipos.forEach(
+
+// ========================================
+// ACTUALIZAR RESUMEN
+// ========================================
+
+function actualizarResumen() {
+
+  tablaResumen.innerHTML =
+    "";
+
+
+  if (
+    equipos.length === 0
+  ) {
+
+    mensajeResumenVacio
+      .classList.remove(
+        "d-none"
+      );
+
+
+    contenedorResumen
+      .classList.add(
+        "d-none"
+      );
+
+
+    totalEquipos.textContent =
+      "0";
+
+
+    return;
+
+  }
+
+
+  mensajeResumenVacio
+    .classList.add(
+      "d-none"
+    );
+
+
+  contenedorResumen
+    .classList.remove(
+      "d-none"
+    );
+
+
+  const resumen =
+    obtenerResumen();
+
+
+  resumen.forEach(
     item => {
 
       const fila =
@@ -1214,36 +1250,37 @@ function actualizarResumen() {
         );
 
 
-      const tdTipo =
+      const tipo =
         document.createElement(
           "td"
         );
 
-      tdTipo.className =
-        "resumen-cantidad";
 
-      tdTipo.textContent =
+      tipo.textContent =
         item.nombre;
 
 
-      const tdCantidad =
+      const cantidad =
         document.createElement(
           "td"
         );
 
-      tdCantidad.className =
-        "text-center resumen-cantidad";
 
-      tdCantidad.textContent =
+      cantidad.className =
+        "text-center fw-bold";
+
+
+      cantidad.textContent =
         item.cantidad;
 
 
       fila.appendChild(
-        tdTipo
+        tipo
       );
 
+
       fila.appendChild(
-        tdCantidad
+        cantidad
       );
 
 
@@ -1262,7 +1299,7 @@ function actualizarResumen() {
 
 
 // ========================================
-// LIMPIAR FORMULARIO DE EQUIPO
+// LIMPIAR FORMULARIO
 // ========================================
 
 function limpiarFormularioEquipo() {
@@ -1270,8 +1307,10 @@ function limpiarFormularioEquipo() {
   tipoEquipo.value =
     "";
 
+
   otroTipoEquipo.value =
     "";
+
 
   contenedorOtroTipo
     .classList.add(
@@ -1282,8 +1321,10 @@ function limpiarFormularioEquipo() {
   modeloEquipo.value =
     "";
 
+
   serieEquipo.value =
     "";
+
 
   fotoEquipo.value =
     "";
@@ -1291,14 +1332,11 @@ function limpiarFormularioEquipo() {
 
   limpiarFotoEquipo();
 
-
-  tipoEquipo.focus();
-
 }
 
 
 // ========================================
-// LIMPIAR FOTO EQUIPO
+// LIMPIAR FOTO
 // ========================================
 
 function limpiarFotoEquipo() {
@@ -1306,9 +1344,11 @@ function limpiarFotoEquipo() {
   fotoEquipoActual =
     "";
 
+
   vistaFoto.removeAttribute(
     "src"
   );
+
 
   contenedorVistaFoto
     .classList.add(
@@ -1319,48 +1359,38 @@ function limpiarFotoEquipo() {
 
 
 // ========================================
-// FOTO GUÍA DE ENVÍO
+// FOTO GUÍA
 // ========================================
 
 fotoGuiaEnvio.addEventListener(
   "change",
-  () => {
+  async () => {
 
-    procesarImagenEvidencia(
-      fotoGuiaEnvio,
-      vistaFotoGuia,
-      contenedorFotoGuia,
-      imagen => {
-
-        fotoGuiaActual =
-          imagen;
-
-      }
-    );
+    fotoGuiaActual =
+      await procesarEvidencia(
+        fotoGuiaEnvio,
+        vistaFotoGuia,
+        contenedorFotoGuia
+      );
 
   }
 );
 
 
 // ========================================
-// FOTO GENERAL DEL ENVÍO
+// FOTO GENERAL
 // ========================================
 
 fotoGeneralEnvio.addEventListener(
   "change",
-  () => {
+  async () => {
 
-    procesarImagenEvidencia(
-      fotoGeneralEnvio,
-      vistaFotoGeneral,
-      contenedorFotoGeneral,
-      imagen => {
-
-        fotoGeneralActual =
-          imagen;
-
-      }
-    );
+    fotoGeneralActual =
+      await procesarEvidencia(
+        fotoGeneralEnvio,
+        vistaFotoGeneral,
+        contenedorFotoGeneral
+      );
 
   }
 );
@@ -1370,11 +1400,10 @@ fotoGeneralEnvio.addEventListener(
 // PROCESAR EVIDENCIA
 // ========================================
 
-function procesarImagenEvidencia(
+async function procesarEvidencia(
   input,
-  imagenVista,
-  contenedor,
-  callback
+  vista,
+  contenedor
 ) {
 
   const archivo =
@@ -1383,17 +1412,18 @@ function procesarImagenEvidencia(
 
   if (!archivo) {
 
-    imagenVista.removeAttribute(
+    vista.removeAttribute(
       "src"
     );
+
 
     contenedor.classList.add(
       "d-none"
     );
 
-    callback("");
 
-    return;
+    return "";
+
   }
 
 
@@ -1403,7 +1433,7 @@ function procesarImagenEvidencia(
     )
   ) {
 
-    Swal.fire({
+    await Swal.fire({
 
       icon: "warning",
 
@@ -1419,56 +1449,248 @@ function procesarImagenEvidencia(
     input.value =
       "";
 
-    imagenVista.removeAttribute(
-      "src"
-    );
 
-    contenedor.classList.add(
-      "d-none"
-    );
+    return "";
 
-    callback("");
-
-    return;
   }
 
 
-  const lector =
-    new FileReader();
+  try {
 
-
-  lector.onload =
-    evento => {
-
-      const imagen =
-        evento.target.result;
-
-
-      imagenVista.src =
-        imagen;
-
-
-      contenedor.classList.remove(
-        "d-none"
+    const imagen =
+      await comprimirImagen(
+        archivo
       );
 
 
-      callback(
-        imagen
-      );
-
-    };
+    vista.src =
+      imagen;
 
 
-  lector.readAsDataURL(
-    archivo
+    contenedor.classList.remove(
+      "d-none"
+    );
+
+
+    return imagen;
+
+
+  } catch (error) {
+
+    console.error(
+      "Error procesando evidencia:",
+      error
+    );
+
+
+    await Swal.fire({
+
+      icon: "error",
+
+      title:
+        "No se pudo cargar la imagen",
+
+      text:
+        "Intenta seleccionar otra fotografía."
+
+    });
+
+
+    return "";
+
+  }
+
+}
+
+
+// ========================================
+// FORMATEAR FECHA
+// ========================================
+
+function formatearFecha(
+  fecha
+) {
+
+  if (!fecha) {
+    return "";
+  }
+
+
+  const partes =
+    fecha.split("-");
+
+
+  if (
+    partes.length !== 3
+  ) {
+
+    return fecha;
+
+  }
+
+
+  return (
+    `${partes[2]}/` +
+    `${partes[1]}/` +
+    `${partes[0]}`
   );
 
 }
 
 
 // ========================================
-// GENERAR PDF
+// CALCULAR DIMENSIONES DE IMAGEN
+// PARA EL PDF
+// ========================================
+
+function obtenerDimensionesImagen(
+  imagenBase64,
+  maxAncho,
+  maxAlto
+) {
+
+  return new Promise(
+    (resolve, reject) => {
+
+      const imagen =
+        new Image();
+
+
+      imagen.onload =
+        () => {
+
+          const proporcion =
+            Math.min(
+              maxAncho /
+                imagen.width,
+
+              maxAlto /
+                imagen.height
+            );
+
+
+          resolve({
+
+            ancho:
+              imagen.width *
+              proporcion,
+
+            alto:
+              imagen.height *
+              proporcion
+
+          });
+
+        };
+
+
+      imagen.onerror =
+        reject;
+
+
+      imagen.src =
+        imagenBase64;
+
+    }
+  );
+
+}
+
+
+// ========================================
+// AGREGAR ENCABEZADO PDF
+// ========================================
+
+function agregarEncabezadoPDF(
+  pdf
+) {
+
+  pdf.setFont(
+    "helvetica",
+    "bold"
+  );
+
+
+  pdf.setFontSize(
+    17
+  );
+
+
+  pdf.text(
+    "TECHASSIST",
+    105,
+    18,
+    {
+      align: "center"
+    }
+  );
+
+
+  pdf.setFontSize(
+    14
+  );
+
+
+  pdf.text(
+    "INFORME DE EQUIPOS ENVIADOS A BODEGA",
+    105,
+    27,
+    {
+      align: "center"
+    }
+  );
+
+
+  pdf.setDrawColor(
+    180
+  );
+
+
+  pdf.line(
+    15,
+    33,
+    195,
+    33
+  );
+
+}
+
+
+// ========================================
+// NUEVA PÁGINA SI ES NECESARIO
+// ========================================
+
+function verificarEspacioPDF(
+  pdf,
+  y,
+  espacioNecesario
+) {
+
+  if (
+    y +
+    espacioNecesario >
+    280
+  ) {
+
+    pdf.addPage();
+
+    agregarEncabezadoPDF(
+      pdf
+    );
+
+
+    return 42;
+
+  }
+
+
+  return y;
+
+}
+
+
+// ========================================
+// GENERAR PDF REAL
 // ========================================
 
 btnGenerarPDF.addEventListener(
@@ -1494,6 +1716,7 @@ btnGenerarPDF.addEventListener(
       });
 
       return;
+
     }
 
 
@@ -1509,11 +1732,12 @@ btnGenerarPDF.addEventListener(
           "No hay equipos",
 
         text:
-          "Agrega al menos un equipo antes de generar el informe."
+          "Agrega al menos un equipo antes de generar el PDF."
 
       });
 
       return;
+
     }
 
 
@@ -1524,16 +1748,15 @@ btnGenerarPDF.addEventListener(
         icon: "warning",
 
         title:
-          "Guía de envío requerida",
+          "Guía requerida",
 
         text:
-          "Agrega una fotografía de la guía de envío."
+          "Agrega la fotografía de la guía de envío."
 
       });
 
-      fotoGuiaEnvio.focus();
-
       return;
+
     }
 
 
@@ -1544,62 +1767,786 @@ btnGenerarPDF.addEventListener(
         icon: "warning",
 
         title:
-          "Fotografía general requerida",
+          "Fotografía requerida",
 
         text:
-          "Agrega una fotografía general de las cajas o equipos enviados."
+          "Agrega la fotografía general del envío."
 
       });
 
-      fotoGeneralEnvio.focus();
-
       return;
+
     }
 
 
     // =====================================
-    // PDF SERÁ EL SIGUIENTE PASO
+    // VERIFICAR JSPDF
     // =====================================
 
-    await Swal.fire({
+    if (
+      !window.jspdf ||
+      !window.jspdf.jsPDF
+    ) {
 
-      icon: "success",
+      await Swal.fire({
 
-      title:
-        "Informe listo",
+        icon: "error",
 
-      html: `
-        <div class="text-start">
+        title:
+          "No se pudo cargar el generador PDF",
 
+        text:
+          "Recarga la página e inténtalo nuevamente."
+
+      });
+
+      return;
+
+    }
+
+
+    const botonOriginal =
+      btnGenerarPDF.innerHTML;
+
+
+    btnGenerarPDF.disabled =
+      true;
+
+
+    btnGenerarPDF.innerHTML = `
+      <span
+        class="spinner-border spinner-border-sm me-1"
+      ></span>
+      Generando PDF...
+    `;
+
+
+    try {
+
+      const {
+        jsPDF
+      } = window.jspdf;
+
+
+      const pdf =
+        new jsPDF({
+
+          orientation:
+            "portrait",
+
+          unit:
+            "mm",
+
+          format:
+            "a4",
+
+          compress:
+            true
+
+        });
+
+
+      // =====================================
+      // PORTADA / DATOS
+      // =====================================
+
+      agregarEncabezadoPDF(
+        pdf
+      );
+
+
+      let y = 43;
+
+
+      pdf.setFont(
+        "helvetica",
+        "normal"
+      );
+
+
+      pdf.setFontSize(
+        11
+      );
+
+
+      pdf.text(
+        `Fecha: ${formatearFecha(fechaInforme.value)}`,
+        18,
+        y
+      );
+
+
+      y += 7;
+
+
+      pdf.text(
+        `Técnico: ${nombreTecnico.value || "-"}`,
+        18,
+        y
+      );
+
+
+      y += 7;
+
+
+      pdf.text(
+        `Bodega: ${bodegaTecnico.value || "-"}`,
+        18,
+        y
+      );
+
+
+      y += 12;
+
+
+      pdf.setFont(
+        "helvetica",
+        "bold"
+      );
+
+
+      pdf.setFontSize(
+        13
+      );
+
+
+      pdf.text(
+        "DETALLE DE EQUIPOS",
+        18,
+        y
+      );
+
+
+      y += 9;
+
+
+      // =====================================
+      // EQUIPOS
+      // =====================================
+
+      for (
+        let indice = 0;
+        indice < equipos.length;
+        indice++
+      ) {
+
+        const equipo =
+          equipos[indice];
+
+
+        y =
+          verificarEspacioPDF(
+            pdf,
+            y,
+            85
+          );
+
+
+        pdf.setFont(
+          "helvetica",
+          "bold"
+        );
+
+
+        pdf.setFontSize(
+          11
+        );
+
+
+        pdf.text(
+          `${indice + 1}. ${equipo.tipo}`,
+          18,
+          y
+        );
+
+
+        y += 6;
+
+
+        pdf.setFont(
+          "helvetica",
+          "normal"
+        );
+
+
+        pdf.setFontSize(
+          10
+        );
+
+
+        pdf.text(
+          `Modelo: ${
+            equipo.modelo ||
+            "No especificado"
+          }`,
+          22,
+          y
+        );
+
+
+        y += 5;
+
+
+        pdf.text(
+          `Número de serie: ${
+            equipo.serie ||
+            "No especificado"
+          }`,
+          22,
+          y
+        );
+
+
+        y += 7;
+
+
+        // IMAGEN EQUIPO
+
+        try {
+
+          const dimensiones =
+            await obtenerDimensionesImagen(
+              equipo.foto,
+              85,
+              55
+            );
+
+
+          y =
+            verificarEspacioPDF(
+              pdf,
+              y,
+              dimensiones.alto +
+                12
+            );
+
+
+          pdf.addImage(
+            equipo.foto,
+            "JPEG",
+            22,
+            y,
+            dimensiones.ancho,
+            dimensiones.alto,
+            undefined,
+            "FAST"
+          );
+
+
+          y +=
+            dimensiones.alto +
+            7;
+
+
+        } catch (error) {
+
+          console.error(
+            "Error agregando imagen del equipo:",
+            error
+          );
+
+
+          pdf.text(
+            "No fue posible insertar la fotografía.",
+            22,
+            y
+          );
+
+
+          y += 7;
+
+        }
+
+
+        pdf.setDrawColor(
+          220
+        );
+
+
+        pdf.line(
+          18,
+          y,
+          192,
+          y
+        );
+
+
+        y += 8;
+
+      }
+
+
+      // =====================================
+      // GUÍA DE ENVÍO
+      // =====================================
+
+      pdf.addPage();
+
+
+      agregarEncabezadoPDF(
+        pdf
+      );
+
+
+      y = 43;
+
+
+      pdf.setFont(
+        "helvetica",
+        "bold"
+      );
+
+
+      pdf.setFontSize(
+        13
+      );
+
+
+      pdf.text(
+        "GUÍA DE ENVÍO",
+        18,
+        y
+      );
+
+
+      y += 8;
+
+
+      try {
+
+        const dimensionesGuia =
+          await obtenerDimensionesImagen(
+            fotoGuiaActual,
+            170,
+            190
+          );
+
+
+        pdf.addImage(
+          fotoGuiaActual,
+          "JPEG",
+          20,
+          y,
+          dimensionesGuia.ancho,
+          dimensionesGuia.alto,
+          undefined,
+          "FAST"
+        );
+
+
+        y +=
+          dimensionesGuia.alto +
+          10;
+
+
+      } catch (error) {
+
+        console.error(
+          "Error agregando guía:",
+          error
+        );
+
+      }
+
+
+      // =====================================
+      // FOTO GENERAL
+      // =====================================
+
+      pdf.addPage();
+
+
+      agregarEncabezadoPDF(
+        pdf
+      );
+
+
+      y = 43;
+
+
+      pdf.setFont(
+        "helvetica",
+        "bold"
+      );
+
+
+      pdf.setFontSize(
+        13
+      );
+
+
+      pdf.text(
+        "EVIDENCIA GENERAL DEL ENVÍO",
+        18,
+        y
+      );
+
+
+      y += 8;
+
+
+      try {
+
+        const dimensionesGeneral =
+          await obtenerDimensionesImagen(
+            fotoGeneralActual,
+            170,
+            190
+          );
+
+
+        pdf.addImage(
+          fotoGeneralActual,
+          "JPEG",
+          20,
+          y,
+          dimensionesGeneral.ancho,
+          dimensionesGeneral.alto,
+          undefined,
+          "FAST"
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          "Error agregando evidencia general:",
+          error
+        );
+
+      }
+
+
+      // =====================================
+      // RESUMEN FINAL
+      // =====================================
+
+      pdf.addPage();
+
+
+      agregarEncabezadoPDF(
+        pdf
+      );
+
+
+      y = 45;
+
+
+      pdf.setFont(
+        "helvetica",
+        "bold"
+      );
+
+
+      pdf.setFontSize(
+        14
+      );
+
+
+      pdf.text(
+        "INFORME GENERAL",
+        105,
+        y,
+        {
+          align: "center"
+        }
+      );
+
+
+      y += 12;
+
+
+      const resumen =
+        obtenerResumen();
+
+
+      // ENCABEZADO TABLA
+
+      pdf.setFillColor(
+        240,
+        240,
+        240
+      );
+
+
+      pdf.rect(
+        25,
+        y,
+        160,
+        10,
+        "F"
+      );
+
+
+      pdf.setFont(
+        "helvetica",
+        "bold"
+      );
+
+
+      pdf.setFontSize(
+        11
+      );
+
+
+      pdf.text(
+        "Tipo de equipo",
+        30,
+        y + 7
+      );
+
+
+      pdf.text(
+        "Cantidad",
+        175,
+        y + 7,
+        {
+          align: "right"
+        }
+      );
+
+
+      y += 10;
+
+
+      // FILAS
+
+      resumen.forEach(
+        item => {
+
+          pdf.setFont(
+            "helvetica",
+            "normal"
+          );
+
+
+          pdf.text(
+            item.nombre,
+            30,
+            y + 7
+          );
+
+
+          pdf.text(
+            String(
+              item.cantidad
+            ),
+            175,
+            y + 7,
+            {
+              align: "right"
+            }
+          );
+
+
+          pdf.setDrawColor(
+            220
+          );
+
+
+          pdf.line(
+            25,
+            y + 10,
+            185,
+            y + 10
+          );
+
+
+          y += 10;
+
+        }
+      );
+
+
+      // TOTAL
+
+      y += 3;
+
+
+      pdf.setFont(
+        "helvetica",
+        "bold"
+      );
+
+
+      pdf.setFontSize(
+        12
+      );
+
+
+      pdf.text(
+        "TOTAL DE EQUIPOS",
+        30,
+        y + 7
+      );
+
+
+      pdf.text(
+        String(
+          equipos.length
+        ),
+        175,
+        y + 7,
+        {
+          align: "right"
+        }
+      );
+
+
+      pdf.setDrawColor(
+        100
+      );
+
+
+      pdf.line(
+        25,
+        y + 10,
+        185,
+        y + 10
+      );
+
+
+      // =====================================
+      // NUMERAR PÁGINAS
+      // =====================================
+
+      const cantidadPaginas =
+        pdf.getNumberOfPages();
+
+
+      for (
+        let pagina = 1;
+        pagina <= cantidadPaginas;
+        pagina++
+      ) {
+
+        pdf.setPage(
+          pagina
+        );
+
+
+        pdf.setFont(
+          "helvetica",
+          "normal"
+        );
+
+
+        pdf.setFontSize(
+          8
+        );
+
+
+        pdf.setTextColor(
+          120
+        );
+
+
+        pdf.text(
+          `Página ${pagina} de ${cantidadPaginas}`,
+          105,
+          290,
+          {
+            align: "center"
+          }
+        );
+
+
+        pdf.setTextColor(
+          0
+        );
+
+      }
+
+
+      // =====================================
+      // NOMBRE DEL ARCHIVO
+      // =====================================
+
+      const fechaArchivo =
+        fechaInforme.value ||
+        "informe";
+
+
+      const nombreArchivo =
+        `Informe_Equipos_${fechaArchivo}.pdf`;
+
+
+      // =====================================
+      // DESCARGAR PDF
+      // =====================================
+
+      pdf.save(
+        nombreArchivo
+      );
+
+
+      await Swal.fire({
+
+        icon: "success",
+
+        title:
+          "PDF generado",
+
+        html: `
           <p>
-            Los datos necesarios para generar
-            el PDF están completos.
-          </p>
-
-          <hr>
-
-          <p class="mb-1">
-            <strong>Equipos:</strong>
-            ${equipos.length}
-          </p>
-
-          <p class="mb-1">
-            <strong>Guía de envío:</strong>
-            Agregada
+            El informe fue generado correctamente.
           </p>
 
           <p class="mb-0">
-            <strong>Evidencia general:</strong>
-            Agregada
+            <strong>
+              Total de equipos:
+            </strong>
+            ${equipos.length}
           </p>
+        `,
 
-        </div>
-      `,
+        confirmButtonText:
+          "Aceptar",
 
-      confirmButtonText:
-        "Aceptar"
+        confirmButtonColor:
+          "#0d6efd"
 
-    });
+      });
+
+
+    } catch (error) {
+
+      console.error(
+        "Error generando PDF:",
+        error
+      );
+
+
+      await Swal.fire({
+
+        icon: "error",
+
+        title:
+          "No se pudo generar el PDF",
+
+        text:
+          error.message ||
+          "Ocurrió un error al generar el informe.",
+
+        confirmButtonText:
+          "Aceptar",
+
+        confirmButtonColor:
+          "#dc3545"
+
+      });
+
+
+    } finally {
+
+      btnGenerarPDF.disabled =
+        false;
+
+
+      btnGenerarPDF.innerHTML =
+        botonOriginal;
+
+    }
 
   }
 );
