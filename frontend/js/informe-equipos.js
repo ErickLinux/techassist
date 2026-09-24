@@ -1,120 +1,160 @@
 // ========================================
-// SESIÓN
+// INFORME DE EQUIPOS - TECHASSIST
 // ========================================
-
-const token =
-  localStorage.getItem("token");
-
-const usuarioGuardado =
-  localStorage.getItem("usuario");
 
 
 // ========================================
-// ELEMENTOS
+// ELEMENTOS GENERALES
 // ========================================
-
-const nombreUsuario =
-  document.getElementById("nombreUsuario");
-
-const nombreTecnico =
-  document.getElementById("nombreTecnico");
-
-const bodegaTecnico =
-  document.getElementById("bodegaTecnico");
-
-const fechaInforme =
-  document.getElementById("fechaInforme");
-
-const btnMenu =
-  document.getElementById("btnMenu");
 
 const sidebar =
-  document.getElementById("sidebar");
+  document.getElementById(
+    "sidebar"
+  );
+
+const btnMenu =
+  document.getElementById(
+    "btnMenu"
+  );
 
 const btnCerrarSesion =
-  document.getElementById("btnCerrarSesion");
-
-const menuAdministrarUsuarios =
   document.getElementById(
-    "menuAdministrarUsuarios"
+    "btnCerrarSesion"
   );
 
-const menuAdministrarRepuestos =
+const nombreUsuarioTop =
   document.getElementById(
-    "menuAdministrarRepuestos"
+    "nombreUsuarioTop"
+  );
+
+const rolUsuarioTop =
+  document.getElementById(
+    "rolUsuarioTop"
+  );
+
+const menuAdminRepuestos =
+  document.getElementById(
+    "menuAdminRepuestos"
+  );
+
+const menuAdminUsuarios =
+  document.getElementById(
+    "menuAdminUsuarios"
   );
 
 
+// ========================================
+// DATOS DEL INFORME
+// ========================================
+
+const fechaInforme =
+  document.getElementById(
+    "fechaInforme"
+  );
+
+const nombreTecnico =
+  document.getElementById(
+    "nombreTecnico"
+  );
+
+const bodegaTecnico =
+  document.getElementById(
+    "bodegaTecnico"
+  );
+
+
+// ========================================
 // EQUIPO
+// ========================================
 
 const tipoEquipo =
-  document.getElementById("tipoEquipo");
+  document.getElementById(
+    "tipoEquipo"
+  );
+
+const contenedorOtroTipo =
+  document.getElementById(
+    "contenedorOtroTipo"
+  );
+
+const otroTipoEquipo =
+  document.getElementById(
+    "otroTipoEquipo"
+  );
 
 const fotoEquipo =
-  document.getElementById("fotoEquipo");
+  document.getElementById(
+    "fotoEquipo"
+  );
 
-const contenedorFoto =
-  document.getElementById("contenedorFoto");
+const contenedorVistaFoto =
+  document.getElementById(
+    "contenedorVistaFoto"
+  );
 
 const vistaFoto =
-  document.getElementById("vistaFoto");
-  const btnAnalizarFoto =
   document.getElementById(
-    "btnAnalizarFoto"
-  );
-
-const estadoOCR =
-  document.getElementById(
-    "estadoOCR"
-  );
-
-const textoEstadoOCR =
-  document.getElementById(
-    "textoEstadoOCR"
-  );
-
-const progresoOCR =
-  document.getElementById(
-    "progresoOCR"
-  );
-  const contenedorImagenOCR =
-  document.getElementById(
-    "contenedorImagenOCR"
-  );
-
-const vistaImagenOCR =
-  document.getElementById(
-    "vistaImagenOCR"
+    "vistaFoto"
   );
 
 const modeloEquipo =
-  document.getElementById("modeloEquipo");
+  document.getElementById(
+    "modeloEquipo"
+  );
 
 const serieEquipo =
-  document.getElementById("serieEquipo");
+  document.getElementById(
+    "serieEquipo"
+  );
 
 const btnAgregarEquipo =
-  document.getElementById("btnAgregarEquipo");
-
-const tablaEquipos =
-  document.getElementById("tablaEquipos");
-
-const cantidadRegistrados =
   document.getElementById(
-    "cantidadRegistrados"
+    "btnAgregarEquipo"
   );
 
 
+// ========================================
+// TABLA EQUIPOS
+// ========================================
+
+const mensajeSinEquipos =
+  document.getElementById(
+    "mensajeSinEquipos"
+  );
+
+const contenedorTablaEquipos =
+  document.getElementById(
+    "contenedorTablaEquipos"
+  );
+
+const tablaEquipos =
+  document.getElementById(
+    "tablaEquipos"
+  );
+
+const badgeTotalEquipos =
+  document.getElementById(
+    "badgeTotalEquipos"
+  );
+
+
+// ========================================
 // RESUMEN
+// ========================================
+
+const mensajeResumenVacio =
+  document.getElementById(
+    "mensajeResumenVacio"
+  );
 
 const contenedorResumen =
   document.getElementById(
     "contenedorResumen"
   );
 
-const btnAgregarTipo =
+const tablaResumen =
   document.getElementById(
-    "btnAgregarTipo"
+    "tablaResumen"
   );
 
 const totalEquipos =
@@ -122,9 +162,50 @@ const totalEquipos =
     "totalEquipos"
   );
 
-const btnGenerarInforme =
+
+// ========================================
+// EVIDENCIAS
+// ========================================
+
+const fotoGuiaEnvio =
   document.getElementById(
-    "btnGenerarInforme"
+    "fotoGuiaEnvio"
+  );
+
+const contenedorFotoGuia =
+  document.getElementById(
+    "contenedorFotoGuia"
+  );
+
+const vistaFotoGuia =
+  document.getElementById(
+    "vistaFotoGuia"
+  );
+
+
+const fotoGeneralEnvio =
+  document.getElementById(
+    "fotoGeneralEnvio"
+  );
+
+const contenedorFotoGeneral =
+  document.getElementById(
+    "contenedorFotoGeneral"
+  );
+
+const vistaFotoGeneral =
+  document.getElementById(
+    "vistaFotoGeneral"
+  );
+
+
+// ========================================
+// PDF
+// ========================================
+
+const btnGenerarPDF =
+  document.getElementById(
+    "btnGenerarPDF"
   );
 
 
@@ -134,93 +215,200 @@ const btnGenerarInforme =
 
 let equipos = [];
 
-let fotoActual = null;
+let fotoEquipoActual = "";
 
-let contadorResumen = 0;
+let fotoGuiaActual = "";
+
+let fotoGeneralActual = "";
 
 
 // ========================================
-// VALIDAR SESIÓN
+// INICIALIZACIÓN
 // ========================================
 
-if (!token || !usuarioGuardado) {
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
 
-  window.location.href =
-    "./login.html";
+    verificarSesion();
 
-} else {
+    establecerFechaActual();
 
-  try {
+    renderizarEquipos();
 
-    const usuario =
-      JSON.parse(usuarioGuardado);
+    actualizarResumen();
 
-    nombreUsuario.textContent =
-      usuario.nombre;
-
-    nombreTecnico.value =
-      usuario.nombre;
-
-    bodegaTecnico.value =
-      usuario.bodega || "";
-
-
-    if (usuario.rol === "ADMIN") {
-
-      if (menuAdministrarUsuarios) {
-
-        menuAdministrarUsuarios
-          .classList.remove("d-none");
-      }
-
-      if (menuAdministrarRepuestos) {
-
-        menuAdministrarRepuestos
-          .classList.remove("d-none");
-      }
-    }
-
-  } catch (error) {
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-
-    window.location.href =
-      "./login.html";
   }
-}
+);
 
 
 // ========================================
-// FECHA GUATEMALA
+// MENÚ MÓVIL
 // ========================================
 
-const hoy =
-  new Date().toLocaleDateString(
-    "en-CA",
-    {
-      timeZone: "America/Guatemala"
-    }
-  );
-
-fechaInforme.value = hoy;
-
-
-// ========================================
-// MENÚ RESPONSIVE
-// ========================================
-
-if (btnMenu && sidebar) {
+if (btnMenu) {
 
   btnMenu.addEventListener(
     "click",
     () => {
 
       sidebar.classList.toggle(
-        "visible"
+        "show"
       );
+
     }
   );
+
+}
+
+
+// ========================================
+// VERIFICAR SESIÓN
+// ========================================
+
+function verificarSesion() {
+
+  const token =
+    localStorage.getItem(
+      "token"
+    );
+
+  const usuarioTexto =
+    localStorage.getItem(
+      "usuario"
+    );
+
+
+  if (
+    !token ||
+    !usuarioTexto
+  ) {
+
+    window.location.href =
+      "./login.html";
+
+    return;
+  }
+
+
+  try {
+
+    const usuario =
+      JSON.parse(
+        usuarioTexto
+      );
+
+
+    const nombre =
+      obtenerNombreUsuario(
+        usuario
+      );
+
+
+    const rol =
+      usuario.rol ||
+      usuario.role ||
+      "TECNICO";
+
+
+    const bodega =
+      usuario.bodega ||
+      usuario.codigoBodega ||
+      usuario.bodegaCodigo ||
+      "";
+
+
+    nombreUsuarioTop.textContent =
+      nombre;
+
+    rolUsuarioTop.textContent =
+      rol;
+
+
+    nombreTecnico.value =
+      nombre;
+
+    bodegaTecnico.value =
+      bodega;
+
+
+    if (
+      String(rol)
+        .toUpperCase() ===
+      "ADMIN"
+    ) {
+
+      if (menuAdminRepuestos) {
+
+        menuAdminRepuestos
+          .classList.remove(
+            "d-none"
+          );
+      }
+
+
+      if (menuAdminUsuarios) {
+
+        menuAdminUsuarios
+          .classList.remove(
+            "d-none"
+          );
+      }
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Error leyendo usuario:",
+      error
+    );
+
+    cerrarSesion();
+
+  }
+
+}
+
+
+// ========================================
+// OBTENER NOMBRE
+// ========================================
+
+function obtenerNombreUsuario(
+  usuario
+) {
+
+  if (!usuario) {
+    return "Usuario";
+  }
+
+
+  if (usuario.nombreCompleto) {
+
+    return usuario.nombreCompleto;
+  }
+
+
+  if (usuario.nombre) {
+
+    return usuario.nombre;
+  }
+
+
+  if (usuario.username) {
+
+    return usuario.username;
+  }
+
+
+  if (usuario.usuario) {
+
+    return usuario.usuario;
+  }
+
+
+  return "Usuario";
 }
 
 
@@ -228,24 +416,152 @@ if (btnMenu && sidebar) {
 // CERRAR SESIÓN
 // ========================================
 
-if (btnCerrarSesion) {
+btnCerrarSesion.addEventListener(
+  "click",
+  async () => {
 
-  btnCerrarSesion.addEventListener(
-    "click",
-    () => {
+    const resultado =
+      await Swal.fire({
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("usuario");
+        icon: "question",
 
-      window.location.href =
-        "./login.html";
+        title:
+          "¿Cerrar sesión?",
+
+        text:
+          "Se cerrará tu sesión actual.",
+
+        showCancelButton: true,
+
+        confirmButtonText:
+          "Sí, cerrar sesión",
+
+        cancelButtonText:
+          "Cancelar"
+
+      });
+
+
+    if (
+      resultado.isConfirmed
+    ) {
+
+      cerrarSesion();
+
     }
+
+  }
+);
+
+
+function cerrarSesion() {
+
+  localStorage.removeItem(
+    "token"
   );
+
+  localStorage.removeItem(
+    "usuario"
+  );
+
+
+  window.location.href =
+    "./login.html";
+
 }
 
 
 // ========================================
-// MOSTRAR FOTO
+// FECHA GUATEMALA
+// ========================================
+
+function establecerFechaActual() {
+
+  const partes =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:
+          "America/Guatemala",
+
+        year:
+          "numeric",
+
+        month:
+          "2-digit",
+
+        day:
+          "2-digit"
+      }
+    ).formatToParts(
+      new Date()
+    );
+
+
+  const valores = {};
+
+
+  partes.forEach(
+    parte => {
+
+      if (
+        parte.type !==
+        "literal"
+      ) {
+
+        valores[parte.type] =
+          parte.value;
+
+      }
+
+    }
+  );
+
+
+  fechaInforme.value =
+    `${valores.year}-${valores.month}-${valores.day}`;
+
+}
+
+
+// ========================================
+// OTRO TIPO DE EQUIPO
+// ========================================
+
+tipoEquipo.addEventListener(
+  "change",
+  () => {
+
+    if (
+      tipoEquipo.value ===
+      "Otro"
+    ) {
+
+      contenedorOtroTipo
+        .classList.remove(
+          "d-none"
+        );
+
+      otroTipoEquipo.focus();
+
+    } else {
+
+      contenedorOtroTipo
+        .classList.add(
+          "d-none"
+        );
+
+      otroTipoEquipo.value =
+        "";
+
+    }
+
+  }
+);
+
+
+// ========================================
+// FOTO DEL EQUIPO
 // ========================================
 
 fotoEquipo.addEventListener(
@@ -254,951 +570,73 @@ fotoEquipo.addEventListener(
 
     const archivo =
       fotoEquipo.files[0];
-      contenedorImagenOCR.classList.add(
-  "d-none"
-);
 
-vistaImagenOCR.removeAttribute(
-  "src"
-);
 
     if (!archivo) {
 
-      fotoActual = null;
-
-      vistaFoto.removeAttribute("src");
-
-      contenedorFoto.classList.add(
-        "d-none"
-      );
+      limpiarFotoEquipo();
 
       return;
     }
 
 
-    if (!archivo.type.startsWith("image/")) {
+    if (
+      !archivo.type.startsWith(
+        "image/"
+      )
+    ) {
 
       Swal.fire({
+
         icon: "warning",
-        title: "Archivo no válido",
+
+        title:
+          "Archivo no válido",
+
         text:
-          "Selecciona una fotografía del equipo."
+          "Selecciona una imagen."
+
       });
 
-      fotoEquipo.value = "";
+
+      fotoEquipo.value =
+        "";
+
+      limpiarFotoEquipo();
 
       return;
     }
-
-
-    fotoActual = archivo;
 
 
     const lector =
       new FileReader();
 
 
-    lector.onload = (event) => {
+    lector.onload =
+      evento => {
 
-      vistaFoto.src =
-        event.target.result;
+        fotoEquipoActual =
+          evento.target.result;
 
-      contenedorFoto.classList.remove(
-        "d-none"
-      );
-    };
+
+        vistaFoto.src =
+          fotoEquipoActual;
+
+
+        contenedorVistaFoto
+          .classList.remove(
+            "d-none"
+          );
+
+      };
 
 
     lector.readAsDataURL(
       archivo
     );
+
   }
 );
-
-// ========================================
-// ANALIZAR ETIQUETA CON OCR
-// ========================================
-
-btnAnalizarFoto.addEventListener(
-  "click",
-  async () => {
-
-    if (!fotoActual) {
-
-      await Swal.fire({
-        icon: "warning",
-        title: "Fotografía requerida",
-        text:
-          "Primero toma o selecciona una fotografía."
-      });
-
-      return;
-    }
-
-
-    try {
-
-      btnAnalizarFoto.disabled = true;
-
-      btnAnalizarFoto.innerHTML = `
-        <span
-          class="spinner-border spinner-border-sm me-1"
-        ></span>
-        Analizando...
-      `;
-
-
-      estadoOCR.classList.remove(
-        "d-none"
-      );
-
-      progresoOCR.style.width =
-        "0%";
-
-      textoEstadoOCR.textContent =
-        "Preparando imagen...";
-
-
-      // =====================================
-      // MEJORAR IMAGEN
-      // =====================================
-
-      const imagenProcesada =
-        await prepararImagenOCR(
-          vistaFoto
-        );
-
-
-      textoEstadoOCR.textContent =
-        "Iniciando reconocimiento...";
-
-
-      // =====================================
-      // OCR
-      // =====================================
-
-      const resultado =
-        await Tesseract.recognize(
-          imagenProcesada,
-          "eng",
-          {
-            logger: mensaje => {
-
-              actualizarProgresoOCR(
-                mensaje
-              );
-            }
-          }
-        );
-
-
-      const texto =
-        resultado.data.text;
-
-
-      console.log(
-        "=============================="
-      );
-
-      console.log(
-        "TEXTO OCR DETECTADO:"
-      );
-
-      console.log(texto);
-
-      console.log(
-        "=============================="
-      );
-
-
-      const datos =
-        extraerDatosEtiqueta(
-          texto
-        );
-
-
-      console.log(
-        "DATOS EXTRAÍDOS:",
-        datos
-      );
-
-
-      if (datos.modelo) {
-
-        modeloEquipo.value =
-          datos.modelo;
-      }
-
-
-      if (datos.serie) {
-
-        serieEquipo.value =
-          datos.serie;
-      }
-
-
-      estadoOCR.classList.add(
-        "d-none"
-      );
-
-
-      if (
-        datos.modelo &&
-        datos.serie
-      ) {
-
-        await Swal.fire({
-
-          icon: "success",
-
-          title:
-            "Datos detectados",
-
-          html: `
-            <div class="text-start">
-
-              <p>
-                TechAssist detectó los siguientes
-                datos. Revísalos antes de agregar
-                el equipo.
-              </p>
-
-              <div class="mb-2">
-                <strong>Modelo:</strong>
-                ${datos.modelo}
-              </div>
-
-              <div>
-                <strong>Serie:</strong>
-                ${datos.serie}
-              </div>
-
-            </div>
-          `
-        });
-
-      } else {
-
-        await Swal.fire({
-
-          icon: "warning",
-
-          title:
-            "Detección incompleta",
-
-          html: `
-            <p>
-              TechAssist no pudo identificar
-              automáticamente todos los datos.
-            </p>
-
-            <p class="mb-0">
-              Intenta acercar más la cámara
-              a la etiqueta.
-            </p>
-          `
-        });
-      }
-
-
-    } catch (error) {
-
-      console.error(
-        "Error OCR:",
-        error
-      );
-
-
-      estadoOCR.classList.add(
-        "d-none"
-      );
-
-
-      await Swal.fire({
-
-        icon: "error",
-
-        title:
-          "No fue posible analizar la imagen",
-
-        text:
-          "Intenta tomar una fotografía más cercana y clara de la etiqueta."
-      });
-
-
-    } finally {
-
-      btnAnalizarFoto.disabled =
-        false;
-
-
-      btnAnalizarFoto.innerHTML = `
-        <i class="bi bi-search me-1"></i>
-        Detectar modelo y serie
-      `;
-    }
-  }
-);
-
-
-// ========================================
-// PREPARAR IMAGEN PARA OCR
-// ========================================
-
-function prepararImagenOCR(
-  imagen
-) {
-
-  return new Promise(
-    (resolve, reject) => {
-
-      try {
-
-        // =====================================
-        // CANVAS ORIGINAL
-        // =====================================
-
-        const canvasOriginal =
-          document.createElement(
-            "canvas"
-          );
-
-        const ctxOriginal =
-          canvasOriginal.getContext(
-            "2d",
-            {
-              willReadFrequently: true
-            }
-          );
-
-
-        canvasOriginal.width =
-          imagen.naturalWidth;
-
-        canvasOriginal.height =
-          imagen.naturalHeight;
-
-
-        ctxOriginal.drawImage(
-          imagen,
-          0,
-          0
-        );
-
-
-        const ancho =
-          canvasOriginal.width;
-
-        const alto =
-          canvasOriginal.height;
-
-
-        // =====================================
-        // BUSCAR ZONA CLARA
-        // =====================================
-
-        const datosOriginales =
-          ctxOriginal.getImageData(
-            0,
-            0,
-            ancho,
-            alto
-          );
-
-
-        const pixeles =
-          datosOriginales.data;
-
-
-        let minX = ancho;
-        let minY = alto;
-
-        let maxX = 0;
-        let maxY = 0;
-
-        let encontrados = 0;
-
-
-        // Analizamos bloques en vez de
-        // cada píxel para mejorar rendimiento.
-
-        const salto = 4;
-
-
-        for (
-          let y = 0;
-          y < alto;
-          y += salto
-        ) {
-
-          for (
-            let x = 0;
-            x < ancho;
-            x += salto
-          ) {
-
-            const indice =
-              (
-                y * ancho +
-                x
-              ) * 4;
-
-
-            const r =
-              pixeles[indice];
-
-            const g =
-              pixeles[indice + 1];
-
-            const b =
-              pixeles[indice + 2];
-
-
-            const brillo =
-              (
-                r +
-                g +
-                b
-              ) / 3;
-
-
-            // Buscamos zonas bastante claras.
-            // La etiqueta del ejemplo tiene
-            // fondo blanco/gris claro.
-
-            if (brillo > 165) {
-
-              minX =
-                Math.min(
-                  minX,
-                  x
-                );
-
-              minY =
-                Math.min(
-                  minY,
-                  y
-                );
-
-              maxX =
-                Math.max(
-                  maxX,
-                  x
-                );
-
-              maxY =
-                Math.max(
-                  maxY,
-                  y
-                );
-
-              encontrados++;
-            }
-          }
-        }
-
-
-        // =====================================
-        // DEFINIR RECORTE
-        // =====================================
-
-        let recorteX = 0;
-        let recorteY = 0;
-
-        let recorteAncho =
-          ancho;
-
-        let recorteAlto =
-          alto;
-
-
-        if (
-          encontrados > 50 &&
-          maxX > minX &&
-          maxY > minY
-        ) {
-
-          // Margen alrededor de la zona
-          // detectada.
-
-          const margenX =
-            Math.round(
-              ancho * 0.025
-            );
-
-          const margenY =
-            Math.round(
-              alto * 0.04
-            );
-
-
-          recorteX =
-            Math.max(
-              0,
-              minX - margenX
-            );
-
-          recorteY =
-            Math.max(
-              0,
-              minY - margenY
-            );
-
-
-          const limiteX =
-            Math.min(
-              ancho,
-              maxX + margenX
-            );
-
-          const limiteY =
-            Math.min(
-              alto,
-              maxY + margenY
-            );
-
-
-          recorteAncho =
-            limiteX -
-            recorteX;
-
-          recorteAlto =
-            limiteY -
-            recorteY;
-        }
-
-
-        console.log(
-          "RECORTE OCR:",
-          {
-            x: recorteX,
-            y: recorteY,
-            ancho: recorteAncho,
-            alto: recorteAlto
-          }
-        );
-
-
-        // =====================================
-        // AMPLIAR RECORTE
-        // =====================================
-
-        const escala = 3;
-
-
-        const canvasOCR =
-          document.createElement(
-            "canvas"
-          );
-
-
-        canvasOCR.width =
-          Math.round(
-            recorteAncho *
-            escala
-          );
-
-        canvasOCR.height =
-          Math.round(
-            recorteAlto *
-            escala
-          );
-
-
-        const ctxOCR =
-          canvasOCR.getContext(
-            "2d",
-            {
-              willReadFrequently: true
-            }
-          );
-
-
-        // Suavizado al ampliar
-
-        ctxOCR.imageSmoothingEnabled =
-          true;
-
-        ctxOCR.imageSmoothingQuality =
-          "high";
-
-
-        ctxOCR.drawImage(
-          canvasOriginal,
-
-          recorteX,
-          recorteY,
-          recorteAncho,
-          recorteAlto,
-
-          0,
-          0,
-          canvasOCR.width,
-          canvasOCR.height
-        );
-
-
-        // =====================================
-        // ESCALA DE GRISES
-        // =====================================
-
-        const datosOCR =
-          ctxOCR.getImageData(
-            0,
-            0,
-            canvasOCR.width,
-            canvasOCR.height
-          );
-
-
-        const pixelesOCR =
-          datosOCR.data;
-
-
-        for (
-          let i = 0;
-          i < pixelesOCR.length;
-          i += 4
-        ) {
-
-          const r =
-            pixelesOCR[i];
-
-          const g =
-            pixelesOCR[i + 1];
-
-          const b =
-            pixelesOCR[i + 2];
-
-
-          let gris =
-            (
-              r * 0.299 +
-              g * 0.587 +
-              b * 0.114
-            );
-
-
-          // =================================
-          // AUMENTAR CONTRASTE
-          // =================================
-
-          gris =
-            (
-              (gris - 128) *
-              1.7
-            ) + 128;
-
-
-          gris =
-            Math.max(
-              0,
-              Math.min(
-                255,
-                gris
-              )
-            );
-
-
-          pixelesOCR[i] =
-            gris;
-
-          pixelesOCR[i + 1] =
-            gris;
-
-          pixelesOCR[i + 2] =
-            gris;
-        }
-
-
-        ctxOCR.putImageData(
-          datosOCR,
-          0,
-          0
-        );
-
-
-        // =====================================
-        // GENERAR IMAGEN
-        // =====================================
-
-        const imagenProcesada =
-          canvasOCR.toDataURL(
-            "image/png"
-          );
-
-
-        // Mostrar exactamente lo que
-        // recibirá Tesseract.
-
-        vistaImagenOCR.src =
-          imagenProcesada;
-
-        contenedorImagenOCR
-          .classList.remove(
-            "d-none"
-          );
-
-
-        resolve(
-          imagenProcesada
-        );
-
-
-      } catch (error) {
-
-        reject(error);
-      }
-    }
-  );
-}
-
-
-// ========================================
-// PROGRESO OCR
-// ========================================
-
-function actualizarProgresoOCR(
-  mensaje
-) {
-
-  if (
-    mensaje.status ===
-    "recognizing text"
-  ) {
-
-    const porcentaje =
-      Math.round(
-        (mensaje.progress || 0) *
-        100
-      );
-
-
-    progresoOCR.style.width =
-      `${porcentaje}%`;
-
-
-    textoEstadoOCR.textContent =
-      `Reconociendo texto: ${porcentaje}%`;
-  }
-
-  else if (
-    mensaje.status ===
-    "loading language traineddata"
-  ) {
-
-    textoEstadoOCR.textContent =
-      "Cargando reconocimiento...";
-  }
-
-  else {
-
-    textoEstadoOCR.textContent =
-      "Procesando etiqueta...";
-  }
-}
-
-
-// ========================================
-// EXTRAER MODELO Y SERIE
-// ========================================
-
-function extraerDatosEtiqueta(
-  texto
-) {
-
-  let modelo = "";
-  let serie = "";
-
-
-  // =====================================
-  // NORMALIZAR TEXTO
-  // =====================================
-
-  const lineas =
-    texto
-      .split(/\r?\n/)
-      .map(
-        linea =>
-          linea
-            .replace(/\s+/g, " ")
-            .trim()
-      )
-      .filter(Boolean);
-
-
-  console.log(
-    "LÍNEAS OCR:",
-    lineas
-  );
-
-
-  // =====================================
-  // RECORRER LÍNEAS
-  // =====================================
-
-  for (
-    let i = 0;
-    i < lineas.length;
-    i++
-  ) {
-
-    const linea =
-      lineas[i];
-
-
-    // ===================================
-    // MODELO
-    // ===================================
-
-    if (!modelo) {
-
-      let coincidencia =
-        linea.match(
-          /(?:MODEL\s*ID|MODEL\s*NO|MODEL\s*NUMBER|MODEL|MODELO)\s*[:.#-]?\s*([A-Z0-9][A-Z0-9._\/-]{2,})/i
-        );
-
-
-      if (
-        coincidencia &&
-        coincidencia[1]
-      ) {
-
-        modelo =
-          coincidencia[1];
-      }
-
-
-      // Puede ocurrir:
-      //
-      // MODEL ID
-      // 278M1R/00
-
-      else if (
-        /MODEL|MODELO/i.test(
-          linea
-        )
-      ) {
-
-        const siguiente =
-          lineas[i + 1];
-
-
-        if (
-          siguiente &&
-          /^[A-Z0-9._\/-]{3,}$/i.test(
-            siguiente
-          )
-        ) {
-
-          modelo =
-            siguiente;
-        }
-      }
-    }
-
-
-    // ===================================
-    // SERIE
-    // ===================================
-
-    if (!serie) {
-
-      let coincidencia =
-        linea.match(
-          /(?:SERIAL\s*NUMBER|SERIAL\s*NO|SERIAL|S\/N|SN|SERIE)\s*[:.#-]?\s*([A-Z0-9][A-Z0-9._\/-]{4,})/i
-        );
-
-
-      if (
-        coincidencia &&
-        coincidencia[1]
-      ) {
-
-        serie =
-          coincidencia[1];
-      }
-
-
-      // Puede ocurrir:
-      //
-      // SERIAL NUMBER
-      // UK82124000064
-
-      else if (
-        /SERIAL|SERIE|S\/N/i.test(
-          linea
-        )
-      ) {
-
-        const siguiente =
-          lineas[i + 1];
-
-
-        if (
-          siguiente &&
-          /^[A-Z0-9._\/-]{5,}$/i.test(
-            siguiente
-          )
-        ) {
-
-          serie =
-            siguiente;
-        }
-      }
-    }
-  }
-
-
-  // =====================================
-  // LIMPIEZA
-  // =====================================
-
-  modelo =
-    limpiarDatoDetectado(
-      modelo
-    );
-
-  serie =
-    limpiarDatoDetectado(
-      serie
-    );
-
-
-  return {
-    modelo,
-    serie
-  };
-}
-
-
-// ========================================
-// LIMPIAR DATO
-// ========================================
-
-function limpiarDatoDetectado(
-  valor
-) {
-
-  if (!valor) {
-    return "";
-  }
-
-
-  return valor
-    .trim()
-    .replace(
-      /^[=:;#\s-]+/,
-      ""
-    )
-    .replace(
-      /[|,;]+$/,
-      ""
-    )
-    .trim();
-}
-
-
 
 
 // ========================================
@@ -1209,213 +647,403 @@ btnAgregarEquipo.addEventListener(
   "click",
   async () => {
 
-    const tipo =
+    let tipo =
       tipoEquipo.value.trim();
-
-    const modelo =
-      modeloEquipo.value.trim();
-
-    const serie =
-      serieEquipo.value.trim();
 
 
     if (!tipo) {
 
       await Swal.fire({
+
         icon: "warning",
-        title: "Tipo requerido",
+
+        title:
+          "Tipo de equipo requerido",
+
         text:
           "Selecciona el tipo de equipo."
+
       });
 
       return;
     }
 
 
-    if (!fotoActual) {
+    if (
+      tipo ===
+      "Otro"
+    ) {
+
+      tipo =
+        otroTipoEquipo
+          .value
+          .trim();
+
+
+      if (!tipo) {
+
+        await Swal.fire({
+
+          icon: "warning",
+
+          title:
+            "Especifica el equipo",
+
+          text:
+            "Indica qué tipo de equipo estás agregando."
+
+        });
+
+        otroTipoEquipo.focus();
+
+        return;
+      }
+
+    }
+
+
+    if (!fotoEquipoActual) {
 
       await Swal.fire({
+
         icon: "warning",
-        title: "Fotografía requerida",
+
+        title:
+          "Fotografía requerida",
+
         text:
           "Toma o selecciona una fotografía del equipo."
+
       });
 
       return;
     }
 
 
-    if (!modelo) {
-
-      await Swal.fire({
-        icon: "warning",
-        title: "Modelo requerido",
-        text:
-          "Ingresa el modelo del equipo."
-      });
-
-      return;
-    }
-
-
-    if (!serie) {
-
-      await Swal.fire({
-        icon: "warning",
-        title: "Serie requerida",
-        text:
-          "Ingresa el número de serie."
-      });
-
-      return;
-    }
-
-
-    const serieDuplicada =
-      equipos.some(
-        equipo =>
-          equipo.serie.toLowerCase() ===
-          serie.toLowerCase()
-      );
-
-
-    if (serieDuplicada) {
-
-      await Swal.fire({
-        icon: "warning",
-        title: "Serie duplicada",
-        text:
-          "Ya agregaste un equipo con esta serie."
-      });
-
-      return;
-    }
-
-
-    const equipo = {
+    const nuevoEquipo = {
 
       id:
-        Date.now(),
+        generarId(),
 
-      tipo,
+      tipo:
+        normalizarNombreTipo(
+          tipo
+        ),
 
-      modelo,
+      modelo:
+        modeloEquipo
+          .value
+          .trim(),
 
-      serie,
+      serie:
+        serieEquipo
+          .value
+          .trim(),
 
       foto:
-        vistaFoto.src
+        fotoEquipoActual
+
     };
 
 
     equipos.push(
-      equipo
+      nuevoEquipo
     );
 
 
-    actualizarTablaEquipos();
+    renderizarEquipos();
+
+    actualizarResumen();
 
     limpiarFormularioEquipo();
+
+
+    await Swal.fire({
+
+      icon: "success",
+
+      title:
+        "Equipo agregado",
+
+      text:
+        `${nuevoEquipo.tipo} agregado correctamente.`,
+
+      timer: 1200,
+
+      showConfirmButton:
+        false
+
+    });
 
   }
 );
 
 
 // ========================================
-// ACTUALIZAR TABLA
+// GENERAR ID
 // ========================================
 
-function actualizarTablaEquipos() {
+function generarId() {
 
-  tablaEquipos.innerHTML = "";
+  if (
+    window.crypto &&
+    crypto.randomUUID
+  ) {
 
-
-  if (equipos.length === 0) {
-
-    tablaEquipos.innerHTML = `
-      <tr>
-
-        <td
-          colspan="6"
-          class="text-center text-secondary py-4"
-        >
-          Todavía no has agregado equipos.
-        </td>
-
-      </tr>
-    `;
-
-  } else {
-
-    equipos.forEach(
-      (equipo, indice) => {
-
-        const fila =
-          document.createElement("tr");
-
-
-        fila.innerHTML = `
-
-          <td>
-            ${indice + 1}
-          </td>
-
-          <td>
-            ${equipo.tipo}
-          </td>
-
-          <td>
-            ${equipo.modelo}
-          </td>
-
-          <td>
-            ${equipo.serie}
-          </td>
-
-          <td>
-
-            <img
-              src="${equipo.foto}"
-              alt="Equipo"
-              style="
-                width: 70px;
-                height: 50px;
-                object-fit: cover;
-              "
-              class="rounded border"
-            >
-
-          </td>
-
-          <td>
-
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger btn-eliminar-equipo"
-              data-id="${equipo.id}"
-            >
-
-              <i class="bi bi-trash"></i>
-
-            </button>
-
-          </td>
-        `;
-
-
-        tablaEquipos.appendChild(
-          fila
-        );
-      }
-    );
+    return crypto.randomUUID();
   }
 
 
-  cantidadRegistrados.textContent =
-    equipos.length;
+  return (
+    Date.now().toString() +
+    Math.random()
+      .toString(16)
+      .slice(2)
+  );
+
+}
 
 
-  actualizarBotonPDF();
+// ========================================
+// NORMALIZAR TIPO
+// ========================================
+
+function normalizarNombreTipo(
+  texto
+) {
+
+  const limpio =
+    texto
+      .trim()
+      .replace(
+        /\s+/g,
+        " "
+      );
+
+
+  if (!limpio) {
+    return "";
+  }
+
+
+  return (
+    limpio.charAt(0)
+      .toUpperCase() +
+    limpio.slice(1)
+  );
+
+}
+
+
+// ========================================
+// RENDERIZAR EQUIPOS
+// ========================================
+
+function renderizarEquipos() {
+
+  tablaEquipos.innerHTML =
+    "";
+
+
+  if (
+    equipos.length === 0
+  ) {
+
+    mensajeSinEquipos
+      .classList.remove(
+        "d-none"
+      );
+
+    contenedorTablaEquipos
+      .classList.add(
+        "d-none"
+      );
+
+    badgeTotalEquipos.textContent =
+      "0 equipos";
+
+    return;
+  }
+
+
+  mensajeSinEquipos
+    .classList.add(
+      "d-none"
+    );
+
+  contenedorTablaEquipos
+    .classList.remove(
+      "d-none"
+    );
+
+
+  equipos.forEach(
+    (equipo, indice) => {
+
+      const fila =
+        document.createElement(
+          "tr"
+        );
+
+
+      // NÚMERO
+
+      const tdNumero =
+        document.createElement(
+          "td"
+        );
+
+      tdNumero.textContent =
+        indice + 1;
+
+
+      // FOTO
+
+      const tdFoto =
+        document.createElement(
+          "td"
+        );
+
+      const imagen =
+        document.createElement(
+          "img"
+        );
+
+      imagen.src =
+        equipo.foto;
+
+      imagen.alt =
+        equipo.tipo;
+
+      imagen.className =
+        "miniatura-equipo";
+
+      tdFoto.appendChild(
+        imagen
+      );
+
+
+      // TIPO
+
+      const tdTipo =
+        document.createElement(
+          "td"
+        );
+
+      tdTipo.textContent =
+        equipo.tipo;
+
+
+      // MODELO
+
+      const tdModelo =
+        document.createElement(
+          "td"
+        );
+
+      tdModelo.textContent =
+        equipo.modelo ||
+        "—";
+
+
+      // SERIE
+
+      const tdSerie =
+        document.createElement(
+          "td"
+        );
+
+      tdSerie.textContent =
+        equipo.serie ||
+        "—";
+
+
+      // ACCIÓN
+
+      const tdAccion =
+        document.createElement(
+          "td"
+        );
+
+      tdAccion.className =
+        "text-center";
+
+
+      const botonEliminar =
+        document.createElement(
+          "button"
+        );
+
+      botonEliminar.type =
+        "button";
+
+      botonEliminar.className =
+        "btn btn-outline-danger btn-sm";
+
+      botonEliminar.innerHTML =
+        '<i class="bi bi-trash"></i>';
+
+      botonEliminar.title =
+        "Eliminar equipo";
+
+
+      botonEliminar.addEventListener(
+        "click",
+        () => {
+
+          eliminarEquipo(
+            equipo.id
+          );
+
+        }
+      );
+
+
+      tdAccion.appendChild(
+        botonEliminar
+      );
+
+
+      fila.appendChild(
+        tdNumero
+      );
+
+      fila.appendChild(
+        tdFoto
+      );
+
+      fila.appendChild(
+        tdTipo
+      );
+
+      fila.appendChild(
+        tdModelo
+      );
+
+      fila.appendChild(
+        tdSerie
+      );
+
+      fila.appendChild(
+        tdAccion
+      );
+
+
+      tablaEquipos.appendChild(
+        fila
+      );
+
+    }
+  );
+
+
+  badgeTotalEquipos.textContent =
+    `${equipos.length} ${
+      equipos.length === 1
+        ? "equipo"
+        : "equipos"
+    }`;
+
 }
 
 
@@ -1423,288 +1051,419 @@ function actualizarTablaEquipos() {
 // ELIMINAR EQUIPO
 // ========================================
 
-tablaEquipos.addEventListener(
-  "click",
-  async (event) => {
-
-    const boton =
-      event.target.closest(
-        ".btn-eliminar-equipo"
-      );
-
-
-    if (!boton) {
-      return;
-    }
-
-
-    const id =
-      Number(
-        boton.dataset.id
-      );
-
-
-    const resultado =
-      await Swal.fire({
-
-        icon: "warning",
-
-        title:
-          "¿Eliminar equipo?",
-
-        text:
-          "Se quitará del informe actual.",
-
-        showCancelButton: true,
-
-        confirmButtonText:
-          "Sí, eliminar",
-
-        cancelButtonText:
-          "Cancelar",
-
-        confirmButtonColor:
-          "#dc3545"
-      });
-
-
-    if (!resultado.isConfirmed) {
-      return;
-    }
-
-
-    equipos =
-      equipos.filter(
-        equipo =>
-          equipo.id !== id
-      );
-
-
-    actualizarTablaEquipos();
-  }
-);
-
-
-// ========================================
-// LIMPIAR EQUIPO
-// ========================================
-
-function limpiarFormularioEquipo() {
-
-  tipoEquipo.value = "";
-
-  modeloEquipo.value = "";
-
-  serieEquipo.value = "";
-
-  fotoEquipo.value = "";
-
-  fotoActual = null;
-
-  vistaFoto.removeAttribute(
-    "src"
-  );
-
-  contenedorFoto.classList.add(
-    "d-none"
-  );
-}
-
-
-// ========================================
-// AGREGAR FILA AL RESUMEN
-// ========================================
-
-function agregarFilaResumen(
-  tipoInicial = "",
-  cantidadInicial = ""
+async function eliminarEquipo(
+  id
 ) {
 
-  contadorResumen++;
-
-
-  const fila =
-    document.createElement("div");
-
-
-  fila.className =
-    "col-12 fila-resumen";
-
-
-  fila.dataset.id =
-    contadorResumen;
-
-
-  fila.innerHTML = `
-
-    <div class="row g-2 align-items-end">
-
-      <div class="col-7 col-md-8">
-
-        <label class="form-label">
-          Tipo de equipo
-        </label>
-
-        <input
-          type="text"
-          class="form-control tipo-resumen"
-          placeholder="Ej. Monitores"
-          value="${tipoInicial}"
-        >
-
-      </div>
-
-
-      <div class="col-3 col-md-3">
-
-        <label class="form-label">
-          Cantidad
-        </label>
-
-        <input
-          type="number"
-          class="form-control cantidad-resumen"
-          min="0"
-          value="${cantidadInicial}"
-        >
-
-      </div>
-
-
-      <div class="col-2 col-md-1">
-
-        <button
-          type="button"
-          class="btn btn-outline-danger w-100 btn-eliminar-resumen"
-        >
-
-          <i class="bi bi-trash"></i>
-
-        </button>
-
-      </div>
-
-    </div>
-  `;
-
-
-  contenedorResumen.appendChild(
-    fila
-  );
-}
-
-
-// ========================================
-// BOTÓN AGREGAR TIPO
-// ========================================
-
-btnAgregarTipo.addEventListener(
-  "click",
-  () => {
-
-    agregarFilaResumen();
-  }
-);
-
-
-// ========================================
-// CAMBIOS EN RESUMEN
-// ========================================
-
-contenedorResumen.addEventListener(
-  "input",
-  () => {
-
-    calcularTotal();
-  }
-);
-
-
-// ========================================
-// ELIMINAR FILA RESUMEN
-// ========================================
-
-contenedorResumen.addEventListener(
-  "click",
-  (event) => {
-
-    const boton =
-      event.target.closest(
-        ".btn-eliminar-resumen"
-      );
-
-
-    if (!boton) {
-      return;
-    }
-
-
-    boton
-      .closest(".fila-resumen")
-      .remove();
-
-
-    calcularTotal();
-  }
-);
-
-
-// ========================================
-// CALCULAR TOTAL
-// ========================================
-
-function calcularTotal() {
-
-  const cantidades =
-    document.querySelectorAll(
-      ".cantidad-resumen"
+  const equipo =
+    equipos.find(
+      item =>
+        item.id === id
     );
 
 
-  let total = 0;
+  if (!equipo) {
+    return;
+  }
 
 
-  cantidades.forEach(
-    campo => {
+  const resultado =
+    await Swal.fire({
 
-      const cantidad =
-        Number(
-          campo.value
-        ) || 0;
+      icon: "warning",
+
+      title:
+        "¿Eliminar equipo?",
+
+      text:
+        `Se eliminará ${equipo.tipo} del informe.`,
+
+      showCancelButton:
+        true,
+
+      confirmButtonColor:
+        "#dc3545",
+
+      confirmButtonText:
+        "Sí, eliminar",
+
+      cancelButtonText:
+        "Cancelar"
+
+    });
 
 
-      if (cantidad > 0) {
+  if (
+    !resultado.isConfirmed
+  ) {
 
-        total +=
-          cantidad;
+    return;
+  }
+
+
+  equipos =
+    equipos.filter(
+      item =>
+        item.id !== id
+    );
+
+
+  renderizarEquipos();
+
+  actualizarResumen();
+
+}
+
+
+// ========================================
+// RESUMEN AUTOMÁTICO
+// ========================================
+
+function actualizarResumen() {
+
+  tablaResumen.innerHTML =
+    "";
+
+
+  if (
+    equipos.length === 0
+  ) {
+
+    mensajeResumenVacio
+      .classList.remove(
+        "d-none"
+      );
+
+    contenedorResumen
+      .classList.add(
+        "d-none"
+      );
+
+    totalEquipos.textContent =
+      "0";
+
+    return;
+  }
+
+
+  mensajeResumenVacio
+    .classList.add(
+      "d-none"
+    );
+
+  contenedorResumen
+    .classList.remove(
+      "d-none"
+    );
+
+
+  const resumen = {};
+
+
+  equipos.forEach(
+    equipo => {
+
+      const clave =
+        equipo.tipo
+          .trim()
+          .toLowerCase();
+
+
+      if (!resumen[clave]) {
+
+        resumen[clave] = {
+
+          nombre:
+            equipo.tipo,
+
+          cantidad:
+            0
+
+        };
+
       }
+
+
+      resumen[clave].cantidad++;
+
+    }
+  );
+
+
+  const tipos =
+    Object.values(
+      resumen
+    );
+
+
+  tipos.sort(
+    (a, b) =>
+      a.nombre.localeCompare(
+        b.nombre,
+        "es"
+      )
+  );
+
+
+  tipos.forEach(
+    item => {
+
+      const fila =
+        document.createElement(
+          "tr"
+        );
+
+
+      const tdTipo =
+        document.createElement(
+          "td"
+        );
+
+      tdTipo.className =
+        "resumen-cantidad";
+
+      tdTipo.textContent =
+        item.nombre;
+
+
+      const tdCantidad =
+        document.createElement(
+          "td"
+        );
+
+      tdCantidad.className =
+        "text-center resumen-cantidad";
+
+      tdCantidad.textContent =
+        item.cantidad;
+
+
+      fila.appendChild(
+        tdTipo
+      );
+
+      fila.appendChild(
+        tdCantidad
+      );
+
+
+      tablaResumen.appendChild(
+        fila
+      );
+
     }
   );
 
 
   totalEquipos.textContent =
-    total;
+    equipos.length;
 
-
-  actualizarBotonPDF();
 }
 
 
 // ========================================
-// ACTIVAR BOTÓN PDF
+// LIMPIAR FORMULARIO DE EQUIPO
 // ========================================
 
-function actualizarBotonPDF() {
+function limpiarFormularioEquipo() {
 
-  const total =
-    Number(
-      totalEquipos.textContent
-    ) || 0;
+  tipoEquipo.value =
+    "";
+
+  otroTipoEquipo.value =
+    "";
+
+  contenedorOtroTipo
+    .classList.add(
+      "d-none"
+    );
 
 
-  btnGenerarInforme.disabled =
-    equipos.length === 0 ||
-    total === 0;
+  modeloEquipo.value =
+    "";
+
+  serieEquipo.value =
+    "";
+
+  fotoEquipo.value =
+    "";
+
+
+  limpiarFotoEquipo();
+
+
+  tipoEquipo.focus();
+
+}
+
+
+// ========================================
+// LIMPIAR FOTO EQUIPO
+// ========================================
+
+function limpiarFotoEquipo() {
+
+  fotoEquipoActual =
+    "";
+
+  vistaFoto.removeAttribute(
+    "src"
+  );
+
+  contenedorVistaFoto
+    .classList.add(
+      "d-none"
+    );
+
+}
+
+
+// ========================================
+// FOTO GUÍA DE ENVÍO
+// ========================================
+
+fotoGuiaEnvio.addEventListener(
+  "change",
+  () => {
+
+    procesarImagenEvidencia(
+      fotoGuiaEnvio,
+      vistaFotoGuia,
+      contenedorFotoGuia,
+      imagen => {
+
+        fotoGuiaActual =
+          imagen;
+
+      }
+    );
+
+  }
+);
+
+
+// ========================================
+// FOTO GENERAL DEL ENVÍO
+// ========================================
+
+fotoGeneralEnvio.addEventListener(
+  "change",
+  () => {
+
+    procesarImagenEvidencia(
+      fotoGeneralEnvio,
+      vistaFotoGeneral,
+      contenedorFotoGeneral,
+      imagen => {
+
+        fotoGeneralActual =
+          imagen;
+
+      }
+    );
+
+  }
+);
+
+
+// ========================================
+// PROCESAR EVIDENCIA
+// ========================================
+
+function procesarImagenEvidencia(
+  input,
+  imagenVista,
+  contenedor,
+  callback
+) {
+
+  const archivo =
+    input.files[0];
+
+
+  if (!archivo) {
+
+    imagenVista.removeAttribute(
+      "src"
+    );
+
+    contenedor.classList.add(
+      "d-none"
+    );
+
+    callback("");
+
+    return;
+  }
+
+
+  if (
+    !archivo.type.startsWith(
+      "image/"
+    )
+  ) {
+
+    Swal.fire({
+
+      icon: "warning",
+
+      title:
+        "Archivo no válido",
+
+      text:
+        "Selecciona una imagen."
+
+    });
+
+
+    input.value =
+      "";
+
+    imagenVista.removeAttribute(
+      "src"
+    );
+
+    contenedor.classList.add(
+      "d-none"
+    );
+
+    callback("");
+
+    return;
+  }
+
+
+  const lector =
+    new FileReader();
+
+
+  lector.onload =
+    evento => {
+
+      const imagen =
+        evento.target.result;
+
+
+      imagenVista.src =
+        imagen;
+
+
+      contenedor.classList.remove(
+        "d-none"
+      );
+
+
+      callback(
+        imagen
+      );
+
+    };
+
+
+  lector.readAsDataURL(
+    archivo
+  );
+
 }
 
 
@@ -1712,26 +1471,135 @@ function actualizarBotonPDF() {
 // GENERAR PDF
 // ========================================
 
-btnGenerarInforme.addEventListener(
+btnGenerarPDF.addEventListener(
   "click",
-  () => {
+  async () => {
 
-    Swal.fire({
+    // =====================================
+    // VALIDACIONES
+    // =====================================
 
-      icon: "info",
+    if (!fechaInforme.value) {
+
+      await Swal.fire({
+
+        icon: "warning",
+
+        title:
+          "Fecha requerida",
+
+        text:
+          "Selecciona la fecha del informe."
+
+      });
+
+      return;
+    }
+
+
+    if (
+      equipos.length === 0
+    ) {
+
+      await Swal.fire({
+
+        icon: "warning",
+
+        title:
+          "No hay equipos",
+
+        text:
+          "Agrega al menos un equipo antes de generar el informe."
+
+      });
+
+      return;
+    }
+
+
+    if (!fotoGuiaActual) {
+
+      await Swal.fire({
+
+        icon: "warning",
+
+        title:
+          "Guía de envío requerida",
+
+        text:
+          "Agrega una fotografía de la guía de envío."
+
+      });
+
+      fotoGuiaEnvio.focus();
+
+      return;
+    }
+
+
+    if (!fotoGeneralActual) {
+
+      await Swal.fire({
+
+        icon: "warning",
+
+        title:
+          "Fotografía general requerida",
+
+        text:
+          "Agrega una fotografía general de las cajas o equipos enviados."
+
+      });
+
+      fotoGeneralEnvio.focus();
+
+      return;
+    }
+
+
+    // =====================================
+    // PDF SERÁ EL SIGUIENTE PASO
+    // =====================================
+
+    await Swal.fire({
+
+      icon: "success",
 
       title:
-        "Generación de PDF",
+        "Informe listo",
 
-      text:
-        "En el siguiente paso conectaremos la generación del informe PDF."
+      html: `
+        <div class="text-start">
+
+          <p>
+            Los datos necesarios para generar
+            el PDF están completos.
+          </p>
+
+          <hr>
+
+          <p class="mb-1">
+            <strong>Equipos:</strong>
+            ${equipos.length}
+          </p>
+
+          <p class="mb-1">
+            <strong>Guía de envío:</strong>
+            Agregada
+          </p>
+
+          <p class="mb-0">
+            <strong>Evidencia general:</strong>
+            Agregada
+          </p>
+
+        </div>
+      `,
+
+      confirmButtonText:
+        "Aceptar"
+
     });
+
   }
 );
-
-
-// ========================================
-// PRIMERA FILA DEL RESUMEN
-// ========================================
-
-agregarFilaResumen();
