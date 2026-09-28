@@ -1,9 +1,5 @@
-const token =
-  localStorage.getItem("token");
-
-const usuarioGuardado =
-  localStorage.getItem("usuario");
-
+const token = localStorage.getItem("token");
+const usuarioGuardado = localStorage.getItem("usuario");
 
 // ========================================
 // ELEMENTOS
@@ -40,37 +36,35 @@ const menuAdministrarRepuestos =
     "menuAdministrarRepuestos"
   );
 
-  const buscarTicket =
+const buscarTicket =
   document.getElementById("buscarTicket");
 
 const resultadosTickets =
-  document.getElementById("resultadosTickets");
+  document.getElementById(
+    "resultadosTickets"
+  );
 
 const determinante =
   document.getElementById("determinante");
 
 const nombreTienda =
   document.getElementById("nombreTienda");
+
 const formPeticionRepuesto =
   document.getElementById(
     "formPeticionRepuesto"
   );
 
 const descripcion =
-  document.getElementById(
-    "descripcion"
-  );
-  
-
-
-// Servicio seleccionado
-let servicioSeleccionado = null;
+  document.getElementById("descripcion");
 
 const buscarRepuesto =
   document.getElementById("buscarRepuesto");
 
 const resultadosRepuestos =
-  document.getElementById("resultadosRepuestos");
+  document.getElementById(
+    "resultadosRepuestos"
+  );
 
 const numeroParte =
   document.getElementById("numeroParte");
@@ -81,9 +75,39 @@ const imagenRepuesto =
 const sinImagen =
   document.getElementById("sinImagen");
 
+// Elementos nuevos del HTML actualizado
+const cantidadRepuesto =
+  document.getElementById("cantidadRepuesto");
 
-// Repuesto seleccionado
+const btnAgregarRepuesto =
+  document.getElementById("btnAgregarRepuesto");
+
+const tablaRepuestosAgregados =
+  document.getElementById(
+    "tablaRepuestosAgregados"
+  );
+
+const cuerpoRepuestosAgregados =
+  document.getElementById(
+    "cuerpoRepuestosAgregados"
+  );
+
+const sinRepuestosAgregados =
+  document.getElementById(
+    "sinRepuestosAgregados"
+  );
+
+
+// ========================================
+// VARIABLES
+// ========================================
+
+let servicioSeleccionado = null;
+
 let repuestoSeleccionado = null;
+
+// Aquí guardaremos todos los repuestos
+let repuestosAgregados = [];
 
 
 // ========================================
@@ -102,7 +126,6 @@ if (!token || !usuarioGuardado) {
     const usuario =
       JSON.parse(usuarioGuardado);
 
-
     nombreUsuario.textContent =
       usuario.nombre;
 
@@ -112,8 +135,6 @@ if (!token || !usuarioGuardado) {
     bodegaTecnico.value =
       usuario.bodega || "";
 
-
-    // Opciones exclusivas del ADMIN
     if (usuario.rol === "ADMIN") {
 
       if (menuAdministrarUsuarios) {
@@ -126,7 +147,6 @@ if (!token || !usuarioGuardado) {
           .classList.remove("d-none");
       }
     }
-
 
   } catch (error) {
 
@@ -196,6 +216,7 @@ if (btnCerrarSesion) {
   );
 }
 
+
 // ========================================
 // BUSCAR TICKET
 // ========================================
@@ -213,24 +234,20 @@ if (buscarTicket) {
       const busqueda =
         buscarTicket.value.trim();
 
-
-      // Si modifica el ticket,
-      // eliminamos la selección anterior
       servicioSeleccionado = null;
 
       determinante.value = "";
       nombreTienda.value = "";
 
       resultadosTickets.innerHTML = "";
+
       resultadosTickets.classList.add(
         "d-none"
       );
 
-
       if (busqueda.length < 2) {
         return;
       }
-
 
       temporizadorTicket =
         setTimeout(
@@ -243,7 +260,7 @@ if (buscarTicket) {
 
 
 // ========================================
-// CONSULTAR TICKETS EN BACKEND
+// CONSULTAR TICKETS
 // ========================================
 
 async function buscarTickets(busqueda) {
@@ -261,10 +278,8 @@ async function buscarTickets(busqueda) {
         }
       );
 
-
     const resultado =
       await respuesta.json();
-
 
     if (!respuesta.ok) {
 
@@ -274,11 +289,9 @@ async function buscarTickets(busqueda) {
       );
     }
 
-
     mostrarResultadosTickets(
       resultado.tickets || []
     );
-
 
   } catch (error) {
 
@@ -286,7 +299,6 @@ async function buscarTickets(busqueda) {
       "Error buscando tickets:",
       error
     );
-
 
     resultadosTickets.innerHTML = `
       <div
@@ -304,13 +316,12 @@ async function buscarTickets(busqueda) {
 
 
 // ========================================
-// MOSTRAR RESULTADOS DE TICKETS
+// MOSTRAR TICKETS
 // ========================================
 
 function mostrarResultadosTickets(tickets) {
 
   resultadosTickets.innerHTML = "";
-
 
   if (tickets.length === 0) {
 
@@ -329,7 +340,6 @@ function mostrarResultadosTickets(tickets) {
     return;
   }
 
-
   tickets.forEach((ticket) => {
 
     const boton =
@@ -339,7 +349,6 @@ function mostrarResultadosTickets(tickets) {
 
     boton.className =
       "list-group-item list-group-item-action";
-
 
     boton.innerHTML = `
       <div
@@ -359,7 +368,6 @@ function mostrarResultadosTickets(tickets) {
       </div>
     `;
 
-
     boton.addEventListener(
       "click",
       () => {
@@ -368,12 +376,10 @@ function mostrarResultadosTickets(tickets) {
       }
     );
 
-
     resultadosTickets.appendChild(
       boton
     );
   });
-
 
   resultadosTickets.classList.remove(
     "d-none"
@@ -389,7 +395,6 @@ function seleccionarTicket(ticket) {
 
   servicioSeleccionado = ticket;
 
-
   buscarTicket.value =
     ticket.numeroTicket;
 
@@ -398,7 +403,6 @@ function seleccionarTicket(ticket) {
 
   nombreTienda.value =
     ticket.nombreTienda;
-
 
   resultadosTickets.innerHTML = "";
 
@@ -409,7 +413,7 @@ function seleccionarTicket(ticket) {
 
 
 // ========================================
-// CERRAR RESULTADOS AL HACER CLICK AFUERA
+// CERRAR RESULTADOS TICKET
 // ========================================
 
 document.addEventListener(
@@ -430,6 +434,7 @@ document.addEventListener(
   }
 );
 
+
 // ========================================
 // BUSCAR REPUESTO
 // ========================================
@@ -442,14 +447,13 @@ if (buscarRepuesto) {
     "input",
     () => {
 
-      clearTimeout(temporizadorRepuesto);
+      clearTimeout(
+        temporizadorRepuesto
+      );
 
       const busqueda =
         buscarRepuesto.value.trim();
 
-
-      // El usuario modificó la búsqueda:
-      // quitar selección anterior
       repuestoSeleccionado = null;
 
       numeroParte.value = "";
@@ -462,11 +466,9 @@ if (buscarRepuesto) {
         "d-none"
       );
 
-
       if (busqueda.length < 2) {
         return;
       }
-
 
       temporizadorRepuesto =
         setTimeout(
@@ -479,7 +481,7 @@ if (buscarRepuesto) {
 
 
 // ========================================
-// CONSULTAR REPUESTOS EN BACKEND
+// CONSULTAR REPUESTOS
 // ========================================
 
 async function buscarRepuestos(busqueda) {
@@ -497,10 +499,8 @@ async function buscarRepuestos(busqueda) {
         }
       );
 
-
     const resultado =
       await respuesta.json();
-
 
     if (!respuesta.ok) {
 
@@ -510,11 +510,9 @@ async function buscarRepuestos(busqueda) {
       );
     }
 
-
     mostrarResultadosRepuestos(
       resultado.repuestos || []
     );
-
 
   } catch (error) {
 
@@ -522,7 +520,6 @@ async function buscarRepuestos(busqueda) {
       "Error buscando repuestos:",
       error
     );
-
 
     resultadosRepuestos.innerHTML = `
       <div
@@ -540,7 +537,7 @@ async function buscarRepuestos(busqueda) {
 
 
 // ========================================
-// MOSTRAR RESULTADOS DE REPUESTOS
+// MOSTRAR REPUESTOS
 // ========================================
 
 function mostrarResultadosRepuestos(
@@ -548,7 +545,6 @@ function mostrarResultadosRepuestos(
 ) {
 
   resultadosRepuestos.innerHTML = "";
-
 
   if (repuestos.length === 0) {
 
@@ -567,7 +563,6 @@ function mostrarResultadosRepuestos(
     return;
   }
 
-
   repuestos.forEach((repuesto) => {
 
     const boton =
@@ -577,7 +572,6 @@ function mostrarResultadosRepuestos(
 
     boton.className =
       "list-group-item list-group-item-action";
-
 
     boton.innerHTML = `
       <div
@@ -597,14 +591,15 @@ function mostrarResultadosRepuestos(
       ${
         repuesto.tipoEquipo
           ? `
-            <div class="small text-secondary">
-              ${repuesto.tipoEquipo}
-            </div>
-          `
+              <div
+                class="small text-secondary"
+              >
+                ${repuesto.tipoEquipo}
+              </div>
+            `
           : ""
       }
     `;
-
 
     boton.addEventListener(
       "click",
@@ -616,12 +611,10 @@ function mostrarResultadosRepuestos(
       }
     );
 
-
     resultadosRepuestos.appendChild(
       boton
     );
   });
-
 
   resultadosRepuestos.classList.remove(
     "d-none"
@@ -647,6 +640,10 @@ function seleccionarRepuesto(repuesto) {
     repuesto.imagenUrl
   );
 
+  if (cantidadRepuesto) {
+    cantidadRepuesto.value = 1;
+  }
+
   resultadosRepuestos.innerHTML = "";
 
   resultadosRepuestos.classList.add(
@@ -656,7 +653,7 @@ function seleccionarRepuesto(repuesto) {
 
 
 // ========================================
-// CONVERTIR URL DE GOOGLE DRIVE
+// CONVERTIR URL GOOGLE DRIVE
 // ========================================
 
 function convertirUrlDrive(url) {
@@ -669,19 +666,16 @@ function convertirUrlDrive(url) {
 
   let idArchivo = null;
 
-
   const coincidenciaFile =
     texto.match(
       /\/file\/d\/([^/]+)/
     );
-
 
   if (coincidenciaFile) {
 
     idArchivo =
       coincidenciaFile[1];
   }
-
 
   if (!idArchivo) {
 
@@ -699,12 +693,9 @@ function convertirUrlDrive(url) {
     }
   }
 
-
   if (!idArchivo) {
-
     return texto;
   }
-
 
   return (
     "https://drive.google.com/thumbnail" +
@@ -718,12 +709,6 @@ function convertirUrlDrive(url) {
 // ========================================
 
 function mostrarImagenRepuesto(imagenUrl) {
-
-  console.log(
-    "URL imagen recibida:",
-    imagenUrl
-  );
-
 
   if (!imagenUrl) {
 
@@ -754,23 +739,14 @@ function mostrarImagenRepuesto(imagenUrl) {
     return;
   }
 
-
   const urlImagen =
     convertirUrlDrive(
       imagenUrl
     );
 
-
-  console.log(
-    "URL imagen convertida:",
-    urlImagen
-  );
-
-
   imagenRepuesto.classList.add(
     "d-none"
   );
-
 
   sinImagen.innerHTML = `
     <div
@@ -787,7 +763,6 @@ function mostrarImagenRepuesto(imagenUrl) {
     "d-none"
   );
 
-
   imagenRepuesto.onload = () => {
 
     sinImagen.classList.add(
@@ -798,7 +773,6 @@ function mostrarImagenRepuesto(imagenUrl) {
       "d-none"
     );
   };
-
 
   imagenRepuesto.onerror = () => {
 
@@ -823,10 +797,10 @@ function mostrarImagenRepuesto(imagenUrl) {
     );
   };
 
-
   imagenRepuesto.src =
     urlImagen;
 }
+
 
 // ========================================
 // OCULTAR IMAGEN
@@ -842,7 +816,6 @@ function ocultarImagenRepuesto() {
     "d-none"
   );
 
-
   sinImagen.innerHTML = `
     <i
       class="bi bi-image"
@@ -855,18 +828,14 @@ function ocultarImagenRepuesto() {
     </div>
   `;
 
-
   sinImagen.classList.remove(
     "d-none"
   );
 }
 
 
-
-
-
 // ========================================
-// CERRAR RESULTADOS AL HACER CLICK AFUERA
+// CERRAR RESULTADOS REPUESTOS
 // ========================================
 
 document.addEventListener(
@@ -889,6 +858,399 @@ document.addEventListener(
 
 
 // ========================================
+// AGREGAR REPUESTO A LA SOLICITUD
+// ========================================
+
+if (btnAgregarRepuesto) {
+
+  btnAgregarRepuesto.addEventListener(
+    "click",
+    async () => {
+
+      if (!repuestoSeleccionado) {
+
+        await Swal.fire({
+          icon: "warning",
+          title: "Selecciona un repuesto",
+          text:
+            "Debes seleccionar un repuesto del catálogo antes de agregarlo.",
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#ffc107"
+        });
+
+        return;
+      }
+
+      const cantidad =
+        parseInt(
+          cantidadRepuesto?.value || "1",
+          10
+        );
+
+      if (
+        Number.isNaN(cantidad) ||
+        cantidad < 1
+      ) {
+
+        await Swal.fire({
+          icon: "warning",
+          title: "Cantidad no válida",
+          text:
+            "La cantidad debe ser mayor o igual a 1.",
+          confirmButtonText: "Aceptar",
+          confirmButtonColor: "#ffc107"
+        });
+
+        return;
+      }
+
+      // Buscar si ya fue agregado
+      const existente =
+        repuestosAgregados.find(
+          (item) =>
+            item.id ===
+            repuestoSeleccionado.id
+        );
+
+      if (existente) {
+
+        // Si ya existe aumentamos cantidad
+        existente.cantidad += cantidad;
+
+      } else {
+
+        // Si no existe lo agregamos
+        repuestosAgregados.push({
+          id:
+            repuestoSeleccionado.id,
+
+          nombre:
+            repuestoSeleccionado.nombre,
+
+          numeroParte:
+            repuestoSeleccionado.numeroParte,
+
+          imagenUrl:
+            repuestoSeleccionado.imagenUrl ||
+            null,
+
+          cantidad
+        });
+      }
+
+      renderizarRepuestosAgregados();
+
+      limpiarSeleccionRepuesto();
+    }
+  );
+}
+
+
+// ========================================
+// LIMPIAR SELECCIÓN ACTUAL
+// ========================================
+
+function limpiarSeleccionRepuesto() {
+
+  repuestoSeleccionado = null;
+
+  buscarRepuesto.value = "";
+
+  numeroParte.value = "";
+
+  if (cantidadRepuesto) {
+    cantidadRepuesto.value = 1;
+  }
+
+  resultadosRepuestos.innerHTML = "";
+
+  resultadosRepuestos.classList.add(
+    "d-none"
+  );
+
+  ocultarImagenRepuesto();
+
+  buscarRepuesto.focus();
+}
+
+
+// ========================================
+// RENDERIZAR REPUESTOS AGREGADOS
+// ========================================
+
+function renderizarRepuestosAgregados() {
+
+  if (!cuerpoRepuestosAgregados) {
+    return;
+  }
+
+  cuerpoRepuestosAgregados.innerHTML = "";
+
+  if (repuestosAgregados.length === 0) {
+
+    if (tablaRepuestosAgregados) {
+      tablaRepuestosAgregados
+        .classList.add("d-none");
+    }
+
+    if (sinRepuestosAgregados) {
+      sinRepuestosAgregados
+        .classList.remove("d-none");
+    }
+
+    return;
+  }
+
+  if (tablaRepuestosAgregados) {
+    tablaRepuestosAgregados
+      .classList.remove("d-none");
+  }
+
+  if (sinRepuestosAgregados) {
+    sinRepuestosAgregados
+      .classList.add("d-none");
+  }
+
+  repuestosAgregados.forEach(
+    (repuesto, indice) => {
+
+      const fila =
+        document.createElement("tr");
+
+      fila.innerHTML = `
+        <td class="align-middle">
+          ${indice + 1}
+        </td>
+
+        <td class="align-middle">
+          <strong>
+            ${repuesto.nombre}
+          </strong>
+        </td>
+
+        <td class="align-middle">
+          ${repuesto.numeroParte}
+        </td>
+
+        <td
+          class="align-middle"
+          style="min-width: 150px;"
+        >
+          <div
+            class="input-group input-group-sm"
+          >
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-accion="restar"
+              data-id="${repuesto.id}"
+            >
+              <i class="bi bi-dash"></i>
+            </button>
+
+            <input
+              type="number"
+              min="1"
+              class="form-control text-center"
+              value="${repuesto.cantidad}"
+              data-accion="cantidad"
+              data-id="${repuesto.id}"
+            >
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-accion="sumar"
+              data-id="${repuesto.id}"
+            >
+              <i class="bi bi-plus"></i>
+            </button>
+
+          </div>
+        </td>
+
+        <td class="align-middle text-center">
+
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-danger"
+            data-accion="eliminar"
+            data-id="${repuesto.id}"
+            title="Eliminar repuesto"
+          >
+            <i class="bi bi-trash"></i>
+          </button>
+
+        </td>
+      `;
+
+      cuerpoRepuestosAgregados
+        .appendChild(fila);
+    }
+  );
+}
+
+
+// ========================================
+// ACCIONES TABLA REPUESTOS
+// ========================================
+
+if (cuerpoRepuestosAgregados) {
+
+  cuerpoRepuestosAgregados.addEventListener(
+    "click",
+    async (event) => {
+
+      const boton =
+        event.target.closest(
+          "button[data-accion]"
+        );
+
+      if (!boton) {
+        return;
+      }
+
+      const id =
+        boton.dataset.id;
+
+      const accion =
+        boton.dataset.accion;
+
+      const repuesto =
+        repuestosAgregados.find(
+          (item) => item.id === id
+        );
+
+      if (!repuesto) {
+        return;
+      }
+
+      if (accion === "sumar") {
+
+        repuesto.cantidad += 1;
+
+        renderizarRepuestosAgregados();
+        return;
+      }
+
+      if (accion === "restar") {
+
+        if (repuesto.cantidad > 1) {
+
+          repuesto.cantidad -= 1;
+
+          renderizarRepuestosAgregados();
+
+        } else {
+
+          await eliminarRepuestoAgregado(
+            id
+          );
+        }
+
+        return;
+      }
+
+      if (accion === "eliminar") {
+
+        await eliminarRepuestoAgregado(
+          id
+        );
+      }
+    }
+  );
+
+
+  // Cambiar cantidad escribiendo
+  cuerpoRepuestosAgregados.addEventListener(
+    "change",
+    (event) => {
+
+      const campo =
+        event.target.closest(
+          'input[data-accion="cantidad"]'
+        );
+
+      if (!campo) {
+        return;
+      }
+
+      const id =
+        campo.dataset.id;
+
+      let cantidad =
+        parseInt(
+          campo.value,
+          10
+        );
+
+      if (
+        Number.isNaN(cantidad) ||
+        cantidad < 1
+      ) {
+        cantidad = 1;
+      }
+
+      const repuesto =
+        repuestosAgregados.find(
+          (item) => item.id === id
+        );
+
+      if (!repuesto) {
+        return;
+      }
+
+      repuesto.cantidad =
+        cantidad;
+
+      renderizarRepuestosAgregados();
+    }
+  );
+}
+
+
+// ========================================
+// ELIMINAR REPUESTO AGREGADO
+// ========================================
+
+async function eliminarRepuestoAgregado(id) {
+
+  const repuesto =
+    repuestosAgregados.find(
+      (item) => item.id === id
+    );
+
+  if (!repuesto) {
+    return;
+  }
+
+  const resultado =
+    await Swal.fire({
+      icon: "question",
+      title: "Eliminar repuesto",
+      text:
+        `¿Deseas eliminar ${repuesto.nombre} de la solicitud?`,
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#dc3545"
+    });
+
+  if (!resultado.isConfirmed) {
+    return;
+  }
+
+  repuestosAgregados =
+    repuestosAgregados.filter(
+      (item) => item.id !== id
+    );
+
+  renderizarRepuestosAgregados();
+}
+
+
+// ========================================
 // GENERAR SOLICITUD
 // ========================================
 
@@ -900,9 +1262,8 @@ if (formPeticionRepuesto) {
 
       event.preventDefault();
 
-
       // ========================================
-      // VALIDAR TICKET SELECCIONADO
+      // VALIDAR TICKET
       // ========================================
 
       if (!servicioSeleccionado) {
@@ -919,18 +1280,19 @@ if (formPeticionRepuesto) {
         return;
       }
 
-
       // ========================================
-      // VALIDAR REPUESTO SELECCIONADO
+      // VALIDAR REPUESTOS AGREGADOS
       // ========================================
 
-      if (!repuestoSeleccionado) {
+      if (
+        repuestosAgregados.length === 0
+      ) {
 
         await Swal.fire({
           icon: "warning",
-          title: "Selecciona un repuesto",
+          title: "Agrega al menos un repuesto",
           text:
-            "Debes seleccionar un repuesto del catálogo.",
+            "Selecciona un repuesto y presiona + Agregar repuesto antes de generar la solicitud.",
           confirmButtonText: "Aceptar",
           confirmButtonColor: "#ffc107"
         });
@@ -938,6 +1300,9 @@ if (formPeticionRepuesto) {
         return;
       }
 
+      // ========================================
+      // VALIDAR DESCRIPCIÓN
+      // ========================================
 
       if (!descripcion.value.trim()) {
 
@@ -953,6 +1318,9 @@ if (formPeticionRepuesto) {
         return;
       }
 
+      // ========================================
+      // ARMAR DATOS
+      // ========================================
 
       const datos = {
 
@@ -962,13 +1330,20 @@ if (formPeticionRepuesto) {
         registroServicioId:
           servicioSeleccionado.id,
 
-        repuestoId:
-          repuestoSeleccionado.id,
+        repuestos:
+          repuestosAgregados.map(
+            (repuesto) => ({
+              repuestoId:
+                repuesto.id,
+
+              cantidad:
+                repuesto.cantidad
+            })
+          ),
 
         descripcion:
           descripcion.value.trim()
       };
-
 
       try {
 
@@ -992,10 +1367,8 @@ if (formPeticionRepuesto) {
             }
           );
 
-
         const resultado =
           await respuesta.json();
-
 
         if (!respuesta.ok) {
 
@@ -1005,11 +1378,9 @@ if (formPeticionRepuesto) {
           );
         }
 
-
-        mostrarSolicitudGenerada(
+        await mostrarSolicitudGenerada(
           resultado.solicitud
         );
-
 
       } catch (error) {
 
@@ -1017,7 +1388,6 @@ if (formPeticionRepuesto) {
           "Error generando solicitud:",
           error
         );
-
 
         await Swal.fire({
           icon: "error",
@@ -1035,6 +1405,7 @@ if (formPeticionRepuesto) {
   );
 }
 
+
 // ========================================
 // MOSTRAR SOLICITUD GENERADA
 // ========================================
@@ -1043,10 +1414,22 @@ async function mostrarSolicitudGenerada(
   solicitud
 ) {
 
-  const detalle =
-    solicitud.detalles[0];
+  // Construir listado de todos
+  // los repuestos guardados
+  const textoRepuestos =
+    solicitud.detalles
+      .map(
+        (detalle, indice) => {
 
-  const texto = `PETICIÓN DE REPUESTO
+          return `${indice + 1}. ${detalle.repuesto.nombre}
+   Número de parte / Modelo: ${detalle.repuesto.numeroParte}
+   Cantidad: ${detalle.cantidad}`;
+        }
+      )
+      .join("\n\n");
+
+  const texto =
+`PETICIÓN DE REPUESTOS
 
 País: ${solicitud.pais}
 Fecha: ${fechaSolicitud.value}
@@ -1055,8 +1438,9 @@ Número de ticket: ${solicitud.registroServicio.numeroTicket}
 Determinante: ${solicitud.tienda.codigo}
 Nombre de tienda: ${solicitud.tienda.nombre}
 
-Nombre de parte: ${detalle.repuesto.nombre}
-Número de parte / Modelo: ${detalle.repuesto.numeroParte}
+REPUESTOS SOLICITADOS
+
+${textoRepuestos}
 
 Soporte: ${solicitud.soporte}
 
@@ -1065,7 +1449,6 @@ Bodega: ${solicitud.usuario.bodega || "-"}
 
 Descripción:
 ${solicitud.descripcion}`;
-
 
   const resultado =
     await Swal.fire({
@@ -1083,7 +1466,7 @@ ${solicitud.descripcion}`;
         <textarea
           id="textoSolicitudGenerada"
           class="form-control"
-          rows="14"
+          rows="18"
           readonly
         ></textarea>
       `,
@@ -1099,7 +1482,7 @@ ${solicitud.descripcion}`;
       confirmButtonColor:
         "#0d6efd",
 
-      width: 700,
+      width: 750,
 
       didOpen: () => {
 
@@ -1108,10 +1491,10 @@ ${solicitud.descripcion}`;
             "textoSolicitudGenerada"
           );
 
-        campo.value = texto;
+        campo.value =
+          texto;
       }
     });
-
 
   if (resultado.isConfirmed) {
 
@@ -1121,7 +1504,6 @@ ${solicitud.descripcion}`;
         texto
       );
 
-
       await Swal.fire({
         icon: "success",
         title: "Copiado",
@@ -1130,7 +1512,6 @@ ${solicitud.descripcion}`;
         timer: 1800,
         showConfirmButton: false
       });
-
 
     } catch (error) {
 
@@ -1146,3 +1527,10 @@ ${solicitud.descripcion}`;
     }
   }
 }
+
+
+// ========================================
+// MOSTRAR ESTADO INICIAL DE TABLA
+// ========================================
+
+renderizarRepuestosAgregados();

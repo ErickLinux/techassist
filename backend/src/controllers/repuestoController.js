@@ -321,7 +321,6 @@ export const listarRepuestos = async (req, res) => {
     });
   }
 };
-
 // ========================================
 // CREAR SOLICITUD DE REPUESTO
 // ========================================
@@ -337,40 +336,108 @@ export const crearSolicitudRepuesto =
       const {
         fechaSolicitud,
         registroServicioId,
-        repuestoId,
+        repuestos,
         descripcion
       } = req.body;
 
 
       // ========================================
-      // VALIDACIONES
+      // VALIDACIONES GENERALES
       // ========================================
 
       if (!fechaSolicitud) {
+
         return res.status(400).json({
           mensaje:
             "La fecha de solicitud es obligatoria"
         });
       }
 
+
       if (!registroServicioId) {
+
         return res.status(400).json({
           mensaje:
             "Debes seleccionar un ticket"
         });
       }
 
-      if (!repuestoId) {
+
+      if (
+        !Array.isArray(repuestos) ||
+        repuestos.length === 0
+      ) {
+
         return res.status(400).json({
           mensaje:
-            "Debes seleccionar un repuesto"
+            "Debes agregar al menos un repuesto"
         });
       }
 
+
       if (!descripcion?.trim()) {
+
         return res.status(400).json({
           mensaje:
             "La descripción es obligatoria"
+        });
+      }
+
+
+      // ========================================
+      // VALIDAR FORMATO DE REPUESTOS
+      // ========================================
+
+      for (const item of repuestos) {
+
+        if (!item.repuestoId) {
+
+          return res.status(400).json({
+            mensaje:
+              "Uno de los repuestos no es válido"
+          });
+        }
+
+
+        const cantidad =
+          Number(item.cantidad);
+
+
+        if (
+          !Number.isInteger(cantidad) ||
+          cantidad < 1
+        ) {
+
+          return res.status(400).json({
+            mensaje:
+              "La cantidad de cada repuesto debe ser mayor o igual a 1"
+          });
+        }
+      }
+
+
+      // ========================================
+      // EVITAR REPUESTOS DUPLICADOS
+      // ========================================
+
+      const idsRepuestos =
+        repuestos.map(
+          (item) => item.repuestoId
+        );
+
+
+      const idsUnicos =
+        new Set(idsRepuestos);
+
+
+      if (
+        idsUnicos.size !==
+        idsRepuestos.length
+      ) {
+
+        return res.status(400).json({
+          mensaje:
+            "La solicitud contiene repuestos duplicados"
         });
       }
 
@@ -381,13 +448,17 @@ export const crearSolicitudRepuesto =
 
       const usuario =
         await prisma.usuario.findUnique({
+
           where: {
             id: usuarioId
           }
         });
 
 
-      if (!usuario || !usuario.activo) {
+      if (
+        !usuario ||
+        !usuario.activo
+      ) {
 
         return res.status(403).json({
           mensaje:
@@ -424,24 +495,38 @@ export const crearSolicitudRepuesto =
 
 
       // ========================================
-      // VALIDAR REPUESTO
+      // VALIDAR TODOS LOS REPUESTOS
       // ========================================
 
-      const repuesto =
-        await prisma.repuesto.findFirst({
+      const repuestosEncontrados =
+        await prisma.repuesto.findMany({
 
           where: {
-            id: repuestoId,
+
+            id: {
+              in: idsRepuestos
+            },
+
             activo: true
+          },
+
+          select: {
+            id: true,
+            nombre: true,
+            numeroParte: true
           }
         });
 
 
-      if (!repuesto) {
+      // Deben existir todos los repuestos
+      if (
+        repuestosEncontrados.length !==
+        idsUnicos.size
+      ) {
 
         return res.status(404).json({
           mensaje:
-            "El repuesto seleccionado no existe o está inactivo"
+            "Uno o más repuestos no existen o están inactivos"
         });
       }
 
@@ -457,7 +542,24 @@ export const crearSolicitudRepuesto =
 
 
       // ========================================
-      // CREAR SOLICITUD + DETALLE
+      // PREPARAR DETALLES
+      // ========================================
+
+      const detalles =
+        repuestos.map(
+          (item) => ({
+
+            repuestoId:
+              item.repuestoId,
+
+            cantidad:
+              Number(item.cantidad)
+          })
+        );
+
+
+      // ========================================
+      // CREAR SOLICITUD + VARIOS DETALLES
       // ========================================
 
       const solicitud =
@@ -465,7 +567,8 @@ export const crearSolicitudRepuesto =
 
           data: {
 
-            pais: "Guatemala",
+            pais:
+              "Guatemala",
 
             fechaSolicitud:
               fecha,
@@ -484,20 +587,25 @@ export const crearSolicitudRepuesto =
             registroServicioId:
               servicio.id,
 
+
+            // Aquí Prisma crea todos
+            // los repuestos de la solicitud
             detalles: {
 
-              create: {
-                repuestoId:
-                  repuesto.id,
-
-                cantidad: 1
-              }
+              create:
+                detalles
             }
           },
+
+
+          // ========================================
+          // DEVOLVER INFORMACIÓN COMPLETA
+          // ========================================
 
           include: {
 
             usuario: {
+
               select: {
                 id: true,
                 nombre: true,
@@ -505,14 +613,18 @@ export const crearSolicitudRepuesto =
               }
             },
 
+
             tienda: true,
 
+
             registroServicio: {
+
               select: {
                 id: true,
                 numeroTicket: true
               }
             },
+
 
             detalles: {
 
@@ -524,10 +636,14 @@ export const crearSolicitudRepuesto =
         });
 
 
+      // ========================================
+      // RESPUESTA
+      // ========================================
+
       return res.status(201).json({
 
         mensaje:
-          "Solicitud de repuesto creada correctamente",
+          "Solicitud de repuestos creada correctamente",
 
         solicitud
       });
@@ -536,18 +652,18 @@ export const crearSolicitudRepuesto =
     } catch (error) {
 
       console.error(
-        "Error creando solicitud de repuesto:",
+        "Error creando solicitud de repuestos:",
         error
       );
 
 
       return res.status(500).json({
+
         mensaje:
-          "Error interno al crear la solicitud de repuesto"
+          "Error interno al crear la solicitud de repuestos"
       });
     }
   };
-
 
   // ========================================
 // CAMBIAR ESTADO DE REPUESTO
