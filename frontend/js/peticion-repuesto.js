@@ -82,19 +82,14 @@ const cantidadRepuesto =
 const btnAgregarRepuesto =
   document.getElementById("btnAgregarRepuesto");
 
-const tablaRepuestosAgregados =
+const cuerpoRepuestosAgregados =
   document.getElementById(
     "tablaRepuestosAgregados"
   );
 
-const cuerpoRepuestosAgregados =
+const filaSinRepuestos =
   document.getElementById(
-    "cuerpoRepuestosAgregados"
-  );
-
-const sinRepuestosAgregados =
-  document.getElementById(
-    "sinRepuestosAgregados"
+    "filaSinRepuestos"
   );
 
 
@@ -986,58 +981,43 @@ function renderizarRepuestosAgregados() {
 
   cuerpoRepuestosAgregados.innerHTML = "";
 
+  // ========================================
+  // SIN REPUESTOS
+  // ========================================
+
   if (repuestosAgregados.length === 0) {
 
-    if (tablaRepuestosAgregados) {
-      tablaRepuestosAgregados
-        .classList.add("d-none");
-    }
-
-    if (sinRepuestosAgregados) {
-      sinRepuestosAgregados
-        .classList.remove("d-none");
-    }
+    cuerpoRepuestosAgregados.innerHTML = `
+      <tr id="filaSinRepuestos">
+        <td
+          colspan="4"
+          class="text-center text-secondary py-3"
+        >
+          No has agregado repuestos a la solicitud.
+        </td>
+      </tr>
+    `;
 
     return;
   }
 
-  if (tablaRepuestosAgregados) {
-    tablaRepuestosAgregados
-      .classList.remove("d-none");
-  }
 
-  if (sinRepuestosAgregados) {
-    sinRepuestosAgregados
-      .classList.add("d-none");
-  }
+  // ========================================
+  // MOSTRAR REPUESTOS
+  // ========================================
 
   repuestosAgregados.forEach(
-    (repuesto, indice) => {
+    (repuesto) => {
 
       const fila =
         document.createElement("tr");
 
       fila.innerHTML = `
-        <td class="align-middle">
-          ${indice + 1}
-        </td>
+        <td class="align-middle text-center">
 
-        <td class="align-middle">
-          <strong>
-            ${repuesto.nombre}
-          </strong>
-        </td>
-
-        <td class="align-middle">
-          ${repuesto.numeroParte}
-        </td>
-
-        <td
-          class="align-middle"
-          style="min-width: 150px;"
-        >
           <div
             class="input-group input-group-sm"
+            style="max-width: 140px; margin: auto;"
           >
 
             <button
@@ -1068,6 +1048,21 @@ function renderizarRepuestosAgregados() {
             </button>
 
           </div>
+
+        </td>
+
+        <td class="align-middle">
+
+          <strong>
+            ${repuesto.nombre}
+          </strong>
+
+        </td>
+
+        <td class="align-middle">
+
+          ${repuesto.numeroParte}
+
         </td>
 
         <td class="align-middle text-center">
@@ -1079,7 +1074,9 @@ function renderizarRepuestosAgregados() {
             data-id="${repuesto.id}"
             title="Eliminar repuesto"
           >
+
             <i class="bi bi-trash"></i>
+
           </button>
 
         </td>
