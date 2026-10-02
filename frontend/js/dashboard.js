@@ -1821,7 +1821,104 @@ modalDetalleServicio.addEventListener(
 // INICIAR DASHBOARD
 // ==============================
 
-cargarServicios();
+iniciarDashboard();
+
+async function iniciarDashboard() {
+
+  // Cargar normalmente los servicios
+  await cargarServicios();
+
+
+  // Revisar si venimos desde
+  // Historial de servicios
+  const servicioEditarId =
+    sessionStorage.getItem(
+      "servicioEditar"
+    );
+
+
+  if (!servicioEditarId) {
+    return;
+  }
+
+
+  // Eliminar inmediatamente el ID
+  // para que no vuelva a abrirse
+  // al recargar el Dashboard
+  sessionStorage.removeItem(
+    "servicioEditar"
+  );
+
+
+  try {
+
+    const respuesta =
+      await fetch(
+        `${API_URL}/api/servicios/${servicioEditarId}`,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
+
+
+    const datos =
+      await respuesta.json();
+
+
+    if (!respuesta.ok) {
+
+      throw new Error(
+        datos.mensaje ||
+        "No fue posible cargar el servicio"
+      );
+    }
+
+
+    // Guardar el servicio seleccionado
+    servicioSeleccionado =
+      datos.servicio;
+
+
+    // Abrir el modal
+    const modal =
+      bootstrap.Modal
+        .getOrCreateInstance(
+          modalDetalleServicio
+        );
+
+
+    modal.show();
+
+
+    // Mostrar directamente
+    // el formulario de edición
+    mostrarFormularioEdicion(
+      servicioSeleccionado
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Error abriendo servicio para editar:",
+      error
+    );
+
+
+    await Swal.fire({
+      icon: "error",
+      title:
+        "No se pudo abrir el servicio",
+      text:
+        error.message,
+      confirmButtonText:
+        "Aceptar"
+    });
+  }
+}
 
 
 async function eliminarServicioSeleccionado() {
