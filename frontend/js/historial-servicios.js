@@ -1861,6 +1861,1123 @@ function mostrarDetalle(
 
 
 // =============================================
+// OBTENER FECHA PARA INPUT
+// =============================================
+
+function obtenerFechaInput(fecha) {
+
+  if (!fecha) {
+    return "";
+  }
+
+  return String(fecha).substring(
+    0,
+    10
+  );
+}
+
+
+// =============================================
+// OBTENER HORA PARA INPUT
+// =============================================
+
+function obtenerHoraInput(fechaHora) {
+
+  if (!fechaHora) {
+    return "";
+  }
+
+  const fecha =
+    new Date(fechaHora);
+
+  return fecha.toLocaleTimeString(
+    "en-GB",
+    {
+      timeZone:
+        "America/Guatemala",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    }
+  );
+}
+
+
+// =============================================
+// MOSTRAR FORMULARIO DE EDICIÓN
+// =============================================
+
+function mostrarFormularioEdicion(
+  servicio
+) {
+
+  const tieneRegresoCasa =
+    Boolean(
+      servicio.inicioRegresoCasa ||
+      servicio.finRegresoCasa
+    );
+
+
+  contenidoDetalleServicio.innerHTML = `
+
+    <form id="formEditarServicio">
+
+      <div class="row g-3">
+
+
+        <!-- FECHA -->
+
+        <div class="col-md-6">
+
+          <label
+            for="editarFecha"
+            class="form-label"
+          >
+            Fecha
+          </label>
+
+          <input
+            type="date"
+            id="editarFecha"
+            class="form-control"
+            value="${obtenerFechaInput(
+              servicio.fecha
+            )}"
+            required
+          >
+
+        </div>
+
+
+        <!-- TIENDA -->
+
+        <div class="col-md-6">
+
+          <label
+            for="editarCodigoTienda"
+            class="form-label"
+          >
+            Código tienda / Determinante
+          </label>
+
+          <input
+            type="number"
+            id="editarCodigoTienda"
+            class="form-control"
+            value="${
+              servicio.tienda?.codigo || ""
+            }"
+            required
+          >
+
+        </div>
+
+
+        <!-- TICKET -->
+
+        <div class="col-md-6">
+
+          <label
+            for="editarTicket"
+            class="form-label"
+          >
+            Ticket / INC
+          </label>
+
+          <input
+            type="text"
+            id="editarTicket"
+            class="form-control"
+            value="${
+              servicio.numeroTicket || ""
+            }"
+            required
+          >
+
+        </div>
+
+
+        <!-- CAF -->
+
+        <div class="col-md-6">
+
+          <label
+            for="editarCaf"
+            class="form-label"
+          >
+            CAF / Boleta
+          </label>
+
+          <input
+            type="text"
+            id="editarCaf"
+            class="form-control"
+            value="${
+              servicio.numeroCaf || ""
+            }"
+          >
+
+        </div>
+
+
+        <!-- LUGAR DE SALIDA -->
+
+        <div class="col-12">
+
+          <label
+            for="editarLugarSalida"
+            class="form-label"
+          >
+            Lugar de salida
+          </label>
+
+          <input
+            type="text"
+            id="editarLugarSalida"
+            class="form-control"
+            value="${
+              servicio.lugarSalida || ""
+            }"
+            placeholder="Ejemplo: Cobán"
+          >
+
+        </div>
+
+
+        <div class="col-12">
+          <hr>
+        </div>
+
+
+        <!-- ATENCIÓN -->
+
+        <div class="col-12">
+
+          <h6 class="fw-bold mb-0">
+
+            <i class="bi bi-clock me-1"></i>
+
+            Atención
+
+          </h6>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+          <label
+            for="editarIngreso"
+            class="form-label"
+          >
+            Hora ingreso
+          </label>
+
+          <input
+            type="time"
+            id="editarIngreso"
+            class="form-control"
+            value="${obtenerHoraInput(
+              servicio.horaIngreso
+            )}"
+          >
+
+        </div>
+
+
+        <div class="col-md-6">
+
+          <label
+            for="editarEgreso"
+            class="form-label"
+          >
+            Hora egreso
+          </label>
+
+          <input
+            type="time"
+            id="editarEgreso"
+            class="form-control"
+            value="${obtenerHoraInput(
+              servicio.horaEgreso
+            )}"
+          >
+
+        </div>
+
+
+        <div class="col-12">
+          <hr>
+        </div>
+
+
+        <!-- VIAJE -->
+
+        <div class="col-12">
+
+          <h6 class="fw-bold mb-0">
+
+            <i
+              class="bi bi-car-front me-1"
+            ></i>
+
+            Viaje
+
+          </h6>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+          <label
+            for="editarInicioViaje"
+            class="form-label"
+          >
+            Inicio viaje
+          </label>
+
+          <input
+            type="time"
+            id="editarInicioViaje"
+            class="form-control"
+            value="${obtenerHoraInput(
+              servicio.inicioViaje
+            )}"
+          >
+
+        </div>
+
+
+        <div class="col-md-6">
+
+          <label
+            for="editarFinViaje"
+            class="form-label"
+          >
+            Fin viaje
+          </label>
+
+          <input
+            type="time"
+            id="editarFinViaje"
+            class="form-control"
+            value="${obtenerHoraInput(
+              servicio.finViaje
+            )}"
+          >
+
+        </div>
+
+
+        <!-- KILÓMETROS -->
+
+        <div class="col-md-6">
+
+          <label
+            for="editarKilometros"
+            class="form-label"
+          >
+            Kilómetros
+          </label>
+
+          <input
+            type="number"
+            id="editarKilometros"
+            class="form-control"
+            min="0"
+            value="${
+              Number(
+                servicio.totalKilometros
+              ) || 0
+            }"
+          >
+
+        </div>
+
+
+        <div class="col-12">
+          <hr>
+        </div>
+
+
+        <!-- REGRESO A CASA -->
+
+        <div class="col-12">
+
+          <div class="form-check form-switch">
+
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              id="editarActivarRegresoCasa"
+              ${
+                tieneRegresoCasa
+                  ? "checked"
+                  : ""
+              }
+            >
+
+            <label
+              class="form-check-label fw-semibold"
+              for="editarActivarRegresoCasa"
+            >
+              Agregar viaje de regreso a casa
+            </label>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="col-12 ${
+            tieneRegresoCasa
+              ? ""
+              : "d-none"
+          }"
+          id="editarCamposRegresoCasa"
+        >
+
+          <div class="row g-3 mt-1">
+
+
+            <div class="col-md-4">
+
+              <label
+                for="editarInicioRegresoCasa"
+                class="form-label"
+              >
+                Inicio regreso a casa
+              </label>
+
+              <input
+                type="time"
+                id="editarInicioRegresoCasa"
+                class="form-control"
+                value="${obtenerHoraInput(
+                  servicio.inicioRegresoCasa
+                )}"
+              >
+
+            </div>
+
+
+            <div class="col-md-4">
+
+              <label
+                for="editarFinRegresoCasa"
+                class="form-label"
+              >
+                Fin regreso a casa
+              </label>
+
+              <input
+                type="time"
+                id="editarFinRegresoCasa"
+                class="form-control"
+                value="${obtenerHoraInput(
+                  servicio.finRegresoCasa
+                )}"
+              >
+
+            </div>
+
+
+            <div class="col-md-4">
+
+              <label
+                for="editarTotalRegresoCasa"
+                class="form-label"
+              >
+                Total regreso
+              </label>
+
+              <input
+                type="text"
+                id="editarTotalRegresoCasa"
+                class="form-control"
+                value="${convertirMinutos(
+                  servicio.totalMinutosRegresoCasa
+                )}"
+                readonly
+              >
+
+            </div>
+
+
+          </div>
+
+        </div>
+
+
+        <div class="col-12">
+          <hr>
+        </div>
+
+
+        <!-- TRABAJO -->
+
+        <div class="col-12">
+
+          <label
+            for="editarTrabajo"
+            class="form-label"
+          >
+            Trabajo realizado / Justificación
+          </label>
+
+          <textarea
+            id="editarTrabajo"
+            class="form-control"
+            rows="4"
+            required
+          >${
+            servicio.trabajoRealizado || ""
+          }</textarea>
+
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <div
+          class="col-12 d-flex justify-content-end gap-2"
+        >
+
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            id="btnCancelarEdicion"
+          >
+
+            <i
+              class="bi bi-x-lg me-1"
+            ></i>
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn btn-success"
+          >
+
+            <i
+              class="bi bi-check-lg me-1"
+            ></i>
+
+            Guardar cambios
+
+          </button>
+
+        </div>
+
+
+      </div>
+
+    </form>
+  `;
+
+
+  // =============================================
+  // REGRESO A CASA
+  // =============================================
+
+  const activarRegresoCasa =
+    document.getElementById(
+      "editarActivarRegresoCasa"
+    );
+
+  const camposRegresoCasa =
+    document.getElementById(
+      "editarCamposRegresoCasa"
+    );
+
+  const inicioRegresoCasa =
+    document.getElementById(
+      "editarInicioRegresoCasa"
+    );
+
+  const finRegresoCasa =
+    document.getElementById(
+      "editarFinRegresoCasa"
+    );
+
+  const totalRegresoCasa =
+    document.getElementById(
+      "editarTotalRegresoCasa"
+    );
+
+
+  function calcularRegresoCasaEdicion() {
+
+    if (
+      !inicioRegresoCasa.value ||
+      !finRegresoCasa.value
+    ) {
+
+      totalRegresoCasa.value =
+        "0 min";
+
+      return;
+    }
+
+
+    const [
+      horaInicio,
+      minutoInicio
+    ] =
+      inicioRegresoCasa.value
+        .split(":")
+        .map(Number);
+
+
+    const [
+      horaFin,
+      minutoFin
+    ] =
+      finRegresoCasa.value
+        .split(":")
+        .map(Number);
+
+
+    let minutosInicio =
+      horaInicio * 60 +
+      minutoInicio;
+
+    let minutosFin =
+      horaFin * 60 +
+      minutoFin;
+
+
+    // Cruza medianoche
+
+    if (
+      minutosFin <
+      minutosInicio
+    ) {
+
+      minutosFin +=
+        24 * 60;
+    }
+
+
+    const totalMinutos =
+      minutosFin -
+      minutosInicio;
+
+
+    totalRegresoCasa.value =
+      convertirMinutos(
+        totalMinutos
+      );
+  }
+
+
+  activarRegresoCasa.addEventListener(
+    "change",
+    () => {
+
+      if (
+        activarRegresoCasa.checked
+      ) {
+
+        camposRegresoCasa
+          .classList.remove(
+            "d-none"
+          );
+
+      } else {
+
+        camposRegresoCasa
+          .classList.add(
+            "d-none"
+          );
+
+        inicioRegresoCasa.value =
+          "";
+
+        finRegresoCasa.value =
+          "";
+
+        totalRegresoCasa.value =
+          "0 min";
+      }
+    }
+  );
+
+
+  inicioRegresoCasa.addEventListener(
+    "change",
+    calcularRegresoCasaEdicion
+  );
+
+
+  finRegresoCasa.addEventListener(
+    "change",
+    calcularRegresoCasaEdicion
+  );
+
+
+  // =============================================
+  // CANCELAR EDICIÓN
+  // =============================================
+
+  const btnCancelarEdicion =
+    document.getElementById(
+      "btnCancelarEdicion"
+    );
+
+
+  btnCancelarEdicion.addEventListener(
+    "click",
+    () => {
+
+      mostrarDetalle(
+        servicioSeleccionado
+      );
+
+      btnEditarServicio
+        .classList.remove(
+          "d-none"
+        );
+
+      btnEliminarServicio
+        .classList.remove(
+          "d-none"
+        );
+    }
+  );
+
+
+  // =============================================
+  // OCULTAR BOTONES DEL MODAL
+  // =============================================
+
+  btnEditarServicio
+    .classList.add(
+      "d-none"
+    );
+
+  btnEliminarServicio
+    .classList.add(
+      "d-none"
+    );
+
+
+  // =============================================
+  // GUARDAR
+  // =============================================
+
+  const formulario =
+    document.getElementById(
+      "formEditarServicio"
+    );
+
+
+  formulario.addEventListener(
+    "submit",
+    guardarEdicionServicio
+  );
+}
+
+
+// =============================================
+// GUARDAR EDICIÓN
+// =============================================
+
+async function guardarEdicionServicio(
+  event
+) {
+
+  event.preventDefault();
+
+
+  if (!servicioSeleccionado) {
+    return;
+  }
+
+
+  const activarRegresoCasa =
+    document.getElementById(
+      "editarActivarRegresoCasa"
+    );
+
+
+  const datos = {
+
+    fecha:
+      document.getElementById(
+        "editarFecha"
+      ).value,
+
+    codigoTienda:
+      Number(
+        document.getElementById(
+          "editarCodigoTienda"
+        ).value
+      ),
+
+    numeroTicket:
+      document
+        .getElementById(
+          "editarTicket"
+        )
+        .value
+        .trim(),
+
+    numeroCaf:
+      document
+        .getElementById(
+          "editarCaf"
+        )
+        .value
+        .trim() || null,
+
+    lugarSalida:
+      document
+        .getElementById(
+          "editarLugarSalida"
+        )
+        .value
+        .trim() || null,
+
+    horaIngreso:
+      document.getElementById(
+        "editarIngreso"
+      ).value || null,
+
+    horaEgreso:
+      document.getElementById(
+        "editarEgreso"
+      ).value || null,
+
+    inicioViaje:
+      document.getElementById(
+        "editarInicioViaje"
+      ).value || null,
+
+    finViaje:
+      document.getElementById(
+        "editarFinViaje"
+      ).value || null,
+
+    totalKilometros:
+      Number(
+        document.getElementById(
+          "editarKilometros"
+        ).value
+      ) || 0,
+
+    inicioRegresoCasa:
+      activarRegresoCasa.checked
+        ? (
+            document.getElementById(
+              "editarInicioRegresoCasa"
+            ).value || null
+          )
+        : null,
+
+    finRegresoCasa:
+      activarRegresoCasa.checked
+        ? (
+            document.getElementById(
+              "editarFinRegresoCasa"
+            ).value || null
+          )
+        : null,
+
+    trabajoRealizado:
+      document
+        .getElementById(
+          "editarTrabajo"
+        )
+        .value
+        .trim()
+  };
+
+
+  // =============================================
+  // VALIDACIONES
+  // =============================================
+
+  if (
+    !datos.fecha ||
+    !datos.codigoTienda ||
+    !datos.numeroTicket ||
+    !datos.trabajoRealizado
+  ) {
+
+    await Swal.fire({
+      icon: "warning",
+      title:
+        "Campos obligatorios",
+      text:
+        "Completa la fecha, determinante, ticket y trabajo realizado.",
+      confirmButtonText:
+        "Aceptar"
+    });
+
+    return;
+  }
+
+
+  if (
+    (
+      datos.horaIngreso &&
+      !datos.horaEgreso
+    ) ||
+    (
+      !datos.horaIngreso &&
+      datos.horaEgreso
+    )
+  ) {
+
+    await Swal.fire({
+      icon: "warning",
+      title:
+        "Horario de atención incompleto",
+      text:
+        "Debes ingresar tanto la hora de ingreso como la hora de egreso.",
+      confirmButtonText:
+        "Aceptar"
+    });
+
+    return;
+  }
+
+
+  if (
+    (
+      datos.inicioViaje &&
+      !datos.finViaje
+    ) ||
+    (
+      !datos.inicioViaje &&
+      datos.finViaje
+    )
+  ) {
+
+    await Swal.fire({
+      icon: "warning",
+      title:
+        "Horario de viaje incompleto",
+      text:
+        "Debes ingresar tanto el inicio como el fin del viaje.",
+      confirmButtonText:
+        "Aceptar"
+    });
+
+    return;
+  }
+
+
+  if (
+    activarRegresoCasa.checked &&
+    (
+      !datos.inicioRegresoCasa ||
+      !datos.finRegresoCasa
+    )
+  ) {
+
+    await Swal.fire({
+      icon: "warning",
+      title:
+        "Regreso a casa incompleto",
+      text:
+        "Debes ingresar la hora de inicio y la hora de fin del regreso a casa.",
+      confirmButtonText:
+        "Aceptar"
+    });
+
+    return;
+  }
+
+
+  try {
+
+    const formulario =
+      document.getElementById(
+        "formEditarServicio"
+      );
+
+    const botonGuardar =
+      formulario.querySelector(
+        'button[type="submit"]'
+      );
+
+
+    botonGuardar.disabled =
+      true;
+
+    botonGuardar.innerHTML = `
+
+      <span
+        class="spinner-border spinner-border-sm me-1"
+      ></span>
+
+      Guardando...
+    `;
+
+
+    const respuesta =
+      await fetch(
+        `${API_URL}/api/servicios/${servicioSeleccionado.id}`,
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              `Bearer ${token}`
+          },
+
+          body:
+            JSON.stringify(
+              datos
+            )
+        }
+      );
+
+
+    const resultado =
+      await respuesta.json();
+
+
+    if (!respuesta.ok) {
+
+      throw new Error(
+        resultado.mensaje ||
+        "No fue posible actualizar el servicio"
+      );
+    }
+
+
+    // Actualizar servicio seleccionado
+
+    servicioSeleccionado =
+      resultado.servicio;
+
+
+    // Actualizar arreglo local
+
+    const indice =
+      servicios.findIndex(
+        (servicio) =>
+          servicio.id ===
+          servicioSeleccionado.id
+      );
+
+
+    if (indice !== -1) {
+
+      servicios[indice] =
+        servicioSeleccionado;
+    }
+
+
+    // Actualizar tabla
+
+    aplicarFiltros();
+
+
+    // Volver al detalle
+
+    mostrarDetalle(
+      servicioSeleccionado
+    );
+
+
+    // Mostrar botones nuevamente
+
+    btnEditarServicio
+      .classList.remove(
+        "d-none"
+      );
+
+    btnEliminarServicio
+      .classList.remove(
+        "d-none"
+      );
+
+
+    await Swal.fire({
+      icon: "success",
+      title:
+        "¡Servicio actualizado!",
+      text:
+        "Los cambios se guardaron correctamente.",
+      confirmButtonText:
+        "Aceptar",
+      confirmButtonColor:
+        "#0d6efd"
+    });
+
+
+  } catch (error) {
+
+    console.error(
+      "Error al editar servicio:",
+      error
+    );
+
+
+    await Swal.fire({
+      icon: "error",
+      title:
+        "No se pudo actualizar",
+      text:
+        error.message,
+      confirmButtonText:
+        "Aceptar",
+      confirmButtonColor:
+        "#dc3545"
+    });
+
+
+    const formulario =
+      document.getElementById(
+        "formEditarServicio"
+      );
+
+
+    if (formulario) {
+
+      const botonGuardar =
+        formulario.querySelector(
+          'button[type="submit"]'
+        );
+
+
+      if (botonGuardar) {
+
+        botonGuardar.disabled =
+          false;
+
+        botonGuardar.innerHTML = `
+
+          <i
+            class="bi bi-check-lg me-1"
+          ></i>
+
+          Guardar cambios
+        `;
+      }
+    }
+  }
+}
+
+// =============================================
+// BOTÓN EDITAR
+// =============================================
+
+// =============================================
 // BOTÓN EDITAR
 // =============================================
 
@@ -1873,14 +2990,9 @@ btnEditarServicio.addEventListener(
     }
 
 
-    sessionStorage.setItem(
-      "servicioEditar",
-      servicioSeleccionado.id
+    mostrarFormularioEdicion(
+      servicioSeleccionado
     );
-
-
-    window.location.href =
-      "./dashboard.html";
   }
 );
 
