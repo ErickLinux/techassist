@@ -13,7 +13,13 @@ import {
   verificarToken
 } from "../middleware/authMiddleware.js";
 
+
 const router = Router();
+
+
+// =============================================
+// LISTAR MIS SERVICIOS
+// =============================================
 
 router.get(
   "/mis-servicios",
@@ -21,11 +27,10 @@ router.get(
   listarMisServicios
 );
 
-router.get(
-  "/:id",
-  verificarToken,
-  obtenerDetalleServicio
-);
+
+// =============================================
+// REGISTRAR SERVICIO
+// =============================================
 
 router.post(
   "/",
@@ -33,21 +38,50 @@ router.post(
   registrarServicio
 );
 
+
+// =============================================
+// ELIMINAR VARIOS SERVICIOS
+// IMPORTANTE: DEBE ESTAR ANTES DE /:id
+// =============================================
+
+router.delete(
+  "/eliminar-multiples",
+  verificarToken,
+  eliminarServiciosMultiples
+);
+
+
+// =============================================
+// OBTENER DETALLE
+// =============================================
+
+router.get(
+  "/:id",
+  verificarToken,
+  obtenerDetalleServicio
+);
+
+
+// =============================================
+// EDITAR SERVICIO
+// =============================================
+
 router.put(
   "/:id",
   verificarToken,
   editarServicio
 );
 
+
+// =============================================
+// ELIMINAR UN SERVICIO
+// =============================================
+
 router.delete(
   "/:id",
   verificarToken,
   eliminarServicio
 );
-router.delete(
-  "/eliminar-multiples",
-  verificarToken,
-  eliminarServiciosMultiples
-);
+
 
 export default router;
