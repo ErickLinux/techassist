@@ -214,3 +214,39 @@ body {
   z-index: 2;
   background-color: #ffffff;
 }
+
+@media (max-width: 576px) {
+
+  .dashboard-summary-card {
+    padding: 16px 12px;
+    min-height: 125px;
+  }
+
+  .summary-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 19px;
+    flex-shrink: 0;
+  }
+
+  .summary-label {
+    font-size: 13px;
+  }
+
+  .summary-value {
+    font-size: 18px;
+  }
+
+  .summary-period {
+    font-size: 11px;
+  }
+
+  .welcome-section h1 {
+    font-size: 24px;
+  }
+
+  .welcome-section p {
+    font-size: 14px;
+  }
+
+}
