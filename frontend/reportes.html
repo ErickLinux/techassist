@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Reportes | TechAssist</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="./css/dashboard.css"
+  >
+
+</head>
+
+<body>
+
+  <!-- ========================================= -->
+  <!-- SIDEBAR -->
+  <!-- ========================================= -->
+
+  <aside
+    class="sidebar"
+    id="sidebar"
+  >
+
+    <div class="sidebar-header">
+
+      <h4>
+        TechAssist
+      </h4>
+
+    </div>
+
+
+    <nav class="sidebar-menu">
+
+      <a href="./dashboard.html">
+        <i class="bi bi-house-door"></i>
+        <span>Inicio</span>
+      </a>
+
+      <a href="./registro-servicio.html">
+        <i class="bi bi-clipboard-plus"></i>
+        <span>Nuevo servicio</span>
+      </a>
+
+      <a href="./historial-servicios.html">
+        <i class="bi bi-journal-text"></i>
+        <span>Historial de servicios</span>
+      </a>
+
+      <a href="./horas-extras.html">
+        <i class="bi bi-clock-history"></i>
+        <span>Horas extras</span>
+      </a>
+
+      <a href="./liquidaciones.html">
+        <i class="bi bi-receipt"></i>
+        <span>Liquidaciones</span>
+      </a>
+
+      <a href="./peticion-repuesto.html">
+        <i class="bi bi-box-seam"></i>
+        <span>Petición de repuestos</span>
+      </a>
+
+      <a href="./informe-equipos.html">
+        <i class="bi bi-camera"></i>
+        <span>Informe de equipos</span>
+      </a>
+
+      <a
+        href="./administrar-repuestos.html"
+        class="d-none"
+        id="menuAdministrarRepuestos"
+      >
+        <i class="bi bi-tools"></i>
+        <span>Administrar repuestos</span>
+      </a>
+
+      <a
+        href="./reportes.html"
+        class="active"
+      >
+        <i class="bi bi-file-earmark-bar-graph"></i>
+        <span>Reportes</span>
+      </a>
+
+      <a
+        href="./usuarios.html"
+        class="d-none"
+        id="menuAdministrarUsuarios"
+      >
+        <i class="bi bi-people"></i>
+        <span>Administrar usuarios</span>
+      </a>
+
+      <a href="./perfil.html">
+        <i class="bi bi-person-circle"></i>
+        <span>Perfil</span>
+      </a>
+
+    </nav>
+
+
+    <div class="sidebar-footer">
+
+      <button
+        class="btn btn-outline-light w-100"
+        id="btnCerrarSesion"
+      >
+        <i class="bi bi-box-arrow-right"></i>
+        Cerrar sesión
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ========================================= -->
+  <!-- CONTENIDO PRINCIPAL -->
+  <!-- ========================================= -->
+
+  <main class="main-content">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+      <button
+        class="btn btn-light"
+        id="btnMenu"
+      >
+        <i class="bi bi-list"></i>
+      </button>
+
+
+      <div>
+
+        <span class="text-secondary">
+          Bienvenido,
+        </span>
+
+        <strong id="nombreUsuario">
+          Usuario
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <div class="container-fluid py-4">
+
+      <!-- ENCABEZADO -->
+
+      <div class="mb-4">
+
+        <h2 class="fw-bold mb-1">
+
+          <i
+            class="bi bi-file-earmark-bar-graph me-2"
+          ></i>
+
+          Reportes
+
+        </h2>
+
+        <p class="text-secondary mb-0">
+          Consulta el resumen de servicios,
+          kilómetros y horas extras.
+        </p>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- FILTROS -->
+      <!-- ===================================== -->
+
+      <div class="card shadow-sm border-0 mb-4">
+
+        <div class="card-body">
+
+          <div class="row g-3 align-items-end">
+
+
+            <div class="col-lg-3 col-md-6">
+
+              <label
+                for="tipoPeriodo"
+                class="form-label fw-semibold"
+              >
+                Período
+              </label>
+
+              <select
+                id="tipoPeriodo"
+                class="form-select"
+              >
+
+                <option value="mes">
+                  Mensual
+                </option>
+
+                <option value="semana">
+                  Semanal
+                </option>
+
+                <option value="rango">
+                  Rango personalizado
+                </option>
+
+              </select>
+
+            </div>
+
+
+            <!-- MES -->
+
+            <div
+              class="col-lg-3 col-md-6"
+              id="contenedorMes"
+            >
+
+              <label
+                for="filtroMes"
+                class="form-label fw-semibold"
+              >
+                Mes
+              </label>
+
+              <select
+                id="filtroMes"
+                class="form-select"
+              >
+
+                <option value="0">Enero</option>
+                <option value="1">Febrero</option>
+                <option value="2">Marzo</option>
+                <option value="3">Abril</option>
+                <option value="4">Mayo</option>
+                <option value="5">Junio</option>
+                <option value="6">Julio</option>
+                <option value="7">Agosto</option>
+                <option value="8">Septiembre</option>
+                <option value="9">Octubre</option>
+                <option value="10">Noviembre</option>
+                <option value="11">Diciembre</option>
+
+              </select>
+
+            </div>
+
+
+            <!-- AÑO -->
+
+            <div
+              class="col-lg-2 col-md-6"
+              id="contenedorAnio"
+            >
+
+              <label
+                for="filtroAnio"
+                class="form-label fw-semibold"
+              >
+                Año
+              </label>
+
+              <select
+                id="filtroAnio"
+                class="form-select"
+              ></select>
+
+            </div>
+
+
+            <!-- SEMANA -->
+
+            <div
+              class="col-lg-3 col-md-6 d-none"
+              id="contenedorSemana"
+            >
+
+              <label
+                for="filtroSemana"
+                class="form-label fw-semibold"
+              >
+                Fecha de la semana
+              </label>
+
+              <input
+                type="date"
+                id="filtroSemana"
+                class="form-control"
+              >
+
+            </div>
+
+
+            <!-- RANGO -->
+
+            <div
+              class="col-lg-2 col-md-6 d-none"
+              id="contenedorFechaInicio"
+            >
+
+              <label
+                for="fechaInicio"
+                class="form-label fw-semibold"
+              >
+                Desde
+              </label>
+
+              <input
+                type="date"
+                id="fechaInicio"
+                class="form-control"
+              >
+
+            </div>
+
+
+            <div
+              class="col-lg-2 col-md-6 d-none"
+              id="contenedorFechaFin"
+            >
+
+              <label
+                for="fechaFin"
+                class="form-label fw-semibold"
+              >
+                Hasta
+              </label>
+
+              <input
+                type="date"
+                id="fechaFin"
+                class="form-control"
+              >
+
+            </div>
+
+
+            <div class="col-lg-2 col-md-6">
+
+              <button
+                type="button"
+                id="btnGenerarReporte"
+                class="btn btn-primary w-100"
+              >
+                <i class="bi bi-search me-1"></i>
+                Generar
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- PERÍODO ACTUAL -->
+      <!-- ===================================== -->
+
+      <div
+        class="alert alert-light border mb-4"
+        id="textoPeriodo"
+      >
+        Preparando reporte...
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- RESUMEN SERVICIOS -->
+      <!-- ===================================== -->
+
+      <div class="mb-3">
+
+        <h5 class="fw-bold">
+          Resumen de servicios
+        </h5>
+
+      </div>
+
+
+      <div class="row g-3 mb-4">
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Servicios / INC
+              </div>
+
+              <div
+                class="fs-3 fw-bold"
+                id="totalServicios"
+              >
+                0
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Kilómetros
+              </div>
+
+              <div
+                class="fs-3 fw-bold"
+                id="totalKilometros"
+              >
+                0 km
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Tiempo de atención
+              </div>
+
+              <div
+                class="fs-3 fw-bold"
+                id="totalAtencion"
+              >
+                0 h 0 min
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Tiempo de viaje
+              </div>
+
+              <div
+                class="fs-3 fw-bold"
+                id="totalViaje"
+              >
+                0 h 0 min
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Regreso a casa
+              </div>
+
+              <div
+                class="fs-3 fw-bold"
+                id="totalRegresoCasa"
+              >
+                0 h 0 min
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- HORAS EXTRAS -->
+      <!-- ===================================== -->
+
+      <div class="mb-3">
+
+        <h5 class="fw-bold">
+          Horas extras
+        </h5>
+
+      </div>
+
+
+      <div class="row g-3 mb-4">
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Extra atención
+              </div>
+
+              <div
+                class="fs-4 fw-bold"
+                id="extraAtencion"
+              >
+                0 h 0 min
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Extra viaje
+              </div>
+
+              <div
+                class="fs-4 fw-bold"
+                id="extraViaje"
+              >
+                0 h 0 min
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Extra regreso
+              </div>
+
+              <div
+                class="fs-4 fw-bold"
+                id="extraRegresoCasa"
+              >
+                0 h 0 min
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="col-xl-3 col-md-6">
+
+          <div class="card shadow-sm border-0 h-100">
+
+            <div class="card-body">
+
+              <div class="text-secondary small">
+                Total horas extras
+              </div>
+
+              <div
+                class="fs-3 fw-bold text-success"
+                id="totalHorasExtras"
+              >
+                0 h 0 min
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- ===================================== -->
+      <!-- TABLA -->
+      <!-- ===================================== -->
+
+      <div class="card shadow-sm border-0">
+
+        <div class="card-header bg-white py-3">
+
+          <h5 class="mb-0 fw-bold">
+            Detalle del reporte
+          </h5>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+
+          <div
+            class="text-center py-5"
+            id="cargandoReporte"
+          >
+
+            <div
+              class="spinner-border text-primary"
+            ></div>
+
+            <div class="mt-2 text-secondary">
+              Cargando información...
+            </div>
+
+          </div>
+
+
+          <div
+            class="text-center py-5 d-none"
+            id="sinResultados"
+          >
+
+            <i
+              class="bi bi-inbox fs-1 text-secondary"
+            ></i>
+
+            <p class="text-secondary mt-2 mb-0">
+              No hay servicios para este período.
+            </p>
+
+          </div>
+
+
+          <div
+            class="table-responsive d-none"
+            id="contenedorTabla"
+          >
+
+            <table
+              class="table table-hover align-middle mb-0"
+            >
+
+              <thead class="table-light">
+
+                <tr>
+
+                  <th>Fecha</th>
+                  <th>INC / Tarea</th>
+                  <th>Tienda</th>
+                  <th>Atención</th>
+                  <th>Viaje</th>
+                  <th>KM</th>
+                  <th>Horas extra</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="tablaReporte">
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+
+  <script src="./js/config.js"></script>
+  <script src="./js/reportes.js"></script>
+
+</body>
+
+</html>
