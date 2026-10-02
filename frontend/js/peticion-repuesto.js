@@ -1407,12 +1407,36 @@ if (formPeticionRepuesto) {
 // MOSTRAR SOLICITUD GENERADA
 // ========================================
 
+// ========================================
+// MOSTRAR SOLICITUD GENERADA
+// ========================================
+
 async function mostrarSolicitudGenerada(
   solicitud
 ) {
 
-  // Construir listado de todos
-  // los repuestos guardados
+  // ========================================
+  // CORREOS DESTINATARIOS
+  // ========================================
+
+  const correosRepuestos = [
+    "jordi.vargas@pbs.group",
+    "brian.diaz@pbs.group",
+    "abner.guevara@grouppbs.com",
+    "edwin.gallardo@pbs.group",
+    "jheremy.martinez@pbs.group",
+    "luis.donado@grouppbs.com",
+    "helmuth.morales@pbs.group",
+    "walter.chingo@pbs.group",
+    "sebastian.poveda@pbs.group",
+    "torrega-wm@pbs.group"
+  ];
+
+
+  // ========================================
+  // CONSTRUIR LISTADO DE REPUESTOS
+  // ========================================
+
   const textoRepuestos =
     solicitud.detalles
       .map(
@@ -1421,9 +1445,15 @@ async function mostrarSolicitudGenerada(
           return `${indice + 1}. ${detalle.repuesto.nombre}
    Número de parte / Modelo: ${detalle.repuesto.numeroParte}
    Cantidad: ${detalle.cantidad}`;
+
         }
       )
       .join("\n\n");
+
+
+  // ========================================
+  // TEXTO COMPLETO DE LA SOLICITUD
+  // ========================================
 
   const texto =
 `PETICIÓN DE REPUESTOS
@@ -1446,6 +1476,21 @@ Bodega: ${solicitud.usuario.bodega || "-"}
 
 Descripción:
 ${solicitud.descripcion}`;
+
+
+  // ========================================
+  // ASUNTO DEL CORREO
+  // ========================================
+
+  const asunto =
+    `SOLICITUD DE REPUESTO - ` +
+    `${solicitud.registroServicio.numeroTicket} - ` +
+    `${solicitud.tienda.nombre}`;
+
+
+  // ========================================
+  // MOSTRAR SOLICITUD
+  // ========================================
 
   const resultado =
     await Swal.fire({
@@ -1470,14 +1515,22 @@ ${solicitud.descripcion}`;
 
       showCancelButton: true,
 
+      showDenyButton: true,
+
       confirmButtonText:
-        "Copiar solicitud",
+        '<i class="bi bi-clipboard"></i> Copiar solicitud',
+
+      denyButtonText:
+        '<i class="bi bi-envelope"></i> Enviar por correo',
 
       cancelButtonText:
         "Cerrar",
 
       confirmButtonColor:
         "#0d6efd",
+
+      denyButtonColor:
+        "#198754",
 
       width: 750,
 
@@ -1488,10 +1541,16 @@ ${solicitud.descripcion}`;
             "textoSolicitudGenerada"
           );
 
-        campo.value =
-          texto;
+        if (campo) {
+          campo.value = texto;
+        }
       }
     });
+
+
+  // ========================================
+  // COPIAR SOLICITUD
+  // ========================================
 
   if (resultado.isConfirmed) {
 
@@ -1502,26 +1561,54 @@ ${solicitud.descripcion}`;
       );
 
       await Swal.fire({
+
         icon: "success",
+
         title: "Copiado",
+
         text:
           "La solicitud fue copiada al portapapeles.",
+
         timer: 1800,
+
         showConfirmButton: false
       });
 
     } catch (error) {
 
       await Swal.fire({
+
         icon: "warning",
+
         title:
           "No fue posible copiar automáticamente",
+
         text:
           "Puedes seleccionar y copiar manualmente el texto de la solicitud.",
+
         confirmButtonText:
           "Aceptar"
       });
     }
+  }
+
+
+  // ========================================
+  // ENVIAR POR CORREO
+  // ========================================
+
+  if (resultado.isDenied) {
+
+    const destinatarios =
+      correosRepuestos.join(",");
+
+    const enlaceCorreo =
+      `mailto:${destinatarios}` +
+      `?subject=${encodeURIComponent(asunto)}` +
+      `&body=${encodeURIComponent(texto)}`;
+
+    window.location.href =
+      enlaceCorreo;
   }
 }
 
