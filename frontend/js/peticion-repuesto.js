@@ -1597,10 +1597,26 @@ ${solicitud.descripcion}`;
   // ENVIAR POR CORREO
   // ========================================
 
-  if (resultado.isDenied) {
+  // ========================================
+// ENVIAR POR CORREO
+// ========================================
 
-    const destinatarios =
-      correosRepuestos.join(",");
+if (resultado.isDenied) {
+
+  const destinatarios =
+    correosRepuestos.join(",");
+
+  const esMovil =
+    /Android|iPhone|iPad|iPod/i.test(
+      navigator.userAgent
+    );
+
+  // ======================================
+  // TELÉFONO
+  // Abrir aplicación de correo
+  // ======================================
+
+  if (esMovil) {
 
     const enlaceCorreo =
       `mailto:${destinatarios}` +
@@ -1609,7 +1625,67 @@ ${solicitud.descripcion}`;
 
     window.location.href =
       enlaceCorreo;
+
+    return;
   }
+
+
+  // ======================================
+  // COMPUTADORA
+  // Confirmar antes de abrir Gmail Web
+  // ======================================
+
+  const confirmar =
+    await Swal.fire({
+
+      icon: "info",
+
+      title: "Abrir Gmail",
+
+      html: `
+        <p>
+          Se abrirá Gmail con la solicitud
+          preparada automáticamente.
+        </p>
+
+        <p class="mb-0">
+          <strong>
+            Verifica la cuenta remitente
+            antes de enviar el correo.
+          </strong>
+        </p>
+      `,
+
+      showCancelButton: true,
+
+      confirmButtonText:
+        '<i class="bi bi-envelope"></i> Abrir Gmail',
+
+      cancelButtonText:
+        "Cancelar",
+
+      confirmButtonColor:
+        "#198754"
+    });
+
+
+  if (!confirmar.isConfirmed) {
+    return;
+  }
+
+
+  const enlaceGmail =
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    `&to=${encodeURIComponent(destinatarios)}` +
+    `&su=${encodeURIComponent(asunto)}` +
+    `&body=${encodeURIComponent(texto)}`;
+
+
+  window.open(
+    enlaceGmail,
+    "_blank"
+  );
+}
 }
 
 
