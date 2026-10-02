@@ -965,7 +965,7 @@ function limpiarSeleccionRepuesto() {
 
   ocultarImagenRepuesto();
 
-  buscarRepuesto.focus();
+  descripcion.focus();
 }
 
 
@@ -1508,8 +1508,13 @@ ${solicitud.descripcion}`;
         <textarea
           id="textoSolicitudGenerada"
           class="form-control"
-          rows="18"
+          rows="10"
           readonly
+          style="
+            max-height: 320px;
+            resize: none;
+            font-size: 14px;
+          "
         ></textarea>
       `,
 
@@ -1532,7 +1537,7 @@ ${solicitud.descripcion}`;
       denyButtonColor:
         "#198754",
 
-      width: 750,
+      width: "min(750px, 95vw)",
 
       didOpen: () => {
 
