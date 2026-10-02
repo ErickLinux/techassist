@@ -6,11 +6,13 @@ let servicioSeleccionado = null;
 
 const token = localStorage.getItem("token");
 const usuarioGuardado = localStorage.getItem("usuario");
+
 const menuAdministrarUsuarios =
   document.getElementById(
     "menuAdministrarUsuarios"
   );
-  const menuAdministrarRepuestos =
+
+const menuAdministrarRepuestos =
   document.getElementById(
     "menuAdministrarRepuestos"
   );
@@ -19,11 +21,20 @@ const menuAdministrarUsuarios =
 // ELEMENTOS DEL DOM
 // ==============================
 
-const nombreUsuario = document.getElementById("nombreUsuario");
-const nombreBienvenida = document.getElementById("nombreBienvenida");
-const btnCerrarSesion = document.getElementById("btnCerrarSesion");
-const btnMenu = document.getElementById("btnMenu");
-const sidebar = document.getElementById("sidebar");
+const nombreUsuario =
+  document.getElementById("nombreUsuario");
+
+const nombreBienvenida =
+  document.getElementById("nombreBienvenida");
+
+const btnCerrarSesion =
+  document.getElementById("btnCerrarSesion");
+
+const btnMenu =
+  document.getElementById("btnMenu");
+
+const sidebar =
+  document.getElementById("sidebar");
 
 const cargandoServicios =
   document.getElementById("cargandoServicios");
@@ -32,21 +43,91 @@ const sinServicios =
   document.getElementById("sinServicios");
 
 const tablaServiciosContenedor =
-  document.getElementById("tablaServiciosContenedor");
+  document.getElementById(
+    "tablaServiciosContenedor"
+  );
 
 const tablaServicios =
   document.getElementById("tablaServicios");
-  
-  const btnEliminarServicio =
+
+const btnEliminarServicio =
   document.getElementById(
     "btnEliminarServicio"
   );
 
 const btnEditarServicio =
-  document.getElementById("btnEditarServicio");
+  document.getElementById(
+    "btnEditarServicio"
+  );
 
 const modalDetalleServicio =
-  document.getElementById("modalDetalleServicio");
+  document.getElementById(
+    "modalDetalleServicio"
+  );
+
+// ==============================
+// RESUMEN DEL DASHBOARD
+// ==============================
+
+const resumenServicios =
+  document.getElementById(
+    "resumenServicios"
+  );
+
+const resumenKilometros =
+  document.getElementById(
+    "resumenKilometros"
+  );
+
+const resumenHorasExtras =
+  document.getElementById(
+    "resumenHorasExtras"
+  );
+
+const resumenAtencion =
+  document.getElementById(
+    "resumenAtencion"
+  );
+
+const mesServicios =
+  document.getElementById(
+    "mesServicios"
+  );
+
+const mesKilometros =
+  document.getElementById(
+    "mesKilometros"
+  );
+
+const mesAtencion =
+  document.getElementById(
+    "mesAtencion"
+  );
+
+const mesViaje =
+  document.getElementById(
+    "mesViaje"
+  );
+
+const mesRegreso =
+  document.getElementById(
+    "mesRegreso"
+  );
+
+const mesHorasExtras =
+  document.getElementById(
+    "mesHorasExtras"
+  );
+
+const nombreMesResumen =
+  document.getElementById(
+    "nombreMesResumen"
+  );
+
+const textoBienvenida =
+  document.getElementById(
+    "textoBienvenida"
+  );
 
 // ==============================
 // VERIFICAR SESIÓN
@@ -54,32 +135,38 @@ const modalDetalleServicio =
 
 if (!token || !usuarioGuardado) {
 
-  window.location.href = "./login.html";
+  window.location.href =
+    "./login.html";
 
 } else {
 
   try {
 
-    const usuario = JSON.parse(usuarioGuardado);
+    const usuario =
+      JSON.parse(usuarioGuardado);
+
     if (usuario.rol === "ADMIN") {
 
-  if (menuAdministrarUsuarios) {
+      if (menuAdministrarUsuarios) {
 
-    menuAdministrarUsuarios.classList.remove(
-      "d-none"
-    );
-  }
+        menuAdministrarUsuarios
+          .classList
+          .remove("d-none");
+      }
 
-  if (menuAdministrarRepuestos) {
+      if (menuAdministrarRepuestos) {
 
-    menuAdministrarRepuestos.classList.remove(
-      "d-none"
-    );
-  }
-}
+        menuAdministrarRepuestos
+          .classList
+          .remove("d-none");
+      }
+    }
 
-    nombreUsuario.textContent = usuario.nombre;
-    nombreBienvenida.textContent = usuario.nombre;
+    nombreUsuario.textContent =
+      usuario.nombre;
+
+    nombreBienvenida.textContent =
+      usuario.nombre;
 
   } catch (error) {
 
@@ -91,7 +178,8 @@ if (!token || !usuarioGuardado) {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
 
-    window.location.href = "./login.html";
+    window.location.href =
+      "./login.html";
   }
 }
 
@@ -99,22 +187,31 @@ if (!token || !usuarioGuardado) {
 // CERRAR SESIÓN
 // ==============================
 
-btnCerrarSesion.addEventListener("click", () => {
+btnCerrarSesion.addEventListener(
+  "click",
+  () => {
 
-  localStorage.removeItem("token");
-  localStorage.removeItem("usuario");
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
 
-  window.location.href = "./login.html";
-});
+    window.location.href =
+      "./login.html";
+  }
+);
 
 // ==============================
 // MENÚ LATERAL
 // ==============================
 
-btnMenu.addEventListener("click", () => {
+btnMenu.addEventListener(
+  "click",
+  () => {
 
-  sidebar.classList.toggle("visible");
-});
+    sidebar.classList.toggle(
+      "visible"
+    );
+  }
+);
 
 // ==============================
 // FUNCIONES DE FORMATO
@@ -122,15 +219,396 @@ btnMenu.addEventListener("click", () => {
 
 function convertirMinutos(minutos) {
 
-  const total = Number(minutos) || 0;
+  const total =
+    Number(minutos) || 0;
 
-  const horas = Math.floor(total / 60);
+  const horas =
+    Math.floor(total / 60);
 
-  const minutosRestantes = total % 60;
+  const minutosRestantes =
+    total % 60;
 
-  return `${horas} h ${minutosRestantes} min`;
+  return (
+    `${horas} h ${minutosRestantes} min`
+  );
 }
 
+// ==============================
+// CALCULAR MINUTOS EXTRA
+// ==============================
+
+function calcularMinutosExtra(
+  inicio,
+  fin,
+  fechaServicio
+) {
+
+  if (
+    !inicio ||
+    !fin ||
+    !fechaServicio
+  ) {
+    return 0;
+  }
+
+  const inicioFecha =
+    new Date(inicio);
+
+  const finFecha =
+    new Date(fin);
+
+  if (
+    Number.isNaN(
+      inicioFecha.getTime()
+    ) ||
+    Number.isNaN(
+      finFecha.getTime()
+    )
+  ) {
+    return 0;
+  }
+
+  let totalMinutos =
+    Math.round(
+      (
+        finFecha.getTime() -
+        inicioFecha.getTime()
+      ) / 60000
+    );
+
+  if (totalMinutos < 0) {
+    totalMinutos +=
+      24 * 60;
+  }
+
+  const fechaBase =
+    new Date(fechaServicio);
+
+  const diaSemana =
+    fechaBase.getDay();
+
+  // Sábado y domingo:
+  // todo cuenta como extra.
+  if (
+    diaSemana === 0 ||
+    diaSemana === 6
+  ) {
+
+    return Math.max(
+      totalMinutos,
+      0
+    );
+  }
+
+  // Lunes a viernes:
+  // horario normal 08:00 - 18:00.
+
+  const inicioNormal =
+    new Date(inicioFecha);
+
+  inicioNormal.setHours(
+    8,
+    0,
+    0,
+    0
+  );
+
+  const finNormal =
+    new Date(inicioFecha);
+
+  finNormal.setHours(
+    18,
+    0,
+    0,
+    0
+  );
+
+  const inicioSolapamiento =
+    Math.max(
+      inicioFecha.getTime(),
+      inicioNormal.getTime()
+    );
+
+  const finSolapamiento =
+    Math.min(
+      finFecha.getTime(),
+      finNormal.getTime()
+    );
+
+  let minutosNormales = 0;
+
+  if (
+    finSolapamiento >
+    inicioSolapamiento
+  ) {
+
+    minutosNormales =
+      Math.round(
+        (
+          finSolapamiento -
+          inicioSolapamiento
+        ) / 60000
+      );
+  }
+
+  return Math.max(
+    totalMinutos -
+    minutosNormales,
+    0
+  );
+}
+
+// ==============================
+// HORAS EXTRA DE UN SERVICIO
+// ==============================
+
+function calcularHorasExtrasServicio(
+  servicio
+) {
+
+  const extraAtencion =
+    calcularMinutosExtra(
+      servicio.horaIngreso,
+      servicio.horaEgreso,
+      servicio.fecha
+    );
+
+  const extraViaje =
+    calcularMinutosExtra(
+      servicio.inicioViaje,
+      servicio.finViaje,
+      servicio.fecha
+    );
+
+  const extraRegreso =
+    calcularMinutosExtra(
+      servicio.inicioRegresoCasa,
+      servicio.finRegresoCasa,
+      servicio.fecha
+    );
+
+  return (
+    extraAtencion +
+    extraViaje +
+    extraRegreso
+  );
+}
+
+// ==============================
+// ACTUALIZAR RESUMEN DEL MES
+// ==============================
+
+function actualizarResumenDashboard(
+  servicios
+) {
+
+  const ahora =
+    new Date();
+
+  const anioActual =
+    Number(
+      ahora.toLocaleString(
+        "en-US",
+        {
+          timeZone:
+            "America/Guatemala",
+
+          year:
+            "numeric"
+        }
+      )
+    );
+
+  const mesActual =
+    Number(
+      ahora.toLocaleString(
+        "en-US",
+        {
+          timeZone:
+            "America/Guatemala",
+
+          month:
+            "numeric"
+        }
+      )
+    );
+
+  const serviciosMes =
+    servicios.filter(
+      (servicio) => {
+
+        if (!servicio.fecha) {
+          return false;
+        }
+
+        const fecha =
+          new Date(
+            servicio.fecha
+          );
+
+        const partes =
+          new Intl.DateTimeFormat(
+            "en-US",
+            {
+              timeZone:
+                "America/Guatemala",
+
+              year:
+                "numeric",
+
+              month:
+                "numeric"
+            }
+          )
+            .formatToParts(
+              fecha
+            );
+
+        const anio =
+          Number(
+            partes.find(
+              (parte) =>
+                parte.type ===
+                "year"
+            )?.value
+          );
+
+        const mes =
+          Number(
+            partes.find(
+              (parte) =>
+                parte.type ===
+                "month"
+            )?.value
+          );
+
+        return (
+          anio === anioActual &&
+          mes === mesActual
+        );
+      }
+    );
+
+  let kilometros = 0;
+  let atencion = 0;
+  let viaje = 0;
+  let regreso = 0;
+  let horasExtras = 0;
+
+  serviciosMes.forEach(
+    (servicio) => {
+
+      kilometros +=
+        Number(
+          servicio.totalKilometros
+        ) || 0;
+
+      atencion +=
+        Number(
+          servicio.totalMinutosAtencion
+        ) || 0;
+
+      viaje +=
+        Number(
+          servicio.totalMinutosViaje
+        ) || 0;
+
+      regreso +=
+        Number(
+          servicio.totalMinutosRegresoCasa
+        ) || 0;
+
+      horasExtras +=
+        calcularHorasExtrasServicio(
+          servicio
+        );
+    }
+  );
+
+  // ==========================
+  // TARJETAS SUPERIORES
+  // ==========================
+
+  resumenServicios.textContent =
+    serviciosMes.length;
+
+  resumenKilometros.textContent =
+    `${kilometros} km`;
+
+  resumenAtencion.textContent =
+    convertirMinutos(
+      atencion
+    );
+
+  resumenHorasExtras.textContent =
+    convertirMinutos(
+      horasExtras
+    );
+
+  // ==========================
+  // RESUMEN LATERAL
+  // ==========================
+
+  mesServicios.textContent =
+    serviciosMes.length;
+
+  mesKilometros.textContent =
+    `${kilometros} km`;
+
+  mesAtencion.textContent =
+    convertirMinutos(
+      atencion
+    );
+
+  mesViaje.textContent =
+    convertirMinutos(
+      viaje
+    );
+
+  mesRegreso.textContent =
+    convertirMinutos(
+      regreso
+    );
+
+  mesHorasExtras.textContent =
+    convertirMinutos(
+      horasExtras
+    );
+
+  // ==========================
+  // NOMBRE DEL MES
+  // ==========================
+
+  const nombreMes =
+    new Intl.DateTimeFormat(
+      "es-GT",
+      {
+        month:
+          "long",
+
+        year:
+          "numeric",
+
+        timeZone:
+          "America/Guatemala"
+      }
+    ).format(
+      ahora
+    );
+
+  nombreMesResumen.textContent =
+    nombreMes
+      .charAt(0)
+      .toUpperCase() +
+    nombreMes.slice(1);
+
+  textoBienvenida.textContent =
+    `Aquí tienes el resumen de tu actividad de ${nombreMes}.`;
+}
+
+// ==============================
+// FORMATEAR FECHA
+// ==============================
 
 function formatearFecha(fecha) {
 
@@ -138,18 +616,28 @@ function formatearFecha(fecha) {
     return "No registrada";
   }
 
-  const fechaObjeto = new Date(fecha);
+  const fechaObjeto =
+    new Date(fecha);
 
-  return fechaObjeto.toLocaleDateString(
-    "es-GT",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric"
-    }
-  );
+  return fechaObjeto
+    .toLocaleDateString(
+      "es-GT",
+      {
+        day:
+          "2-digit",
+
+        month:
+          "2-digit",
+
+        year:
+          "numeric"
+      }
+    );
 }
 
+// ==============================
+// FORMATEAR HORA
+// ==============================
 
 function formatearHora(fechaHora) {
 
@@ -157,18 +645,28 @@ function formatearHora(fechaHora) {
     return "No registrado";
   }
 
-  const fecha = new Date(fechaHora);
+  const fecha =
+    new Date(fechaHora);
 
-  return fecha.toLocaleTimeString(
-    "es-GT",
-    {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true
-    }
-  );
+  return fecha
+    .toLocaleTimeString(
+      "es-GT",
+      {
+        hour:
+          "2-digit",
+
+        minute:
+          "2-digit",
+
+        hour12:
+          true
+      }
+    );
 }
 
+// ==============================
+// FECHA PARA INPUT
+// ==============================
 
 function obtenerFechaInput(fecha) {
 
@@ -176,21 +674,34 @@ function obtenerFechaInput(fecha) {
     return "";
   }
 
-  const valor = new Date(fecha);
+  const valor =
+    new Date(fecha);
 
-  const anio = valor.getFullYear();
+  const anio =
+    valor.getFullYear();
 
-  const mes = String(
-    valor.getMonth() + 1
-  ).padStart(2, "0");
+  const mes =
+    String(
+      valor.getMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    );
 
-  const dia = String(
-    valor.getDate()
-  ).padStart(2, "0");
+  const dia =
+    String(
+      valor.getDate()
+    ).padStart(
+      2,
+      "0"
+    );
 
   return `${anio}-${mes}-${dia}`;
 }
 
+// ==============================
+// HORA PARA INPUT
+// ==============================
 
 function obtenerHoraInput(fecha) {
 
@@ -198,15 +709,24 @@ function obtenerHoraInput(fecha) {
     return "";
   }
 
-  const valor = new Date(fecha);
+  const valor =
+    new Date(fecha);
 
-  const horas = String(
-    valor.getHours()
-  ).padStart(2, "0");
+  const horas =
+    String(
+      valor.getHours()
+    ).padStart(
+      2,
+      "0"
+    );
 
-  const minutos = String(
-    valor.getMinutes()
-  ).padStart(2, "0");
+  const minutos =
+    String(
+      valor.getMinutes()
+    ).padStart(
+      2,
+      "0"
+    );
 
   return `${horas}:${minutos}`;
 }
@@ -219,42 +739,55 @@ async function cargarServicios() {
 
   tablaServicios.innerHTML = "";
 
-  sinServicios.classList.add("d-none");
-
-  tablaServiciosContenedor.classList.add(
+  sinServicios.classList.add(
     "d-none"
   );
 
-  cargandoServicios.classList.remove(
-    "d-none"
-  );
+  tablaServiciosContenedor
+    .classList
+    .add("d-none");
+
+  cargandoServicios
+    .classList
+    .remove("d-none");
 
   try {
 
-    const respuesta = await fetch(
-  `${API_URL}/api/servicios/mis-servicios`,
-  {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-);
+    const respuesta =
+      await fetch(
+        `${API_URL}/api/servicios/mis-servicios`,
+        {
+          headers: {
+
+            Authorization:
+              `Bearer ${token}`
+          }
+        }
+      );
 
     // Token vencido o inválido
+
     if (
       respuesta.status === 401 ||
       respuesta.status === 403
     ) {
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("usuario");
+      localStorage.removeItem(
+        "token"
+      );
 
-      window.location.href = "./login.html";
+      localStorage.removeItem(
+        "usuario"
+      );
+
+      window.location.href =
+        "./login.html";
 
       return;
     }
 
-    const datos = await respuesta.json();
+    const datos =
+      await respuesta.json();
 
     if (!respuesta.ok) {
 
@@ -264,93 +797,190 @@ async function cargarServicios() {
       );
     }
 
-    cargandoServicios.classList.add(
-      "d-none"
+    const servicios =
+      Array.isArray(
+        datos.servicios
+      )
+        ? datos.servicios
+        : [];
+
+    // ==========================
+    // ACTUALIZAR INDICADORES
+    // ==========================
+
+    actualizarResumenDashboard(
+      servicios
     );
 
-    // No hay servicios
+    cargandoServicios
+      .classList
+      .add("d-none");
+
+    // ==========================
+    // SIN SERVICIOS
+    // ==========================
+
     if (
-      !datos.servicios ||
-      datos.servicios.length === 0
+      servicios.length === 0
     ) {
 
-      sinServicios.classList.remove(
-        "d-none"
-      );
+      sinServicios
+        .classList
+        .remove("d-none");
 
       return;
     }
 
-    // Crear filas
-    datos.servicios.forEach((servicio) => {
+    // ==========================
+    // ÚLTIMOS 6 SERVICIOS
+    // ==========================
 
-      const fila =
-        document.createElement("tr");
+    const serviciosRecientes =
+      [...servicios]
+        .sort(
+          (a, b) => {
 
-      fila.innerHTML = `
-        <td>
-          ${formatearFecha(servicio.fecha)}
-        </td>
+            const fechaA =
+              new Date(
+                a.fechaRegistro ||
+                a.fecha ||
+                0
+              ).getTime();
 
-        <td>
-          <strong>
-            ${servicio.numeroTicket}
-          </strong>
-        </td>
+            const fechaB =
+              new Date(
+                b.fechaRegistro ||
+                b.fecha ||
+                0
+              ).getTime();
 
-        <td>
+            return (
+              fechaB -
+              fechaA
+            );
+          }
+        )
+        .slice(
+          0,
+          6
+        );
 
-          <div>
-            ${servicio.tienda.nombre}
-          </div>
+    // ==========================
+    // CREAR FILAS
+    // ==========================
 
-          <small class="text-secondary">
-            ${servicio.tienda.departamento}
-            -
-            ${servicio.tienda.municipio}
-          </small>
+    serviciosRecientes.forEach(
+      (servicio) => {
 
-        </td>
+        const fila =
+          document.createElement(
+            "tr"
+          );
 
-        <td>
-          ${convertirMinutos(
-            servicio.totalMinutosAtencion
-          )}
-        </td>
+        const tienda =
+          servicio.tienda || {};
 
-        <td>
-          ${convertirMinutos(
-            servicio.totalMinutosViaje
-          )}
-        </td>
+        const nombreTienda =
+          tienda.nombre ||
+          "Tienda no registrada";
 
-        <td>
-          ${servicio.totalKilometros}
-        </td>
+        const ubicacion = [
+          tienda.departamento,
+          tienda.municipio
+        ]
+          .filter(Boolean)
+          .join(" - ");
 
-        <td>
+        const kilometros =
+          Number(
+            servicio.totalKilometros
+          ) || 0;
 
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-primary btn-ver-servicio"
-            data-id="${servicio.id}"
-          >
+        fila.innerHTML = `
 
-            <i class="bi bi-eye"></i>
+          <td>
 
-            Ver
+            ${formatearFecha(
+              servicio.fecha
+            )}
 
-          </button>
+          </td>
 
-        </td>
-      `;
 
-      tablaServicios.appendChild(fila);
-    });
+          <td>
 
-    tablaServiciosContenedor.classList.remove(
-      "d-none"
+            <strong>
+
+              ${
+                servicio.numeroTicket ||
+                "Sin ticket"
+              }
+
+            </strong>
+
+          </td>
+
+
+          <td>
+
+            <div>
+              ${nombreTienda}
+            </div>
+
+            ${
+              ubicacion
+                ? `
+
+                  <small
+                    class="text-secondary"
+                  >
+
+                    ${ubicacion}
+
+                  </small>
+
+                `
+                : ""
+            }
+
+          </td>
+
+
+          <td>
+
+            ${kilometros} km
+
+          </td>
+
+
+          <td>
+
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-primary btn-ver-servicio"
+              data-id="${servicio.id}"
+            >
+
+              <i class="bi bi-eye"></i>
+
+              Ver
+
+            </button>
+
+          </td>
+
+        `;
+
+        tablaServicios
+          .appendChild(
+            fila
+          );
+      }
     );
+
+    tablaServiciosContenedor
+      .classList
+      .remove("d-none");
 
   } catch (error) {
 
@@ -359,20 +989,24 @@ async function cargarServicios() {
       error
     );
 
-    cargandoServicios.classList.add(
-      "d-none"
-    );
+    cargandoServicios
+      .classList
+      .add("d-none");
 
-    sinServicios.classList.remove(
-      "d-none"
-    );
+    sinServicios
+      .classList
+      .remove("d-none");
 
     sinServicios.innerHTML = `
-      <i class="bi bi-exclamation-circle"></i>
+
+      <i
+        class="bi bi-exclamation-circle"
+      ></i>
 
       <p>
         ${error.message}
       </p>
+
     `;
   }
 }

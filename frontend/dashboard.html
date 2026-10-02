@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -25,11 +26,169 @@
     rel="stylesheet"
     href="./css/dashboard.css"
   >
+
+  <!-- Estilos exclusivos del Dashboard -->
+  <style>
+
+    .dashboard-summary-card {
+      border: 0;
+      border-radius: 16px;
+      box-shadow: 0 5px 18px rgba(15, 23, 42, 0.07);
+      height: 100%;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashboard-summary-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.11);
+    }
+
+    .summary-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #eaf2ff;
+      color: #0d6efd;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    .summary-label {
+      color: #6c757d;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .summary-value {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #172033;
+      line-height: 1.2;
+    }
+
+    .summary-period {
+      font-size: 0.78rem;
+      color: #8a94a6;
+      margin-top: 5px;
+    }
+
+    .dashboard-section-card {
+      border: 0;
+      border-radius: 16px;
+      box-shadow: 0 5px 18px rgba(15, 23, 42, 0.07);
+    }
+
+    .quick-action {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid #e6eaf0;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #1f2937;
+      background: #ffffff;
+      height: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .quick-action:hover {
+      color: #0d6efd;
+      border-color: #b8d3ff;
+      background: #f7faff;
+      transform: translateY(-2px);
+    }
+
+    .quick-action-icon {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 11px;
+      background: #eaf2ff;
+      color: #0d6efd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    .quick-action-title {
+      font-weight: 600;
+      margin-bottom: 1px;
+    }
+
+    .quick-action-text {
+      color: #6c757d;
+      font-size: 0.78rem;
+      margin: 0;
+    }
+
+    .month-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid #edf0f4;
+    }
+
+    .month-summary-row:last-child {
+      border-bottom: 0;
+    }
+
+    .month-summary-label {
+      color: #6c757d;
+    }
+
+    .month-summary-value {
+      font-weight: 700;
+      color: #172033;
+    }
+
+    .dashboard-table-container {
+      max-height: 460px;
+      overflow-y: auto;
+    }
+
+    .dashboard-table-container thead {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 1;
+    }
+
+    .dashboard-section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 767.98px) {
+
+      .summary-value {
+        font-size: 1.3rem;
+      }
+
+      .quick-action {
+        padding: 12px;
+      }
+
+    }
+
+  </style>
+
 </head>
+
 
 <body>
 
-  <!-- Menú lateral -->
+
+  <!-- ========================================= -->
+  <!-- SIDEBAR -->
+  <!-- ========================================= -->
+
   <aside
     class="sidebar"
     id="sidebar"
@@ -38,6 +197,7 @@
     <div class="sidebar-header">
       <h2>TechAssist</h2>
     </div>
+
 
     <nav class="sidebar-menu">
 
@@ -49,6 +209,7 @@
         <span>Inicio</span>
       </a>
 
+
       <a
         href="./registro-servicio.html"
         class="menu-item"
@@ -56,6 +217,8 @@
         <i class="bi bi-clipboard-plus"></i>
         <span>Nuevo servicio</span>
       </a>
+
+
       <a
         href="./historial-servicios.html"
         class="menu-item"
@@ -64,10 +227,15 @@
         <span>Historial de servicios</span>
       </a>
 
-      <a href="./horas-extras.html" class="menu-item">
+
+      <a
+        href="./horas-extras.html"
+        class="menu-item"
+      >
         <i class="bi bi-clock-history"></i>
         <span>Horas extras</span>
       </a>
+
 
       <a
         href="./liquidaciones.html"
@@ -76,29 +244,35 @@
         <i class="bi bi-receipt"></i>
         <span>Liquidaciones</span>
       </a>
-      <a
-  href="./peticion-repuesto.html"
-  class="menu-item"
->
-  <i class="bi bi-box-seam"></i>
-  <span>Petición de repuestos</span>
-</a>
-<a
-  href="./informe-equipos.html"
-  class="menu-item"
->
-  <i class="bi bi-camera"></i>
-  <span>Informe de equipos</span>
-</a>
 
-<a
-  href="./administrar-repuestos.html"
-  class="menu-item d-none"
-  id="menuAdministrarRepuestos"
->
-  <i class="bi bi-tools"></i>
-  <span>Administrar repuestos</span>
-</a>
+
+      <a
+        href="./peticion-repuesto.html"
+        class="menu-item"
+      >
+        <i class="bi bi-box-seam"></i>
+        <span>Petición de repuestos</span>
+      </a>
+
+
+      <a
+        href="./informe-equipos.html"
+        class="menu-item"
+      >
+        <i class="bi bi-camera"></i>
+        <span>Informe de equipos</span>
+      </a>
+
+
+      <a
+        href="./administrar-repuestos.html"
+        class="menu-item d-none"
+        id="menuAdministrarRepuestos"
+      >
+        <i class="bi bi-tools"></i>
+        <span>Administrar repuestos</span>
+      </a>
+
 
       <a
         href="./reportes.html"
@@ -107,41 +281,53 @@
         <i class="bi bi-file-earmark-bar-graph"></i>
         <span>Reportes</span>
       </a>
-      <a
-  href="./usuarios.html"
-  class="menu-item d-none"
-  id="menuAdministrarUsuarios"
->
-  <i class="bi bi-people"></i>
-  <span>Administrar usuarios</span>
-</a>
+
 
       <a
-  href="./perfil.html"
-  class="menu-item"
->
-  <i class="bi bi-person-circle"></i>
-  Perfil
-</a>
+        href="./usuarios.html"
+        class="menu-item d-none"
+        id="menuAdministrarUsuarios"
+      >
+        <i class="bi bi-people"></i>
+        <span>Administrar usuarios</span>
+      </a>
+
+
+      <a
+        href="./perfil.html"
+        class="menu-item"
+      >
+        <i class="bi bi-person-circle"></i>
+        <span>Perfil</span>
+      </a>
 
     </nav>
 
+
     <div class="sidebar-logout">
-  <button
-    type="button"
-    class="btn btn-outline-light w-100"
-    id="btnCerrarSesion"
-  >
-    <i class="bi bi-box-arrow-left"></i>
-    Cerrar sesión
-  </button>
-</div>
+
+      <button
+        type="button"
+        class="btn btn-outline-light w-100"
+        id="btnCerrarSesion"
+      >
+        <i class="bi bi-box-arrow-left"></i>
+        Cerrar sesión
+      </button>
+
+    </div>
 
   </aside>
 
 
-  <!-- Contenido principal -->
+  <!-- ========================================= -->
+  <!-- CONTENIDO PRINCIPAL -->
+  <!-- ========================================= -->
+
   <main class="main-content">
+
+
+    <!-- TOPBAR -->
 
     <header class="topbar">
 
@@ -153,7 +339,9 @@
         <i class="bi bi-list"></i>
       </button>
 
+
       <div>
+
         <span class="text-secondary">
           Usuario:
         </span>
@@ -161,6 +349,7 @@
         <strong id="nombreUsuario">
           Usuario
         </strong>
+
       </div>
 
     </header>
@@ -168,7 +357,11 @@
 
     <section class="content">
 
-      <!-- Bienvenida -->
+
+      <!-- ===================================== -->
+      <!-- BIENVENIDA -->
+      <!-- ===================================== -->
+
       <div class="welcome-section">
 
         <h1>
@@ -178,236 +371,378 @@
           </span>
         </h1>
 
-        <p>
-          Registra y administra la información
-          de tus servicios técnicos.
+        <p id="textoBienvenida">
+          Aquí tienes el resumen de tu actividad.
         </p>
 
       </div>
 
 
-      <!-- Tarjetas -->
-      <!-- Tarjetas -->
-<div class="row g-4 mt-2">
+      <!-- ===================================== -->
+      <!-- INDICADORES -->
+      <!-- ===================================== -->
 
-  <!-- Nuevo servicio -->
-  <div class="col-12 col-md-6 col-xl-3">
+      <div class="row g-3 mt-2">
 
-    <div class="card dashboard-card">
 
-      <div class="card-body">
+        <!-- SERVICIOS -->
 
-        <div class="card-icon">
-          <i class="bi bi-clipboard-plus"></i>
+        <div class="col-12 col-sm-6 col-xl-3">
+
+          <div class="card dashboard-summary-card">
+
+            <div class="card-body">
+
+              <div class="d-flex align-items-center gap-3">
+
+                <div class="summary-icon">
+                  <i class="bi bi-clipboard-check"></i>
+                </div>
+
+                <div>
+
+                  <div class="summary-label">
+                    Servicios
+                  </div>
+
+                  <div
+                    class="summary-value"
+                    id="resumenServicios"
+                  >
+                    0
+                  </div>
+
+                  <div class="summary-period">
+                    Este mes
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <h5>
-          Nuevo servicio
-        </h5>
 
-        <p>
-          Registra la tienda, el ticket,
-          los horarios y el trabajo realizado.
-        </p>
+        <!-- KM -->
 
-        <a
-          href="./registro-servicio.html"
-          class="btn btn-primary"
-        >
-          Registrar servicio
-        </a>
+        <div class="col-12 col-sm-6 col-xl-3">
 
-      </div>
+          <div class="card dashboard-summary-card">
 
-    </div>
+            <div class="card-body">
 
-  </div>
+              <div class="d-flex align-items-center gap-3">
 
+                <div class="summary-icon">
+                  <i class="bi bi-speedometer2"></i>
+                </div>
 
-  <!-- Horas extras -->
-  <div class="col-12 col-md-6 col-xl-3">
+                <div>
 
-    <div class="card dashboard-card">
+                  <div class="summary-label">
+                    Kilómetros
+                  </div>
 
-      <div class="card-body">
+                  <div
+                    class="summary-value"
+                    id="resumenKilometros"
+                  >
+                    0 km
+                  </div>
 
-        <div class="card-icon">
-          <i class="bi bi-clock-history"></i>
+                  <div class="summary-period">
+                    Este mes
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <h5>
-          Horas extras
-        </h5>
 
-        <p>
-          Consulta y calcula las horas extras
-          de los servicios registrados.
-        </p>
+        <!-- HORAS EXTRAS -->
 
-        <a
-          href="./horas-extras.html"
-          class="btn btn-primary"
-        >
-          Ver Horas Extras
-        </a>
+        <div class="col-12 col-sm-6 col-xl-3">
 
-      </div>
+          <div class="card dashboard-summary-card">
 
-    </div>
+            <div class="card-body">
 
-  </div>
+              <div class="d-flex align-items-center gap-3">
 
+                <div class="summary-icon">
+                  <i class="bi bi-clock-history"></i>
+                </div>
 
-  <!-- Liquidaciones -->
-  <div class="col-12 col-md-6 col-xl-3">
+                <div>
 
-    <div class="card dashboard-card">
+                  <div class="summary-label">
+                    Horas extras
+                  </div>
 
-      <div class="card-body">
+                  <div
+                    class="summary-value"
+                    id="resumenHorasExtras"
+                  >
+                    0 h 0 min
+                  </div>
 
-        <div class="card-icon">
-          <i class="bi bi-receipt"></i>
+                  <div class="summary-period">
+                    Este mes
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <h5>
-          Liquidaciones
-        </h5>
 
-        <p>
-          Genera la liquidación utilizando
-          los datos de los servicios.
-        </p>
+        <!-- ATENCIÓN -->
 
-        <a
-          href="./liquidaciones.html"
-          class="btn btn-primary"
-        >
-          Generar Liquidacion
-        </a>
+        <div class="col-12 col-sm-6 col-xl-3">
 
-      </div>
+          <div class="card dashboard-summary-card">
 
-    </div>
+            <div class="card-body">
 
-  </div>
+              <div class="d-flex align-items-center gap-3">
 
+                <div class="summary-icon">
+                  <i class="bi bi-headset"></i>
+                </div>
 
-  <!-- Reportes -->
-  <div class="col-12 col-md-6 col-xl-3">
+                <div>
 
-    <div class="card dashboard-card">
+                  <div class="summary-label">
+                    Tiempo de atención
+                  </div>
 
-      <div class="card-body">
+                  <div
+                    class="summary-value"
+                    id="resumenAtencion"
+                  >
+                    0 h 0 min
+                  </div>
 
-        <div class="card-icon">
-          <i class="bi bi-file-earmark-bar-graph"></i>
+                  <div class="summary-period">
+                    Este mes
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <h5>
-          Reportes
-        </h5>
-
-        <p>
-          Consulta y exporta la información
-          en PDF o Excel.
-        </p>
-
-        <a
-          href="#"
-          class="btn btn-secondary disabled"
-        >
-          Próximamente
-        </a>
-
       </div>
 
-    </div>
 
-  </div>
+      <!-- ===================================== -->
+      <!-- ACCIONES RÁPIDAS -->
+      <!-- ===================================== -->
 
-</div>
-
-      <!-- Actividad reciente -->
-      <section class="card activity-card mt-4">
+      <section class="card dashboard-section-card mt-4">
 
         <div class="card-body">
 
-          <div
-            class="d-flex justify-content-between align-items-center mb-3"
-          >
+          <div class="mb-3">
 
-            <h4 class="mb-0">
-              Actividad reciente
+            <h4 class="dashboard-section-title">
+              Acciones rápidas
             </h4>
 
-            <a
-              href="./registro-servicio.html"
-              class="btn btn-sm btn-outline-primary"
-            >
-              <i class="bi bi-plus-lg"></i>
-              Nuevo servicio
-            </a>
+            <p class="text-secondary small mb-0 mt-1">
+              Accede rápidamente a las funciones principales.
+            </p>
 
           </div>
 
 
-          <div id="contenedorServicios">
-
-            <!-- Cargando -->
-            <div
-              id="cargandoServicios"
-              class="empty-activity"
-            >
-              <div
-                class="spinner-border text-primary mb-3"
-                role="status"
-              ></div>
-
-              <p>
-                Cargando servicios...
-              </p>
-            </div>
+          <div class="row g-3">
 
 
-            <!-- Sin servicios -->
-            <div
-              id="sinServicios"
-              class="empty-activity d-none"
-            >
-              <i class="bi bi-inbox"></i>
+            <div class="col-12 col-md-6 col-xl-4">
 
-              <p>
-                Todavía no hay servicios registrados.
-              </p>
-            </div>
-
-
-            <!-- Tabla -->
-            <div
-              id="tablaServiciosContenedor"
-              class="table-responsive d-none"
-            >
-
-              <table
-                class="table table-hover align-middle"
+              <a
+                href="./registro-servicio.html"
+                class="quick-action"
               >
 
-                <thead>
-                  <tr>
-                    <th>Fecha</th>
-                    <th>Ticket</th>
-                    <th>Tienda</th>
-                    <th>Atención</th>
-                    <th>Viaje</th>
-                    <th>KM</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
+                <div class="quick-action-icon">
+                  <i class="bi bi-plus-lg"></i>
+                </div>
 
-                <tbody id="tablaServicios">
-                </tbody>
+                <div>
 
-              </table>
+                  <div class="quick-action-title">
+                    Nuevo servicio
+                  </div>
+
+                  <p class="quick-action-text">
+                    Registrar una nueva atención
+                  </p>
+
+                </div>
+
+              </a>
+
+            </div>
+
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+              <a
+                href="./historial-servicios.html"
+                class="quick-action"
+              >
+
+                <div class="quick-action-icon">
+                  <i class="bi bi-journal-text"></i>
+                </div>
+
+                <div>
+
+                  <div class="quick-action-title">
+                    Historial
+                  </div>
+
+                  <p class="quick-action-text">
+                    Consultar servicios registrados
+                  </p>
+
+                </div>
+
+              </a>
+
+            </div>
+
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+              <a
+                href="./horas-extras.html"
+                class="quick-action"
+              >
+
+                <div class="quick-action-icon">
+                  <i class="bi bi-clock-history"></i>
+                </div>
+
+                <div>
+
+                  <div class="quick-action-title">
+                    Horas extras
+                  </div>
+
+                  <p class="quick-action-text">
+                    Consultar tiempo extraordinario
+                  </p>
+
+                </div>
+
+              </a>
+
+            </div>
+
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+              <a
+                href="./liquidaciones.html"
+                class="quick-action"
+              >
+
+                <div class="quick-action-icon">
+                  <i class="bi bi-receipt"></i>
+                </div>
+
+                <div>
+
+                  <div class="quick-action-title">
+                    Liquidaciones
+                  </div>
+
+                  <p class="quick-action-text">
+                    Generar liquidación
+                  </p>
+
+                </div>
+
+              </a>
+
+            </div>
+
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+              <a
+                href="./peticion-repuesto.html"
+                class="quick-action"
+              >
+
+                <div class="quick-action-icon">
+                  <i class="bi bi-box-seam"></i>
+                </div>
+
+                <div>
+
+                  <div class="quick-action-title">
+                    Repuestos
+                  </div>
+
+                  <p class="quick-action-text">
+                    Crear petición de repuestos
+                  </p>
+
+                </div>
+
+              </a>
+
+            </div>
+
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+              <a
+                href="./reportes.html"
+                class="quick-action"
+              >
+
+                <div class="quick-action-icon">
+                  <i class="bi bi-file-earmark-bar-graph"></i>
+                </div>
+
+                <div>
+
+                  <div class="quick-action-title">
+                    Reportes
+                  </div>
+
+                  <p class="quick-action-text">
+                    Consultar, exportar PDF o Excel
+                  </p>
+
+                </div>
+
+              </a>
 
             </div>
 
@@ -417,12 +752,287 @@
 
       </section>
 
+
+      <!-- ===================================== -->
+      <!-- ACTIVIDAD + RESUMEN -->
+      <!-- ===================================== -->
+
+      <div class="row g-4 mt-1">
+
+
+        <!-- ACTIVIDAD RECIENTE -->
+
+        <div class="col-12 col-xl-8">
+
+          <section
+            class="card dashboard-section-card h-100"
+          >
+
+            <div class="card-body">
+
+              <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3"
+              >
+
+                <div>
+
+                  <h4 class="dashboard-section-title">
+                    Actividad reciente
+                  </h4>
+
+                  <p class="text-secondary small mb-0 mt-1">
+                    Tus últimos servicios registrados.
+                  </p>
+
+                </div>
+
+
+                <a
+                  href="./historial-servicios.html"
+                  class="btn btn-sm btn-outline-primary"
+                >
+                  Ver historial
+                  <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+              </div>
+
+
+              <div id="contenedorServicios">
+
+
+                <!-- CARGANDO -->
+
+                <div
+                  id="cargandoServicios"
+                  class="empty-activity"
+                >
+
+                  <div
+                    class="spinner-border text-primary mb-3"
+                    role="status"
+                  ></div>
+
+                  <p>
+                    Cargando servicios...
+                  </p>
+
+                </div>
+
+
+                <!-- SIN SERVICIOS -->
+
+                <div
+                  id="sinServicios"
+                  class="empty-activity d-none"
+                >
+
+                  <i class="bi bi-inbox"></i>
+
+                  <p>
+                    Todavía no hay servicios registrados.
+                  </p>
+
+                </div>
+
+
+                <!-- TABLA -->
+
+                <div
+                  id="tablaServiciosContenedor"
+                  class="table-responsive dashboard-table-container d-none"
+                >
+
+                  <table
+                    class="table table-hover align-middle"
+                  >
+
+                    <thead>
+
+                      <tr>
+
+                        <th>Fecha</th>
+
+                        <th>
+                          INC / Tarea
+                        </th>
+
+                        <th>Tienda</th>
+
+                        <th>KM</th>
+
+                        <th class="text-center">
+                          Acción
+                        </th>
+
+                      </tr>
+
+                    </thead>
+
+                    <tbody id="tablaServicios">
+                    </tbody>
+
+                  </table>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+
+        <!-- RESUMEN DEL MES -->
+
+        <div class="col-12 col-xl-4">
+
+          <section
+            class="card dashboard-section-card h-100"
+          >
+
+            <div class="card-body">
+
+              <div class="mb-3">
+
+                <h4 class="dashboard-section-title">
+                  Resumen del mes
+                </h4>
+
+                <p
+                  class="text-secondary small mb-0 mt-1"
+                  id="nombreMesResumen"
+                >
+                  Mes actual
+                </p>
+
+              </div>
+
+
+              <div class="month-summary-row">
+
+                <span class="month-summary-label">
+                  Servicios
+                </span>
+
+                <span
+                  class="month-summary-value"
+                  id="mesServicios"
+                >
+                  0
+                </span>
+
+              </div>
+
+
+              <div class="month-summary-row">
+
+                <span class="month-summary-label">
+                  Kilómetros
+                </span>
+
+                <span
+                  class="month-summary-value"
+                  id="mesKilometros"
+                >
+                  0 km
+                </span>
+
+              </div>
+
+
+              <div class="month-summary-row">
+
+                <span class="month-summary-label">
+                  Atención
+                </span>
+
+                <span
+                  class="month-summary-value"
+                  id="mesAtencion"
+                >
+                  0 h 0 min
+                </span>
+
+              </div>
+
+
+              <div class="month-summary-row">
+
+                <span class="month-summary-label">
+                  Viaje
+                </span>
+
+                <span
+                  class="month-summary-value"
+                  id="mesViaje"
+                >
+                  0 h 0 min
+                </span>
+
+              </div>
+
+
+              <div class="month-summary-row">
+
+                <span class="month-summary-label">
+                  Regreso a casa
+                </span>
+
+                <span
+                  class="month-summary-value"
+                  id="mesRegreso"
+                >
+                  0 h 0 min
+                </span>
+
+              </div>
+
+
+              <div class="month-summary-row">
+
+                <span class="month-summary-label">
+                  Horas extras
+                </span>
+
+                <span
+                  class="month-summary-value text-primary"
+                  id="mesHorasExtras"
+                >
+                  0 h 0 min
+                </span>
+
+              </div>
+
+
+              <a
+                href="./reportes.html"
+                class="btn btn-primary w-100 mt-4"
+              >
+                <i class="bi bi-bar-chart me-1"></i>
+                Ver reporte completo
+              </a>
+
+            </div>
+
+          </section>
+
+        </div>
+
+      </div>
+
+
     </section>
 
   </main>
 
 
-  <!-- Modal detalle -->
+  <!-- ========================================= -->
+  <!-- MODAL DETALLE -->
+  <!-- ========================================= -->
+
   <div
     class="modal fade"
     id="modalDetalleServicio"
@@ -436,11 +1046,15 @@
 
       <div class="modal-content">
 
+
         <div class="modal-header">
 
           <h5 class="modal-title">
+
             <i class="bi bi-file-earmark-text me-2"></i>
+
             Detalle del servicio
+
           </h5>
 
           <button
@@ -479,31 +1093,33 @@
 
         <div class="modal-footer">
 
-            <button
-              type="button"
-              id="btnEliminarServicio"
-              class="btn btn-danger"
-            >
-              <i class="bi bi-trash me-1"></i>
-              Eliminar
-            </button>
+          <button
+            type="button"
+            id="btnEliminarServicio"
+            class="btn btn-danger"
+          >
+            <i class="bi bi-trash me-1"></i>
+            Eliminar
+          </button>
 
-            <button
-              type="button"
-              id="btnEditarServicio"
-              class="btn btn-primary"
-            >
-              <i class="bi bi-pencil-square me-1"></i>
-              Editar
-            </button>
 
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Cerrar
-            </button>
+          <button
+            type="button"
+            id="btnEditarServicio"
+            class="btn btn-primary"
+          >
+            <i class="bi bi-pencil-square me-1"></i>
+            Editar
+          </button>
+
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cerrar
+          </button>
 
         </div>
 
@@ -514,14 +1130,20 @@
   </div>
 
 
-  <!-- Bootstrap JavaScript -->
+  <!-- ========================================= -->
+  <!-- SCRIPTS -->
+  <!-- ========================================= -->
+
   <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   ></script>
 
-  <!-- JavaScript de TechAssist -->
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <script src="./js/config.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/sweetalert2@11"
+  ></script>
+
+  <script src="./js/config.js"></script>
+
   <script src="./js/dashboard.js"></script>
 
 </body>
