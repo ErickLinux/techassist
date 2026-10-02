@@ -2334,7 +2334,7 @@ function agregarEncabezadoPDF(
 
 
   pdf.text(
-    "TECHASSIST",
+    "",
     105,
     18,
     {
