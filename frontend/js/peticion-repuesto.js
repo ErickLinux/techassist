@@ -1597,19 +1597,26 @@ ${solicitud.descripcion}`;
   // ENVIAR POR CORREO
   // ========================================
 
-  if (resultado.isDenied) {
+  // ========================================
+// ENVIAR POR GMAIL
+// ========================================
 
-    const destinatarios =
-      correosRepuestos.join(",");
+if (resultado.isDenied) {
 
-    const enlaceCorreo =
-      `mailto:${destinatarios}` +
-      `?subject=${encodeURIComponent(asunto)}` +
-      `&body=${encodeURIComponent(texto)}`;
+  const destinatarios =
+    correosRepuestos.join(",");
 
-    window.location.href =
-      enlaceCorreo;
-  }
+  const enlaceGmail =
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    `&to=${encodeURIComponent(destinatarios)}` +
+    `&su=${encodeURIComponent(asunto)}` +
+    `&body=${encodeURIComponent(texto)}`;
+
+  window.open(
+    enlaceGmail,
+    "_blank"
+  );
+}
 }
 
 
