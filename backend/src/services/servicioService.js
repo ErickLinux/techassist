@@ -546,3 +546,71 @@ export const eliminarRegistroServicio = async (
   };
 };
 
+export const eliminarRegistrosServicioMultiples = async (
+  ids,
+  usuarioId
+) => {
+
+  if (!Array.isArray(ids) || ids.length === 0) {
+
+    const error = new Error(
+      "Debes seleccionar al menos un servicio"
+    );
+
+    error.statusCode = 400;
+    throw error;
+  }
+
+
+  // Evitar IDs repetidos
+  const idsUnicos = [
+    ...new Set(ids)
+  ];
+
+
+  // Buscar únicamente servicios
+  // pertenecientes al usuario autenticado
+  const servicios =
+    await prisma.registroServicio.findMany({
+      where: {
+        id: {
+          in: idsUnicos
+        },
+        usuarioId
+      },
+      select: {
+        id: true,
+        numeroTicket: true
+      }
+    });
+
+
+  // Verificar que todos los servicios
+  // seleccionados pertenezcan al usuario
+  if (servicios.length !== idsUnicos.length) {
+
+    const error = new Error(
+      "Uno o más servicios no existen o no tienes permiso para eliminarlos"
+    );
+
+    error.statusCode = 403;
+    throw error;
+  }
+
+
+  const resultado =
+    await prisma.registroServicio.deleteMany({
+      where: {
+        id: {
+          in: idsUnicos
+        },
+        usuarioId
+      }
+    });
+
+
+  return {
+    cantidadEliminada: resultado.count,
+    servicios
+  };
+};

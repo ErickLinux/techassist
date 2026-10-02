@@ -3,7 +3,8 @@ import {
   obtenerServiciosPorUsuario,
   obtenerServicioPorId,
   actualizarRegistroServicio,
-  eliminarRegistroServicio
+  eliminarRegistroServicio,
+  eliminarRegistrosServicioMultiples
 } from "../services/servicioService.js";
 
 export const registrarServicio = async (req, res) => {
@@ -161,4 +162,53 @@ export const eliminarServicio = async (
   }
 };
 
+
+export const eliminarServiciosMultiples = async (
+  req,
+  res
+) => {
+
+  try {
+
+    const { ids } = req.body;
+
+
+    const resultado =
+      await eliminarRegistrosServicioMultiples(
+        ids,
+        req.usuario.id
+      );
+
+
+    return res.status(200).json({
+      mensaje:
+        resultado.cantidadEliminada === 1
+          ? "1 servicio eliminado correctamente"
+          : `${resultado.cantidadEliminada} servicios eliminados correctamente`,
+
+      cantidadEliminada:
+        resultado.cantidadEliminada
+    });
+
+
+  } catch (error) {
+
+    console.error(
+      "Error al eliminar múltiples servicios:",
+      error
+    );
+
+
+    return res.status(
+      error.statusCode || 500
+    ).json({
+
+      mensaje:
+        error.statusCode
+          ? error.message
+          : "Error interno al eliminar los servicios"
+
+    });
+  }
+};
 

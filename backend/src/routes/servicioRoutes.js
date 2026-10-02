@@ -5,7 +5,8 @@ import {
   listarMisServicios,
   obtenerDetalleServicio,
   editarServicio,
-  eliminarServicio
+  eliminarServicio,
+  eliminarServiciosMultiples
 } from "../controllers/servicioController.js";
 
 import {
@@ -42,6 +43,11 @@ router.delete(
   "/:id",
   verificarToken,
   eliminarServicio
+);
+router.delete(
+  "/eliminar-multiples",
+  verificarToken,
+  eliminarServiciosMultiples
 );
 
 export default router;
