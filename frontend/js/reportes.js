@@ -1,4 +1,7 @@
 let servicios = [];
+let serviciosReporteActual = [];
+
+let descripcionPeriodoActual = "";
 
 
 // =============================================
@@ -17,12 +20,498 @@ if (!token || !usuarioGuardado) {
   window.location.href =
     "./login.html";
 }
+// =============================================
+// EXPORTAR REPORTE A PDF
+// =============================================
+
+async function exportarPDF() {
+
+  if (
+    !serviciosReporteActual.length
+  ) {
+
+    await Swal.fire({
+      icon: "warning",
+      title: "Sin información",
+      text:
+        "No hay servicios en el período seleccionado para generar el PDF.",
+      confirmButtonText: "Aceptar"
+    });
+
+    return;
+  }
+
+
+  if (
+    !window.jspdf ||
+    !window.jspdf.jsPDF
+  ) {
+
+    await Swal.fire({
+      icon: "error",
+      title: "No se pudo generar el PDF",
+      text:
+        "La librería para generar el PDF no está disponible.",
+      confirmButtonText: "Aceptar"
+    });
+
+    return;
+  }
+
+
+  const {
+    jsPDF
+  } = window.jspdf;
+
+
+  const pdf =
+    new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4"
+    });
+
+
+  // =========================================
+  // TÍTULO
+  // =========================================
+
+  pdf.setFontSize(18);
+
+  pdf.text(
+    "REPORTE DE SERVICIOS",
+    14,
+    16
+  );
+
+
+  pdf.setFontSize(10);
+
+
+  pdf.text(
+    `Técnico: ${
+      usuario?.nombre || "N/A"
+    }`,
+    14,
+    24
+  );
+
+
+  pdf.text(
+    `Período: ${
+      descripcionPeriodoActual
+    }`,
+    14,
+    30
+  );
+
+
+  const fechaGeneracion =
+    new Date()
+      .toLocaleDateString(
+        "es-GT",
+        {
+          timeZone:
+            "America/Guatemala",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        }
+      );
+
+
+  pdf.text(
+    `Fecha de generación: ${
+      fechaGeneracion
+    }`,
+    14,
+    36
+  );
+
+
+  // =========================================
+  // CALCULAR TOTALES
+  // =========================================
+
+  let kilometros = 0;
+
+  let minutosAtencion = 0;
+
+  let minutosViaje = 0;
+
+  let minutosRegreso = 0;
+
+  let minutosExtraAtencion = 0;
+
+  let minutosExtraViaje = 0;
+
+  let minutosExtraRegreso = 0;
+
+
+  serviciosReporteActual.forEach(
+    (servicio) => {
+
+      kilometros +=
+        Number(
+          servicio.totalKilometros
+        ) || 0;
+
+
+      minutosAtencion +=
+        Number(
+          servicio.totalMinutosAtencion
+        ) || 0;
+
+
+      minutosViaje +=
+        Number(
+          servicio.totalMinutosViaje
+        ) || 0;
+
+
+      minutosRegreso +=
+        Number(
+          servicio.totalMinutosRegresoCasa
+        ) || 0;
+
+
+      const extras =
+        calcularHorasExtrasServicio(
+          servicio
+        );
+
+
+      minutosExtraAtencion +=
+        extras
+          .minutosExtraAtencion;
+
+
+      minutosExtraViaje +=
+        extras
+          .minutosExtraViaje;
+
+
+      minutosExtraRegreso +=
+        extras
+          .minutosExtraRegresoCasa;
+    }
+  );
+
+
+  const totalExtra =
+    minutosExtraAtencion +
+    minutosExtraViaje +
+    minutosExtraRegreso;
+
+
+  // =========================================
+  // RESUMEN GENERAL
+  // =========================================
+
+  pdf.setFontSize(12);
+
+  pdf.text(
+    "Resumen general",
+    14,
+    47
+  );
+
+
+  pdf.autoTable({
+
+    startY: 51,
+
+    head: [[
+      "Servicios",
+      "Kilómetros",
+      "Atención",
+      "Viaje",
+      "Regreso a casa"
+    ]],
+
+    body: [[
+
+      serviciosReporteActual.length,
+
+      `${kilometros} km`,
+
+      convertirMinutos(
+        minutosAtencion
+      ),
+
+      convertirMinutos(
+        minutosViaje
+      ),
+
+      convertirMinutos(
+        minutosRegreso
+      )
+
+    ]],
+
+    theme: "grid",
+
+    styles: {
+      fontSize: 9,
+      halign: "center"
+    },
+
+    headStyles: {
+      halign: "center"
+    }
+
+  });
+
+
+  // =========================================
+  // RESUMEN HORAS EXTRAS
+  // =========================================
+
+  let siguienteY =
+    pdf.lastAutoTable.finalY +
+    9;
+
+
+  pdf.setFontSize(12);
+
+  pdf.text(
+    "Resumen de horas extras",
+    14,
+    siguienteY
+  );
+
+
+  pdf.autoTable({
+
+    startY:
+      siguienteY + 4,
+
+    head: [[
+      "Extra atención",
+      "Extra viaje",
+      "Extra regreso",
+      "Total horas extras"
+    ]],
+
+    body: [[
+
+      convertirMinutos(
+        minutosExtraAtencion
+      ),
+
+      convertirMinutos(
+        minutosExtraViaje
+      ),
+
+      convertirMinutos(
+        minutosExtraRegreso
+      ),
+
+      convertirMinutos(
+        totalExtra
+      )
+
+    ]],
+
+    theme: "grid",
+
+    styles: {
+      fontSize: 9,
+      halign: "center"
+    },
+
+    headStyles: {
+      halign: "center"
+    }
+
+  });
+
+
+  // =========================================
+  // DETALLE
+  // =========================================
+
+  siguienteY =
+    pdf.lastAutoTable.finalY +
+    9;
+
+
+  pdf.setFontSize(12);
+
+  pdf.text(
+    "Detalle de servicios",
+    14,
+    siguienteY
+  );
+
+
+  const filas =
+    serviciosReporteActual.map(
+      (servicio) => {
+
+        const extras =
+          calcularHorasExtrasServicio(
+            servicio
+          );
+
+
+        return [
+
+          formatearFecha(
+            servicio.fecha
+          ),
+
+          servicio.numeroTicket ||
+            "N/A",
+
+          servicio.tienda?.nombre ||
+            "N/A",
+
+          servicio.tienda?.codigo ||
+            "N/A",
+
+          convertirMinutos(
+            servicio
+              .totalMinutosAtencion
+          ),
+
+          convertirMinutos(
+            servicio
+              .totalMinutosViaje
+          ),
+
+          Number(
+            servicio.totalKilometros
+          ) || 0,
+
+          convertirMinutos(
+            extras.totalMinutosExtra
+          )
+
+        ];
+      }
+    );
+
+
+  pdf.autoTable({
+
+    startY:
+      siguienteY + 4,
+
+    head: [[
+      "Fecha",
+      "INC / Tarea",
+      "Tienda",
+      "Det.",
+      "Atención",
+      "Viaje",
+      "KM",
+      "Horas extra"
+    ]],
+
+    body:
+      filas,
+
+    theme:
+      "grid",
+
+    styles: {
+      fontSize: 8,
+      cellPadding: 2
+    },
+
+    headStyles: {
+      halign: "center"
+    },
+
+    columnStyles: {
+
+      0: {
+        halign: "center"
+      },
+
+      3: {
+        halign: "center"
+      },
+
+      4: {
+        halign: "center"
+      },
+
+      5: {
+        halign: "center"
+      },
+
+      6: {
+        halign: "center"
+      },
+
+      7: {
+        halign: "center"
+      }
+
+    },
+
+    didDrawPage: function () {
+
+      const numeroPagina =
+        pdf.internal
+          .getNumberOfPages();
+
+
+      pdf.setFontSize(8);
+
+
+      pdf.text(
+        `Página ${numeroPagina}`,
+        280,
+        200,
+        {
+          align: "right"
+        }
+      );
+    }
+
+  });
+
+
+  // =========================================
+  // NOMBRE DEL ARCHIVO
+  // =========================================
+
+  const nombreTecnico =
+    (
+      usuario?.nombre ||
+      "tecnico"
+    )
+      .replace(
+        /[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g,
+        "_"
+      );
+
+
+  const nombreArchivo =
+    `Reporte_Servicios_${nombreTecnico}.pdf`;
+
+
+  pdf.save(
+    nombreArchivo
+  );
+}
 
 
 // =============================================
 // ELEMENTOS
 // =============================================
+const btnExportarPDF =
+  document.getElementById(
+    "btnExportarPDF"
+  );
 
+const btnExportarExcel =
+  document.getElementById(
+    "btnExportarExcel"
+  );
 const sidebar =
   document.getElementById(
     "sidebar"
@@ -1067,6 +1556,11 @@ function generarReporte() {
     ${descripcionPeriodo}
 
   `;
+  serviciosReporteActual =
+  lista;
+
+descripcionPeriodoActual =
+  descripcionPeriodo;
 
 
   calcularResumen(
@@ -1479,7 +1973,10 @@ async function cargarServicios() {
 // =============================================
 // EVENTOS
 // =============================================
-
+btnExportarPDF.addEventListener(
+  "click",
+  exportarPDF
+);
 tipoPeriodo.addEventListener(
   "change",
   () => {
