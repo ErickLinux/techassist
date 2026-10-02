@@ -498,6 +498,496 @@ async function exportarPDF() {
     nombreArchivo
   );
 }
+// =============================================
+// EXPORTAR REPORTE A EXCEL
+// =============================================
+
+async function exportarExcel() {
+
+  if (
+    !serviciosReporteActual.length
+  ) {
+
+    await Swal.fire({
+      icon: "warning",
+      title: "Sin información",
+      text:
+        "No hay servicios en el período seleccionado para generar el Excel.",
+      confirmButtonText: "Aceptar"
+    });
+
+    return;
+  }
+
+
+  if (
+    typeof XLSX === "undefined"
+  ) {
+
+    await Swal.fire({
+      icon: "error",
+      title: "No se pudo generar el Excel",
+      text:
+        "La librería para generar el archivo Excel no está disponible.",
+      confirmButtonText: "Aceptar"
+    });
+
+    return;
+  }
+
+
+  // =========================================
+  // CALCULAR TOTALES
+  // =========================================
+
+  let kilometros = 0;
+
+  let minutosAtencion = 0;
+
+  let minutosViaje = 0;
+
+  let minutosRegreso = 0;
+
+  let minutosExtraAtencion = 0;
+
+  let minutosExtraViaje = 0;
+
+  let minutosExtraRegreso = 0;
+
+
+  serviciosReporteActual.forEach(
+    (servicio) => {
+
+      kilometros +=
+        Number(
+          servicio.totalKilometros
+        ) || 0;
+
+
+      minutosAtencion +=
+        Number(
+          servicio.totalMinutosAtencion
+        ) || 0;
+
+
+      minutosViaje +=
+        Number(
+          servicio.totalMinutosViaje
+        ) || 0;
+
+
+      minutosRegreso +=
+        Number(
+          servicio.totalMinutosRegresoCasa
+        ) || 0;
+
+
+      const extras =
+        calcularHorasExtrasServicio(
+          servicio
+        );
+
+
+      minutosExtraAtencion +=
+        extras.minutosExtraAtencion;
+
+
+      minutosExtraViaje +=
+        extras.minutosExtraViaje;
+
+
+      minutosExtraRegreso +=
+        extras.minutosExtraRegresoCasa;
+    }
+  );
+
+
+  const totalExtra =
+    minutosExtraAtencion +
+    minutosExtraViaje +
+    minutosExtraRegreso;
+
+
+  // =========================================
+  // CREAR LIBRO
+  // =========================================
+
+  const libro =
+    XLSX.utils.book_new();
+
+
+  // =========================================
+  // HOJA 1 - RESUMEN
+  // =========================================
+
+  const datosResumen = [
+
+    [
+      "REPORTE DE SERVICIOS"
+    ],
+
+    [],
+
+    [
+      "Técnico",
+      usuario?.nombre || "N/A"
+    ],
+
+    [
+      "Período",
+      descripcionPeriodoActual
+    ],
+
+    [
+      "Fecha de generación",
+      new Date()
+        .toLocaleDateString(
+          "es-GT",
+          {
+            timeZone:
+              "America/Guatemala"
+          }
+        )
+    ],
+
+    [],
+
+    [
+      "RESUMEN GENERAL"
+    ],
+
+    [],
+
+    [
+      "Concepto",
+      "Total"
+    ],
+
+    [
+      "Servicios / INC",
+      serviciosReporteActual.length
+    ],
+
+    [
+      "Kilómetros",
+      kilometros
+    ],
+
+    [
+      "Tiempo de atención",
+      convertirMinutos(
+        minutosAtencion
+      )
+    ],
+
+    [
+      "Tiempo de viaje",
+      convertirMinutos(
+        minutosViaje
+      )
+    ],
+
+    [
+      "Regreso a casa",
+      convertirMinutos(
+        minutosRegreso
+      )
+    ]
+
+  ];
+
+
+  const hojaResumen =
+    XLSX.utils.aoa_to_sheet(
+      datosResumen
+    );
+
+
+  hojaResumen["!cols"] = [
+    {
+      wch: 25
+    },
+    {
+      wch: 35
+    }
+  ];
+
+
+  XLSX.utils.book_append_sheet(
+    libro,
+    hojaResumen,
+    "Resumen"
+  );
+
+
+  // =========================================
+  // HOJA 2 - HORAS EXTRAS
+  // =========================================
+
+  const datosExtras = [
+
+    [
+      "REPORTE DE HORAS EXTRAS"
+    ],
+
+    [],
+
+    [
+      "Técnico",
+      usuario?.nombre || "N/A"
+    ],
+
+    [
+      "Período",
+      descripcionPeriodoActual
+    ],
+
+    [],
+
+    [
+      "Concepto",
+      "Total"
+    ],
+
+    [
+      "Extra atención",
+      convertirMinutos(
+        minutosExtraAtencion
+      )
+    ],
+
+    [
+      "Extra viaje",
+      convertirMinutos(
+        minutosExtraViaje
+      )
+    ],
+
+    [
+      "Extra regreso a casa",
+      convertirMinutos(
+        minutosExtraRegreso
+      )
+    ],
+
+    [
+      "TOTAL HORAS EXTRAS",
+      convertirMinutos(
+        totalExtra
+      )
+    ]
+
+  ];
+
+
+  const hojaExtras =
+    XLSX.utils.aoa_to_sheet(
+      datosExtras
+    );
+
+
+  hojaExtras["!cols"] = [
+    {
+      wch: 28
+    },
+    {
+      wch: 25
+    }
+  ];
+
+
+  XLSX.utils.book_append_sheet(
+    libro,
+    hojaExtras,
+    "Horas Extras"
+  );
+
+
+  // =========================================
+  // HOJA 3 - DETALLE
+  // =========================================
+
+  const datosDetalle =
+    serviciosReporteActual.map(
+      (servicio) => {
+
+        const extras =
+          calcularHorasExtrasServicio(
+            servicio
+          );
+
+
+        return {
+
+          "Fecha":
+            formatearFecha(
+              servicio.fecha
+            ),
+
+          "INC / Tarea":
+            servicio.numeroTicket ||
+            "",
+
+          "CAF / Boleta":
+            servicio.numeroCaf ||
+            "",
+
+          "Determinante":
+            servicio.tienda?.codigo ||
+            "",
+
+          "Tienda":
+            servicio.tienda?.nombre ||
+            "",
+
+          "Departamento":
+            servicio.tienda?.departamento ||
+            "",
+
+          "Municipio":
+            servicio.tienda?.municipio ||
+            "",
+
+          "Lugar de salida":
+            servicio.lugarSalida ||
+            "",
+
+          "Atención":
+            convertirMinutos(
+              servicio
+                .totalMinutosAtencion
+            ),
+
+          "Viaje":
+            convertirMinutos(
+              servicio
+                .totalMinutosViaje
+            ),
+
+          "Regreso a casa":
+            convertirMinutos(
+              servicio
+                .totalMinutosRegresoCasa
+            ),
+
+          "Kilómetros":
+            Number(
+              servicio.totalKilometros
+            ) || 0,
+
+          "Extra atención":
+            convertirMinutos(
+              extras
+                .minutosExtraAtencion
+            ),
+
+          "Extra viaje":
+            convertirMinutos(
+              extras
+                .minutosExtraViaje
+            ),
+
+          "Extra regreso":
+            convertirMinutos(
+              extras
+                .minutosExtraRegresoCasa
+            ),
+
+          "Total horas extra":
+            convertirMinutos(
+              extras
+                .totalMinutosExtra
+            ),
+
+          "Trabajo realizado":
+            servicio.trabajoRealizado ||
+            ""
+
+        };
+      }
+    );
+
+
+  const hojaDetalle =
+    XLSX.utils.json_to_sheet(
+      datosDetalle
+    );
+
+
+  hojaDetalle["!cols"] = [
+
+    { wch: 13 }, // Fecha
+
+    { wch: 20 }, // INC
+
+    { wch: 18 }, // CAF
+
+    { wch: 14 }, // Determinante
+
+    { wch: 28 }, // Tienda
+
+    { wch: 20 }, // Departamento
+
+    { wch: 20 }, // Municipio
+
+    { wch: 22 }, // Salida
+
+    { wch: 16 }, // Atención
+
+    { wch: 16 }, // Viaje
+
+    { wch: 18 }, // Regreso
+
+    { wch: 12 }, // KM
+
+    { wch: 18 }, // Extra atención
+
+    { wch: 18 }, // Extra viaje
+
+    { wch: 18 }, // Extra regreso
+
+    { wch: 20 }, // Total extra
+
+    { wch: 45 }  // Trabajo
+
+  ];
+
+
+  XLSX.utils.book_append_sheet(
+    libro,
+    hojaDetalle,
+    "Detalle de Servicios"
+  );
+
+
+  // =========================================
+  // NOMBRE DEL ARCHIVO
+  // =========================================
+
+  const nombreTecnico =
+    (
+      usuario?.nombre ||
+      "tecnico"
+    )
+      .replace(
+        /[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+/g,
+        "_"
+      );
+
+
+  const nombreArchivo =
+    `Reporte_Servicios_${nombreTecnico}.xlsx`;
+
+
+  // =========================================
+  // DESCARGAR
+  // =========================================
+
+  XLSX.writeFile(
+    libro,
+    nombreArchivo
+  );
+}
 
 
 // =============================================
@@ -1976,6 +2466,10 @@ async function cargarServicios() {
 btnExportarPDF.addEventListener(
   "click",
   exportarPDF
+);
+btnExportarExcel.addEventListener(
+  "click",
+  exportarExcel
 );
 tipoPeriodo.addEventListener(
   "change",
