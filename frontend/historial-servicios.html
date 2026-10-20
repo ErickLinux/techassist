@@ -25,6 +25,28 @@
     rel="stylesheet"
     href="./css/dashboard.css"
   >
+
+  <style>
+    /* Historial: tabla completa en escritorio, tarjetas en móvil */
+    #tarjetasServiciosMovil { display: none; }
+    @media (max-width: 767.98px) {
+      #tablaServiciosContenedor { display: none !important; }
+      #tarjetasServiciosMovil:not(.d-none) { display: grid; gap: 12px; }
+      #tarjetasServiciosMovil .hist-card { border: 1px solid #dce3eb; border-radius: 14px; background: #fff; padding: 14px; min-width: 0; box-shadow: 0 2px 9px rgba(0,0,0,.04); }
+      #tarjetasServiciosMovil .hist-card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; border-bottom: 1px solid #edf0f4; padding-bottom: 10px; margin-bottom: 12px; }
+      #tarjetasServiciosMovil .hist-card-title { font-weight: 700; font-size: 1.06rem; overflow-wrap: anywhere; }
+      #tarjetasServiciosMovil .hist-label { font-size: .76rem; color: #697586; }
+      #tarjetasServiciosMovil .hist-shop { font-weight: 600; overflow-wrap: anywhere; }
+      #tarjetasServiciosMovil .hist-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0; }
+      #tarjetasServiciosMovil .hist-stat { border-radius: 9px; padding: 9px 6px; background: #f4f6f9; min-width: 0; text-align: center; }
+      #tarjetasServiciosMovil .hist-stat strong { display: block; font-size: .86rem; overflow-wrap: anywhere; }
+      #tarjetasServiciosMovil .hist-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+      #tarjetasServiciosMovil .hist-actions .btn { min-height: 40px; }
+      #tarjetasServiciosMovil .check-servicio { width: 1.15em; height: 1.15em; }
+      #btnEliminarSeleccionados { max-width: 100%; white-space: normal; }
+      .content .card-body { min-width: 0; }
+    }
+  </style>
 </head>
 
 <body>
@@ -580,6 +602,9 @@
 
           </div>
 
+
+          <!-- TARJETAS PARA CELULARES -->
+          <div id="tarjetasServiciosMovil" class="d-none" aria-label="Servicios registrados"></div>
 
           <!-- TABLA -->
 

@@ -128,6 +128,8 @@ const tablaServicios =
     "tablaServicios"
   );
 
+const tarjetasServiciosMovil = document.getElementById("tarjetasServiciosMovil");
+
 const contadorServicios =
   document.getElementById(
     "contadorServicios"
@@ -856,10 +858,49 @@ function aplicarFiltros() {
 // RENDERIZAR SERVICIOS
 // =============================================
 
+function escaparHtmlHistorial(valor) {
+  return String(valor ?? "").replace(/[&<>"']/g, caracter => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[caracter]);
+}
+
+function renderizarTarjetasMovil() {
+  tarjetasServiciosMovil.innerHTML = "";
+  serviciosFiltrados.forEach(servicio => {
+    const id = escaparHtmlHistorial(servicio.id);
+    const marcado = serviciosSeleccionados.has(servicio.id);
+    const tarjeta = document.createElement("article");
+    tarjeta.className = "hist-card";
+    tarjeta.innerHTML = `
+      <div class="hist-card-head">
+        <label class="d-flex align-items-center gap-2 mb-0">
+          <input type="checkbox" class="form-check-input check-servicio" data-id="${id}" ${marcado ? "checked" : ""} aria-label="Seleccionar servicio ${escaparHtmlHistorial(servicio.numeroTicket)}">
+          <span class="hist-label">Seleccionar</span>
+        </label>
+        <span class="hist-label">${escaparHtmlHistorial(formatearFecha(servicio.fecha))}</span>
+      </div>
+      <div class="hist-label">INC / Tarea</div>
+      <div class="hist-card-title">${escaparHtmlHistorial(servicio.numeroTicket)}</div>
+      <div class="hist-label mt-2">Tienda</div>
+      <div class="hist-shop">${escaparHtmlHistorial(servicio.tienda?.nombre || "No registrada")}</div>
+      <div class="hist-label">${servicio.tienda?.codigo ? `Det. ${escaparHtmlHistorial(servicio.tienda.codigo)}` : ""}</div>
+      <div class="hist-stats">
+        <div class="hist-stat"><div class="hist-label">Atención</div><strong>${escaparHtmlHistorial(convertirMinutos(servicio.totalMinutosAtencion))}</strong></div>
+        <div class="hist-stat"><div class="hist-label">Viaje</div><strong>${escaparHtmlHistorial(convertirMinutos(servicio.totalMinutosViaje))}</strong></div>
+        <div class="hist-stat"><div class="hist-label">KM</div><strong>${escaparHtmlHistorial(Number(servicio.totalKilometros) || 0)}</strong></div>
+      </div>
+      <div class="hist-actions">
+        <button type="button" class="btn btn-outline-primary btn-ver" data-id="${id}"><i class="bi bi-eye me-1"></i> Ver detalle</button>
+        <button type="button" class="btn btn-outline-danger btn-eliminar" data-id="${id}"><i class="bi bi-trash me-1"></i> Eliminar</button>
+      </div>`;
+    tarjetasServiciosMovil.appendChild(tarjeta);
+  });
+}
+
 function renderizarServicios() {
 
-  tablaServicios.innerHTML =
-    "";
+  tablaServicios.innerHTML = "";
+  tarjetasServiciosMovil.innerHTML = "";
 
 
   const cantidad =
@@ -877,9 +918,8 @@ function renderizarServicios() {
   if (cantidad === 0) {
 
     tablaServiciosContenedor
-      .classList.add(
-        "d-none"
-      );
+      .classList.add("d-none");
+    tarjetasServiciosMovil.classList.add("d-none");
 
     sinServicios
       .classList.remove(
@@ -896,10 +936,9 @@ function renderizarServicios() {
     );
 
   tablaServiciosContenedor
-    .classList.remove(
-      "d-none"
-    );
-
+    .classList.remove("d-none");
+  tarjetasServiciosMovil.classList.remove("d-none");
+  renderizarTarjetasMovil();
 
   serviciosFiltrados.forEach(
     (servicio) => {
@@ -1134,10 +1173,25 @@ tablaServicios.addEventListener(
     }
 
 
+    document.querySelectorAll(".check-servicio").forEach(otro => {
+      if (otro.dataset.id === id && otro !== check) otro.checked = check.checked;
+    });
     actualizarSeleccion();
   }
 );
 
+// La selección de tarjetas usa el mismo conjunto de IDs que la tabla.
+tarjetasServiciosMovil.addEventListener("change", event => {
+  const check = event.target.closest(".check-servicio");
+  if (!check) return;
+  const id = check.dataset.id;
+  if (check.checked) serviciosSeleccionados.add(id);
+  else serviciosSeleccionados.delete(id);
+  document.querySelectorAll(".check-servicio").forEach(otro => {
+    if (otro.dataset.id === id && otro !== check) otro.checked = check.checked;
+  });
+  actualizarSeleccion();
+});
 
 // =============================================
 // SELECCIONAR TODOS
@@ -1231,6 +1285,19 @@ tablaServicios.addEventListener(
   }
 );
 
+
+tarjetasServiciosMovil.addEventListener("click", async event => {
+  const botonVer = event.target.closest(".btn-ver");
+  if (botonVer) {
+    await verDetalleServicio(botonVer.dataset.id);
+    return;
+  }
+  const botonEliminar = event.target.closest(".btn-eliminar");
+  if (botonEliminar) {
+    const servicio = servicios.find(item => String(item.id) === botonEliminar.dataset.id);
+    if (servicio) await eliminarServicioIndividual(servicio);
+  }
+});
 
 // =============================================
 // VER DETALLE
