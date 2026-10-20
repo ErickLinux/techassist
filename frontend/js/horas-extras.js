@@ -138,6 +138,9 @@ const totalHorasExtra =
   document.getElementById(
     "totalHorasExtra"
   );
+
+const mostrarTodosServicios =
+  document.getElementById("mostrarTodosServicios");
   function filtrarServiciosPorMes() {
 
   const mes =
@@ -162,9 +165,7 @@ const totalHorasExtra =
     );
 
 
-  mostrarServicios(
-    filtrados
-  );
+  mostrarServicios(filtrados);
 }
 const btnMesAnterior =
   document.getElementById(
@@ -729,9 +730,14 @@ filtrarServiciosPorMes();;
 // ==============================
 
 function mostrarServicios(lista) {
-    calcularResumenHorasExtras(
-  lista
-);
+  // El resumen siempre representa todas las extras del período.
+  calcularResumenHorasExtras(lista);
+
+  const listaVisible = mostrarTodosServicios?.checked
+    ? lista
+    : lista.filter(servicio =>
+        calcularHorasExtrasServicio(servicio).totalMinutosExtra > 0
+      );
 
   cargandoServicios.classList.add(
     "d-none"
@@ -741,7 +747,12 @@ function mostrarServicios(lista) {
     "";
 
 
-  if (!lista.length) {
+  if (!listaVisible.length) {
+
+    sinServicios.innerHTML = `<i class="bi bi-inbox fs-1 text-secondary"></i>
+      <p class="mt-2">${lista.length
+        ? "No hay servicios con horas extras en este período."
+        : "No hay servicios para mostrar en este período."}</p>`;
 
     tablaServiciosContenedor.classList.add(
       "d-none"
@@ -760,7 +771,7 @@ function mostrarServicios(lista) {
   );
 
 
-  lista.forEach(
+  listaVisible.forEach(
     (servicio) => {
 
       const fila =
@@ -839,6 +850,8 @@ function mostrarServicios(lista) {
 }
 
 
+mostrarTodosServicios?.addEventListener("change", filtrarServiciosPorMes);
+
 // ==============================
 // FILTRAR POR FECHA
 // ==============================
@@ -874,9 +887,7 @@ btnLimpiarFiltro.addEventListener(
   "click",
   () => {
 
-    mostrarServicios(
-      servicios
-    );
+    mostrarServicios(servicios);
   }
 );
 
