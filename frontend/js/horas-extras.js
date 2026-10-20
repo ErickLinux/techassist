@@ -1,5 +1,7 @@
 let servicios = [];
 let servicioSeleccionado = null;
+let diasEspeciales = [];
+
 
 
 // ==============================
@@ -471,122 +473,91 @@ function convertirMinutosFormato(minutos) {
 // CÁLCULO DE HORAS EXTRAS
 // ==============================
 
-function calcularMinutosExtra(
-  fechaInicio,
-  fechaFin,
-  fechaServicio
-) {
-
-  if (!fechaInicio || !fechaFin) {
-    return 0;
+// Las fechas DATE de PostgreSQL se reciben en UTC. Tomamos la parte
+// AAAA-MM-DD para evitar desplazarlas un día por la zona horaria.
+function fechaISOCalendario(valor) {
+  if (!valor) return "";
+  if (typeof valor === "string" && /^\d{4}-\d{2}-\d{2}/.test(valor)) {
+    return valor.slice(0, 10);
   }
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return "";
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Guatemala", year: "numeric", month: "2-digit", day: "2-digit"
+  }).format(fecha);
+}
 
+function esDiaEspecial(fecha) {
+  const iso = fechaISOCalendario(fecha);
+  if (!iso) return false;
+  return diasEspeciales.some(dia => {
+    if (!dia.activo) return false;
+    const registrada = fechaISOCalendario(dia.fecha);
+    return registrada === iso ||
+      (dia.recurrente && registrada.slice(5) === iso.slice(5));
+  });
+}
+
+function esDiaExtraCompleto(fecha) {
+  const iso = fechaISOCalendario(fecha);
+  if (!iso) return false;
+  const diaSemana = new Date(`${iso}T12:00:00Z`).getUTCDay();
+  return diaSemana === 0 || diaSemana === 6 || esDiaEspecial(iso);
+}
+
+// Cada tramo se evalúa en horario de Guatemala, incluso si cruza medianoche.
+function calcularMinutosExtra(fechaInicio, fechaFin, fechaServicio) {
+  if (!fechaInicio || !fechaFin || !fechaServicio) return 0;
   const inicio = new Date(fechaInicio);
   const fin = new Date(fechaFin);
-  const fechaBase = new Date(fechaServicio);
+  if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime()) || fin <= inicio) return 0;
 
-  if (
-    isNaN(inicio.getTime()) ||
-    isNaN(fin.getTime()) ||
-    isNaN(fechaBase.getTime())
-  ) {
-    return 0;
+  let extra = 0;
+  let cursor = inicio.getTime();
+  const limite = fin.getTime();
+  const zona = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Guatemala", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+  });
+
+  // Guatemala utiliza UTC-06:00 sin cambio estacional.
+  while (cursor < limite) {
+    const partes = Object.fromEntries(zona.formatToParts(new Date(cursor))
+      .filter(p => p.type !== "literal").map(p => [p.type, p.value]));
+    const iso = `${partes.year}-${partes.month}-${partes.day}`;
+    const medianocheSiguiente = Date.parse(`${iso}T06:00:00Z`) + 86400000;
+    const finTramo = Math.min(limite, medianocheSiguiente);
+    if (esDiaExtraCompleto(iso)) {
+      extra += (finTramo - cursor) / 60000;
+    } else {
+      const inicioNormal = Date.parse(`${iso}T14:00:00Z`); // 08:00 GT
+      const finNormal = Date.parse(`${iso}T00:00:00Z`) + 86400000; // 18:00 GT
+      const normales = Math.max(0, Math.min(finTramo, finNormal) - Math.max(cursor, inicioNormal)) / 60000;
+      extra += (finTramo - cursor) / 60000 - normales;
+    }
+    cursor = finTramo;
   }
+  return Math.max(0, Math.round(extra));
+}
 
-  // 0 = domingo
-  // 6 = sábado
-  const diaSemana = fechaBase.getDay();
-
-  const duracionTotal =
-    Math.max(
-      0,
-      Math.round(
-        (fin - inicio) / 60000
-      )
-    );
-
-  // Sábado y domingo:
-  // todo el tiempo cuenta como extra
-  if (
-    diaSemana === 0 ||
-    diaSemana === 6
-  ) {
-    return duracionTotal;
+async function cargarDiasEspeciales() {
+  const respuesta = await fetch(`${API_URL}/api/dias-especiales`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (respuesta.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    window.location.href = "./login.html";
+    throw new Error("La sesión expiró.");
   }
-
-  // Lunes a viernes:
-  // horario normal 08:00 - 18:00
-
-  const inicioHorarioNormal =
-    new Date(fechaBase);
-
-  inicioHorarioNormal.setHours(
-    8,
-    0,
-    0,
-    0
-  );
-
-
-  const finHorarioNormal =
-    new Date(fechaBase);
-
-  finHorarioNormal.setHours(
-    18,
-    0,
-    0,
-    0
-  );
-
-
-  // Calcular cuánto del servicio
-  // ocurrió dentro del horario normal
-
-  const inicioDentroHorario =
-    new Date(
-      Math.max(
-        inicio.getTime(),
-        inicioHorarioNormal.getTime()
-      )
-    );
-
-
-  const finDentroHorario =
-    new Date(
-      Math.min(
-        fin.getTime(),
-        finHorarioNormal.getTime()
-      )
-    );
-
-
-  let minutosNormales = 0;
-
-
-  if (
-    finDentroHorario >
-    inicioDentroHorario
-  ) {
-
-    minutosNormales =
-      Math.round(
-        (
-          finDentroHorario -
-          inicioDentroHorario
-        ) / 60000
-      );
+  if (!respuesta.ok) {
+    throw new Error(`No se pudieron consultar los días especiales (HTTP ${respuesta.status}).`);
   }
-
-
-  const minutosExtra =
-    duracionTotal -
-    minutosNormales;
-
-
-  return Math.max(
-    0,
-    minutosExtra
-  );
+  const datos = await respuesta.json();
+  if (!Array.isArray(datos.diasEspeciales)) {
+    throw new Error("La respuesta de días especiales no tiene el formato esperado.");
+  }
+  diasEspeciales = datos.diasEspeciales;
 }
 
 
@@ -1459,10 +1430,7 @@ btnGenerarScript.addEventListener(
 
       // Sábado y domingo:
       // toda la atención es extra
-      if (
-        diaSemana === 0 ||
-        diaSemana === 6
-      ) {
+      if (esDiaExtraCompleto(servicio.fecha)) {
 
         horaIngresoExtra =
           formatearHora24(
@@ -1487,30 +1455,9 @@ btnGenerarScript.addEventListener(
           );
 
 
-        const inicioHorarioNormal =
-          new Date(
-            servicio.fecha
-          );
-
-        inicioHorarioNormal.setHours(
-          8,
-          0,
-          0,
-          0
-        );
-
-
-        const finHorarioNormal =
-          new Date(
-            servicio.fecha
-          );
-
-        finHorarioNormal.setHours(
-          18,
-          0,
-          0,
-          0
-        );
+        const fechaLocal = fechaISOCalendario(servicio.fecha);
+        const inicioHorarioNormal = new Date(`${fechaLocal}T14:00:00Z`);
+        const finHorarioNormal = new Date(Date.parse(`${fechaLocal}T00:00:00Z`) + 86400000);
 
 
         // Todo antes de las 08:00
@@ -1624,10 +1571,7 @@ btnGenerarScript.addEventListener(
 
       // Sábado y domingo:
       // todo el viaje es extra
-      if (
-        diaSemana === 0 ||
-        diaSemana === 6
-      ) {
+      if (esDiaExtraCompleto(servicio.fecha)) {
 
         inicioViajeExtra =
           formatearHora24(
@@ -1652,30 +1596,9 @@ btnGenerarScript.addEventListener(
           );
 
 
-        const inicioHorarioNormal =
-          new Date(
-            servicio.fecha
-          );
-
-        inicioHorarioNormal.setHours(
-          8,
-          0,
-          0,
-          0
-        );
-
-
-        const finHorarioNormal =
-          new Date(
-            servicio.fecha
-          );
-
-        finHorarioNormal.setHours(
-          18,
-          0,
-          0,
-          0
-        );
+        const fechaLocal = fechaISOCalendario(servicio.fecha);
+        const inicioHorarioNormal = new Date(`${fechaLocal}T14:00:00Z`);
+        const finHorarioNormal = new Date(Date.parse(`${fechaLocal}T00:00:00Z`) + 86400000);
 
 
         // Todo antes de las 08:00
@@ -1791,10 +1714,7 @@ btnGenerarScript.addEventListener(
 
       // Sábado y domingo:
       // todo el regreso es extra
-      if (
-        diaSemana === 0 ||
-        diaSemana === 6
-      ) {
+      if (esDiaExtraCompleto(servicio.fecha)) {
 
         inicioRegresoExtra =
           formatearHora24(
@@ -1819,30 +1739,9 @@ btnGenerarScript.addEventListener(
           );
 
 
-        const inicioHorarioNormal =
-          new Date(
-            servicio.fecha
-          );
-
-        inicioHorarioNormal.setHours(
-          8,
-          0,
-          0,
-          0
-        );
-
-
-        const finHorarioNormal =
-          new Date(
-            servicio.fecha
-          );
-
-        finHorarioNormal.setHours(
-          18,
-          0,
-          0,
-          0
-        );
+        const fechaLocal = fechaISOCalendario(servicio.fecha);
+        const inicioHorarioNormal = new Date(`${fechaLocal}T14:00:00Z`);
+        const finHorarioNormal = new Date(Date.parse(`${fechaLocal}T00:00:00Z`) + 86400000);
 
 
         // Todo el regreso antes de 08:00
