@@ -25,6 +25,57 @@
     rel="stylesheet"
     href="./css/dashboard.css"
   >
+
+  <style>
+    /* Vista de tarjetas solo en pantallas pequeñas. */
+    @media (max-width: 767.98px) {
+      #btnNuevoRepuesto { width: 100%; }
+      #tablaRepuestosContenedor { overflow-x: visible; }
+      #tablaRepuestosContenedor table,
+      #tablaRepuestosContenedor tbody,
+      #tablaRepuestosContenedor tr,
+      #tablaRepuestosContenedor td { display: block; width: 100%; }
+      #tablaRepuestosContenedor thead { display: none; }
+      #tablaRepuestosContenedor table { border: 0; margin: 0; }
+      #tablaRepuestosContenedor tr {
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        background: #fff;
+        padding: 14px;
+        margin-bottom: 14px;
+        box-shadow: 0 2px 7px rgba(0,0,0,.04);
+      }
+      #tablaRepuestosContenedor td {
+        border: 0;
+        padding: 7px 0;
+        overflow-wrap: anywhere;
+        white-space: normal;
+      }
+      #tablaRepuestosContenedor td::before {
+        display: block;
+        color: #6c757d;
+        font-size: .78rem;
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+      #tablaRepuestosContenedor td:nth-child(1)::before { content: "Nombre de parte"; }
+      #tablaRepuestosContenedor td:nth-child(2)::before { content: "Número de parte"; }
+      #tablaRepuestosContenedor td:nth-child(3)::before { content: "Tipo de equipo"; }
+      #tablaRepuestosContenedor td:nth-child(4)::before { content: "Estado"; }
+      #tablaRepuestosContenedor td:nth-child(5)::before { content: "Acciones"; }
+      #tablaRepuestosContenedor td:first-child strong { font-size: 1.04rem; }
+      #tablaRepuestosContenedor td:last-child { padding-top: 12px; }
+      #tablaRepuestosContenedor td:last-child > div {
+        display: flex !important;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      #tablaRepuestosContenedor td:last-child button {
+        flex: 1 1 125px;
+        min-height: 40px;
+      }
+    }
+  </style>
 </head>
 
 <body>

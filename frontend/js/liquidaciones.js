@@ -89,6 +89,18 @@ const tablaLiquidacion =
     "tablaLiquidacion"
   );
 
+const tarjetasLiquidacion =
+  document.getElementById("tarjetasLiquidacion");
+
+// Evita interpretar datos de servicios como etiquetas HTML.
+function escaparHtml(valor) {
+  return String(valor ?? "-").replace(/[&<>"']/g, (caracter) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[caracter]);
+}
+
+
 const totalServicios =
   document.getElementById(
     "totalServicios"
@@ -599,6 +611,8 @@ function mostrarLiquidacion(lista) {
   tablaLiquidacion.innerHTML =
     "";
 
+  tarjetasLiquidacion.innerHTML = "";
+
   let kilometrosAcumulados = 0;
 
   totalServicios.textContent =
@@ -708,6 +722,36 @@ function mostrarLiquidacion(lista) {
       tablaLiquidacion.appendChild(
         fila
       );
+
+      const tarjeta = document.createElement("article");
+      tarjeta.className = "liquidacion-tarjeta";
+      const dato = (etiqueta, valor, ancho = false) => `
+        <div class="liquidacion-dato ${ancho ? "ancho" : ""}">
+          <span class="liquidacion-etiqueta">${etiqueta}</span>
+          <span class="liquidacion-valor">${escaparHtml(valor)}</span>
+        </div>`;
+      tarjeta.innerHTML = `
+        <div class="liquidacion-tarjeta-cabecera">
+          <strong>Servicio #${indice + 1}</strong>
+          <span class="liquidacion-fecha">${escaparHtml(formatearFecha(servicio.fecha))}</span>
+        </div>
+        <div class="liquidacion-datos">
+          ${dato("Departamento", servicio.tienda?.departamento || "-")}
+          ${dato("Municipio", servicio.tienda?.municipio || "-")}
+          ${dato("Tienda", servicio.tienda?.nombre || "-", true)}
+          ${dato("INC / Tarea", servicio.numeroTicket || "-")}
+          ${dato("Boleta CAF", servicio.numeroCaf || "-")}
+          ${dato("Trabajo realizado", servicio.trabajoRealizado || "-", true)}
+          <div class="liquidacion-dato liquidacion-km">
+            <span class="liquidacion-etiqueta">KM diario</span>
+            <span class="liquidacion-valor">${escaparHtml(kilometros)} km</span>
+          </div>
+          <div class="liquidacion-dato liquidacion-km">
+            <span class="liquidacion-etiqueta">Total a validar</span>
+            <span class="liquidacion-valor">${escaparHtml(kilometros)} km</span>
+          </div>
+        </div>`;
+      tarjetasLiquidacion.appendChild(tarjeta);
     }
   );
 
@@ -716,6 +760,16 @@ function mostrarLiquidacion(lista) {
 
   totalKilometrosTabla.textContent =
     kilometrosAcumulados;
+
+  const totalMovil = document.createElement("div");
+  totalMovil.className = "liquidacion-total-movil";
+  const textoTotal = document.createElement("strong");
+  textoTotal.textContent = "TOTAL KILÓMETROS A VALIDAR";
+  const valorTotal = document.createElement("strong");
+  valorTotal.className = "text-primary";
+  valorTotal.textContent = `${kilometrosAcumulados} km`;
+  totalMovil.append(textoTotal, valorTotal);
+  tarjetasLiquidacion.appendChild(totalMovil);
 
   tablaLiquidacionContenedor.classList.remove(
     "d-none"
