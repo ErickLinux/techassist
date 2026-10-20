@@ -1193,7 +1193,7 @@ try {
   document.getElementById("menuAdministrarRepuestos")
     ?.classList.remove("d-none");
 
-  document.getElementById("menuAdministrarDiasEspeciales")
+  document.getElementById("menuDiasEspeciales")
     ?.classList.remove("d-none");
 
 }
