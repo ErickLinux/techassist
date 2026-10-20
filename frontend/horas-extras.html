@@ -25,6 +25,18 @@
     rel="stylesheet"
     href="./css/dashboard.css"
   >
+<style>
+@media (max-width: 767.98px) {
+  #tablaServiciosContenedor { display: none !important; }
+  #tarjetasServiciosMovil { display: grid; gap: 12px; }
+  .extra-mobile-card { border: 1px solid #dee2e6; border-radius: 12px; padding: 14px; background: #fff; min-width: 0; }
+  .extra-mobile-card .extra-ticket { font-weight: 700; overflow-wrap: anywhere; }
+  .extra-mobile-card .extra-tienda { overflow-wrap: anywhere; }
+  .extra-mobile-card .extra-fecha { color: #6c757d; font-size: .84rem; }
+  .extra-mobile-card .extra-tiempo { color: #198754; font-weight: 700; }
+}
+@media (min-width: 768px) { #tarjetasServiciosMovil { display: none !important; } }
+</style>
 </head>
 
 <body>
@@ -448,6 +460,7 @@
             </table>
 
           </div>
+          <div id="tarjetasServiciosMovil" class="d-none"></div>
 
         </div>
 

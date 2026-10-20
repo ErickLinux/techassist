@@ -729,6 +729,14 @@ filtrarServiciosPorMes();;
 // MOSTRAR SERVICIOS
 // ==============================
 
+function escaparHtml(valor) {
+  return String(valor ?? "").replace(/[&<>"']/g, caracter => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[caracter]);
+}
+
+const tarjetasServiciosMovil = document.getElementById("tarjetasServiciosMovil");
+
 function mostrarServicios(lista) {
   // El resumen siempre representa todas las extras del período.
   calcularResumenHorasExtras(lista);
@@ -743,8 +751,9 @@ function mostrarServicios(lista) {
     "d-none"
   );
 
-  tablaServicios.innerHTML =
-    "";
+  tablaServicios.innerHTML = "";
+  tarjetasServiciosMovil.innerHTML = "";
+  tarjetasServiciosMovil.classList.add("d-none");
 
 
   if (!listaVisible.length) {
@@ -837,16 +846,31 @@ function mostrarServicios(lista) {
       `;
 
 
-      tablaServicios.appendChild(
-        fila
-      );
+      tablaServicios.appendChild(fila);
+
+      const minutosExtra = calcularHorasExtrasServicio(servicio).totalMinutosExtra;
+      const tarjeta = document.createElement("div");
+      tarjeta.className = "extra-mobile-card";
+      tarjeta.innerHTML = `
+        <div class="d-flex justify-content-between gap-2 align-items-start mb-2">
+          <span class="extra-ticket">${escaparHtml(servicio.numeroTicket)}</span>
+          <span class="extra-fecha text-nowrap">${formatearFecha(servicio.fecha)}</span>
+        </div>
+        <div class="extra-tienda mb-2">${escaparHtml(servicio.tienda?.nombre)}</div>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-secondary small">Horas extras</span>
+          <span class="extra-tiempo">${convertirMinutos(minutosExtra)}</span>
+        </div>
+        <button type="button" class="btn btn-primary w-100 btn-script-movil" data-id="${escaparHtml(servicio.id)}">
+          <i class="bi bi-file-earmark-text"></i> Generar script
+        </button>`;
+      tarjetasServiciosMovil.appendChild(tarjeta);
     }
   );
 
 
-  tablaServiciosContenedor.classList.remove(
-    "d-none"
-  );
+  tablaServiciosContenedor.classList.remove("d-none");
+  tarjetasServiciosMovil.classList.remove("d-none");
 }
 
 
@@ -922,6 +946,18 @@ tablaServicios.addEventListener(
 );
 
 
+tarjetasServiciosMovil.addEventListener("click", async event => {
+  const boton = event.target.closest(".btn-script-movil");
+  if (!boton || boton.disabled) return;
+  boton.disabled = true;
+  try {
+    const seleccionado = await seleccionarServicio(boton.dataset.id);
+    if (seleccionado) btnGenerarScript.click();
+  } finally {
+    boton.disabled = false;
+  }
+});
+
 async function seleccionarServicio(id) {
 
   try {
@@ -955,10 +991,8 @@ async function seleccionarServicio(id) {
       datos.servicio;
 
 
-    mostrarDetalleServicio(
-      servicioSeleccionado
-    );
-
+    mostrarDetalleServicio(servicioSeleccionado);
+    return true;
 
   } catch (error) {
 
@@ -967,9 +1001,8 @@ async function seleccionarServicio(id) {
       error
     );
 
-    alert(
-      error.message
-    );
+    alert(error.message);
+    return false;
   }
 }
 
@@ -978,29 +1011,9 @@ async function seleccionarServicio(id) {
 // MOSTRAR DETALLE
 // ==============================
 
-function mostrarDetalleServicio(
-  servicio
-) {
-    const horasExtras =
-  calcularHorasExtrasServicio(
-    servicio
-  );
-  badgeTicket.textContent =
-    servicio.numeroTicket;
-
-
-  function mostrarDetalleServicio(
-  servicio
-) {
-
-  const horasExtras =
-    calcularHorasExtrasServicio(
-      servicio
-    );
-
-  badgeTicket.textContent =
-    servicio.numeroTicket;
-
+function mostrarDetalleServicio(servicio) {
+  const horasExtras = calcularHorasExtrasServicio(servicio);
+  badgeTicket.textContent = servicio.numeroTicket;
 
   detalleServicio.innerHTML = `
 
@@ -1363,29 +1376,7 @@ function mostrarDetalleServicio(
     "";
 
 
-  seccionServicioSeleccionado.scrollIntoView({
-    behavior: "smooth"
-  });
-}
-
-
-  seccionServicioSeleccionado.classList.remove(
-    "d-none"
-  );
-
-
-  seccionScript.classList.add(
-    "d-none"
-  );
-
-
-  textoScript.value =
-    "";
-
-
-  seccionServicioSeleccionado.scrollIntoView({
-    behavior: "smooth"
-  });
+  seccionServicioSeleccionado.scrollIntoView({ behavior: "smooth" });
 }
 
 
