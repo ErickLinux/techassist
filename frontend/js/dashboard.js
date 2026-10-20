@@ -17,6 +17,9 @@ const menuAdministrarRepuestos =
     "menuAdministrarRepuestos"
   );
 
+const menuDiasEspeciales =
+  document.getElementById("menuDiasEspeciales");
+
 // ==============================
 // ELEMENTOS DEL DOM
 // ==============================
@@ -159,6 +162,10 @@ if (!token || !usuarioGuardado) {
         menuAdministrarRepuestos
           .classList
           .remove("d-none");
+      }
+
+      if (menuDiasEspeciales) {
+        menuDiasEspeciales.classList.remove("d-none");
       }
     }
 
