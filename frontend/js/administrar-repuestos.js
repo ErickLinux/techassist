@@ -194,39 +194,24 @@ if (!token || !usuarioGuardado) {
 
     const usuario =
       JSON.parse(usuarioGuardado);
+      if (usuario.rol === "ADMIN") {
 
-    if (usuario.rol !== "ADMIN") {
+  document.getElementById("menuAdministrarUsuarios")
+    ?.classList.remove("d-none");
 
-      Swal.fire({
-        icon: "error",
-        title: "Acceso denegado",
-        text:
-          "No tienes permisos para administrar repuestos.",
-        confirmButtonText: "Volver al inicio",
-        confirmButtonColor: "#dc3545"
-      }).then(() => {
+  document.getElementById("menuAdministrarRepuestos")
+    ?.classList.remove("d-none");
 
-        window.location.href =
-          "./dashboard.html";
+  document.getElementById("menuAdministrarDiasEspeciales")
+    ?.classList.remove("d-none");
 
-      });
-
-    } 
-    const menuDiasEspeciales = document.getElementById(
-  "menuAdministrarDiasEspeciales"
-);
-
-if (menuDiasEspeciales) {
-  menuDiasEspeciales.classList.remove("d-none");
 }
+
     
-    
-    
-    else {
 
       nombreUsuario.textContent =
         usuario.nombre;
-    }
+    
 
   } catch (error) {
 

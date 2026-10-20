@@ -194,26 +194,24 @@ if (!token || !usuarioGuardado) {
 
     const usuario =
       JSON.parse(usuarioGuardado);
+      if (usuario.rol === "ADMIN") {
+
+  document.getElementById("menuAdministrarUsuarios")
+    ?.classList.remove("d-none");
+
+  document.getElementById("menuAdministrarRepuestos")
+    ?.classList.remove("d-none");
+
+  document.getElementById("menuAdministrarDiasEspeciales")
+    ?.classList.remove("d-none");
+
+}
 
     nombreUsuario.textContent =
       usuario.nombre;
 
 
-    if (usuario.rol === "ADMIN") {
-
-      if (menuAdministrarUsuarios) {
-
-        menuAdministrarUsuarios
-          .classList.remove("d-none");
-      }
-
-
-      if (menuAdministrarRepuestos) {
-
-        menuAdministrarRepuestos
-          .classList.remove("d-none");
-      }
-    }
+    
 
   } catch (error) {
 

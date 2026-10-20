@@ -314,6 +314,18 @@ function verificarSesion() {
 
     const usuario =
       JSON.parse(usuarioGuardado);
+      if (usuario.rol === "ADMIN") {
+
+  document.getElementById("menuAdministrarUsuarios")
+    ?.classList.remove("d-none");
+
+  document.getElementById("menuAdministrarRepuestos")
+    ?.classList.remove("d-none");
+
+  document.getElementById("menuAdministrarDiasEspeciales")
+    ?.classList.remove("d-none");
+
+}
 
     nombreUsuario.textContent =
       usuario.nombre;
@@ -322,15 +334,7 @@ function verificarSesion() {
   usuario.nombre;
 
 
-    if (
-      menuAdministrarUsuarios &&
-      usuario.rol === "ADMIN"
-    ) {
-
-      menuAdministrarUsuarios.classList.remove(
-        "d-none"
-      );
-    }
+    
 
 
   } catch (error) {

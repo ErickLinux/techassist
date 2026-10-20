@@ -87,15 +87,18 @@ function verificarSesion() {
       usuario.nombre;
 
 
-    if (
-      menuAdministrarUsuarios &&
-      usuario.rol === "ADMIN"
-    ) {
+    if (usuario.rol === "ADMIN") {
 
-      menuAdministrarUsuarios.classList.remove(
-        "d-none"
-      );
-    }
+  document.getElementById("menuAdministrarUsuarios")
+    ?.classList.remove("d-none");
+
+  document.getElementById("menuAdministrarRepuestos")
+    ?.classList.remove("d-none");
+
+  document.getElementById("menuAdministrarDiasEspeciales")
+    ?.classList.remove("d-none");
+
+}
 
 
   } catch (error) {

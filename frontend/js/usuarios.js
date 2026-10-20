@@ -115,26 +115,18 @@ if (!token || !usuarioGuardado) {
     const usuario =
       JSON.parse(usuarioGuardado);
 
-    if (usuario.rol !== "ADMIN") {
+    if (usuario.rol === "ADMIN") {
 
-      Swal.fire({
-  icon: "error",
-  title: "Acceso denegado",
-  text: "No tienes permisos para acceder a esta sección.",
-  confirmButtonText: "Volver al inicio",
-  confirmButtonColor: "#dc3545"
-}).then(() => {
-  window.location.href =
-    "./dashboard.html";
-});
+  document.getElementById("menuAdministrarUsuarios")
+    ?.classList.remove("d-none");
 
-    } else {
+  document.getElementById("menuAdministrarRepuestos")
+    ?.classList.remove("d-none");
 
-      if (nombreUsuario) {
-        nombreUsuario.textContent =
-          usuario.nombre;
-      }
-    }
+  document.getElementById("menuAdministrarDiasEspeciales")
+    ?.classList.remove("d-none");
+
+}
 
   } catch (error) {
 
