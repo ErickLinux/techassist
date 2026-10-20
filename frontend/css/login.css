@@ -379,3 +379,81 @@ body {
   .animated-background *, .animated-background::before,
   .login-card, .login-card::before { animation: none !important; }
 }
+
+/* =====================================================
+   AJUSTE DE ALTURA + BORDE LUMINOSO RECORRIENDO TARJETA
+   ===================================================== */
+html, body { width: 100%; min-height: 100%; }
+body { overflow-x: hidden; }
+.login-container {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(8px, 1.8vh, 18px) 16px;
+}
+.login-card {
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.75);
+  border-radius: 22px;
+  box-shadow: 0 20px 65px rgba(0,0,0,.36), 0 0 35px rgba(76,130,255,.24);
+}
+/* El brillo se desplaza por los cuatro lados, sin tapar el formulario. */
+.login-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 3px;
+  pointer-events: none;
+  z-index: 3;
+  background: conic-gradient(from var(--borde-angulo, 0deg),
+    #14e7ef 0deg, #4b77ff 35deg, #a55bff 65deg,
+    rgba(255,255,255,.15) 105deg, rgba(255,255,255,.13) 300deg,
+    #14e7ef 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  animation: borde-recorrido 6s linear infinite;
+}
+@property --borde-angulo {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes borde-recorrido { to { --borde-angulo: 360deg; } }
+/* Quitamos la franja superior para mostrar el contorno completo. */
+.login-card::before { display: none; }
+
+/* En pantallas bajas se compacta el formulario para evitar scroll. */
+@media (max-height: 800px) and (min-width: 577px) {
+  .login-card > .card-body { padding: clamp(15px, 2.5vh, 26px) 38px !important; }
+  .login-logo { width: clamp(65px, 12vh, 94px); height: clamp(65px, 12vh, 94px); margin-bottom: 2px; }
+  .login-brand { margin-bottom: clamp(12px, 2.5vh, 20px); }
+  .login-brand h1 { font-size: clamp(1.5rem, 3.7vh, 1.85rem); }
+  .brand-subtitle { margin-bottom: 6px; }
+  .login-description { font-size: .88rem; }
+  .login-card .mb-3 { margin-bottom: 12px !important; }
+  .login-card .mb-4 { margin-bottom: 13px !important; }
+  .login-card .form-label { margin-bottom: 5px; }
+  .login-card .form-control, .login-card .input-group-text { min-height: 42px; }
+  .btn-login { min-height: 44px; }
+  .login-footer { margin-top: 13px; }
+}
+@media (max-width: 576px) {
+  .login-container { padding: 10px 12px; }
+  .login-card > .card-body { padding: clamp(14px, 3vh, 25px) !important; }
+  .login-logo { width: clamp(62px, 11vh, 92px); height: clamp(62px, 11vh, 92px); margin-bottom: 3px; }
+  .login-brand { margin-bottom: 16px; }
+  .login-brand h1 { font-size: 1.55rem; }
+  .brand-subtitle { margin-bottom: 5px; }
+  .login-description { font-size: .84rem; }
+  .login-card .mb-3 { margin-bottom: 12px !important; }
+  .login-card .mb-4 { margin-bottom: 14px !important; }
+  .login-card .form-control, .login-card .input-group-text { min-height: 43px; }
+  .btn-login { min-height: 44px; }
+  .login-footer { margin-top: 15px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-card::after { animation: none; }
+}
