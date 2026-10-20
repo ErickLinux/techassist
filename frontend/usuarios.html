@@ -25,6 +25,50 @@
     rel="stylesheet"
     href="./css/dashboard.css"
   >
+
+  <!-- Diseño adaptable exclusivo de Administración de usuarios -->
+  <style>
+    .usuarios-tabla { width: 100%; }
+    @media (max-width: 767.98px) {
+      .usuarios-encabezado { flex-direction: column; align-items: stretch !important; gap: 12px; }
+      .usuarios-encabezado #btnNuevoUsuario { width: 100%; }
+      .usuarios-tabla-contenedor { overflow: visible; }
+      .usuarios-tabla, .usuarios-tabla tbody { display: block; width: 100%; }
+      .usuarios-tabla thead { display: none; }
+      .usuarios-tabla tbody tr {
+        display: block; width: 100%; margin-bottom: 14px; padding: 15px;
+        background: #fff; border: 1px solid #dee2e6; border-radius: 12px;
+        box-shadow: 0 2px 5px rgba(0,0,0,.035);
+      }
+      .usuarios-tabla tbody td {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        gap: 12px; width: 100%; padding: 9px 0; border: 0;
+        text-align: right; min-width: 0; overflow-wrap: anywhere;
+      }
+      .usuarios-tabla tbody td + td { border-top: 1px solid #f0f1f3; }
+      .usuarios-tabla tbody td::before {
+        content: ""; flex: 0 0 92px; text-align: left; font-size: .82rem;
+        color: #64748b; font-weight: 600;
+      }
+      .usuarios-tabla tbody td:nth-child(1)::before { content: "Nombre"; }
+      .usuarios-tabla tbody td:nth-child(2)::before { content: "Correo"; }
+      .usuarios-tabla tbody td:nth-child(3)::before { content: "Bodega"; }
+      .usuarios-tabla tbody td:nth-child(4)::before { content: "Rol"; }
+      .usuarios-tabla tbody td:nth-child(5)::before { content: "Estado"; }
+      .usuarios-tabla tbody td:nth-child(6)::before { content: "Acciones"; }
+      .usuarios-tabla tbody td:nth-child(1) { font-weight: 700; font-size: 1.05rem; }
+      .usuarios-tabla tbody td:nth-child(6) > div {
+        display: flex !important; flex-direction: column; width: 100%; gap: 8px !important;
+      }
+      .usuarios-tabla tbody td:nth-child(6) button { width: 100%; min-height: 38px; }
+      .usuarios-tabla tbody td .badge { white-space: normal; }
+      .content .card-body { min-width: 0; }
+    }
+    @media (max-width: 360px) {
+      .usuarios-tabla tbody td::before { flex-basis: 72px; }
+      .usuarios-tabla tbody tr { padding: 11px; }
+    }
+  </style>
 </head>
 
 <body>
@@ -207,7 +251,7 @@
         <div class="card-body">
 
           <div
-            class="d-flex justify-content-between align-items-center mb-3"
+            class="d-flex justify-content-between align-items-center mb-3 usuarios-encabezado"
           >
 
             <h4 class="mb-0">
@@ -246,11 +290,11 @@
           <!-- TABLA -->
           <div
             id="tablaUsuariosContenedor"
-            class="table-responsive d-none"
+            class="table-responsive d-none usuarios-tabla-contenedor"
           >
 
             <table
-              class="table table-hover align-middle"
+              class="table table-hover align-middle usuarios-tabla"
             >
 
               <thead>

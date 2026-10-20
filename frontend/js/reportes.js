@@ -2182,6 +2182,49 @@ function calcularResumen(
 }
 
 
+
+// Presentación móvil independiente de la tabla de escritorio.
+const tarjetasReporte = document.getElementById("tarjetasReporte");
+function escaparReporte(valor) {
+  return String(valor ?? "").replace(/[&<>"']/g, (caracter) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[caracter]);
+}
+function mostrarTarjetasReporte(lista) {
+  if (!tarjetasReporte) return;
+  tarjetasReporte.replaceChildren();
+  tarjetasReporte.classList.toggle("d-none", !lista.length);
+  const fragmento = document.createDocumentFragment();
+  lista.forEach((servicio) => {
+    const extras = calcularHorasExtrasServicio(servicio);
+    const tarjeta = document.createElement("article");
+    tarjeta.className = "reporte-tarjeta";
+    const dato = (etiqueta, valor, especial = false) => `
+      <div class="reporte-tarjeta__dato${especial ? " reporte-tarjeta__dato--extra" : ""}">
+        <small>${escaparReporte(etiqueta)}</small>
+        <strong>${escaparReporte(valor)}</strong>
+      </div>`;
+    tarjeta.innerHTML = `
+      <div class="reporte-tarjeta__cabecera">
+        <div><small class="text-secondary d-block">INC / Tarea</small>
+          <div class="reporte-tarjeta__inc">${escaparReporte(servicio.numeroTicket || "N/A")}</div></div>
+        <span class="reporte-tarjeta__fecha">${escaparReporte(formatearFecha(servicio.fecha))}</span>
+      </div>
+      <div class="reporte-tarjeta__tienda">
+        <strong>${escaparReporte(servicio.tienda?.nombre || "N/A")}</strong>
+        <div class="reporte-tarjeta__det">Determinante: ${escaparReporte(servicio.tienda?.codigo || "N/A")}</div>
+      </div>
+      <div class="reporte-tarjeta__datos">
+        ${dato("Atención", convertirMinutos(servicio.totalMinutosAtencion))}
+        ${dato("Viaje", convertirMinutos(servicio.totalMinutosViaje))}
+        ${dato("Kilómetros", `${Number(servicio.totalKilometros) || 0} km`)}
+        ${dato("Horas extras", convertirMinutos(extras.totalMinutosExtra), true)}
+      </div>`;
+    fragmento.appendChild(tarjeta);
+  });
+  tarjetasReporte.appendChild(fragmento);
+}
+
 // =============================================
 // MOSTRAR TABLA
 // =============================================
@@ -2192,6 +2235,7 @@ function mostrarTabla(
 
   tablaReporte.innerHTML =
     "";
+  mostrarTarjetasReporte(lista);
 
 
   cargandoReporte
@@ -2348,7 +2392,7 @@ async function cargarServicios() {
     .classList.add(
       "d-none"
     );
-
+  if (tarjetasReporte) tarjetasReporte.classList.add("d-none");
 
   try {
 
@@ -2428,6 +2472,7 @@ async function cargarServicios() {
         "d-none"
       );
 
+    if (tarjetasReporte) tarjetasReporte.classList.add("d-none");
     sinResultados.innerHTML = `
 
       <div
