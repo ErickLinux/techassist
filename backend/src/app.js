@@ -19,7 +19,7 @@ import liquidacionRoutes
 import repuestoRoutes
   from "./routes/repuestoRoutes.js";
 
-
+import diaEspecialRoutes from "./routes/diaEspecialRoutes.js"; 
 const app = express();
 
 
@@ -90,4 +90,10 @@ app.get(
 
   }
 );
+
+app.use(
+  "/api/dias-especiales",
+  diaEspecialRoutes
+);
+
 export default app;

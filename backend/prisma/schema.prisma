@@ -162,3 +162,22 @@ model DetalleSolicitudRepuesto {
   @@index([repuestoId])
   @@map("detalles_solicitud_repuesto")
 }
+
+
+ // ========================================
+ // DÍAS ESPECIALES Y ASUETOS
+ // ========================================
+
+ model DiaEspecial {
+   id            String   @id @default(uuid())
+   fecha         DateTime @db.Date
+   nombre        String
+   descripcion   String?
+   recurrente    Boolean  @default(false)
+   activo        Boolean  @default(true)
+   fechaRegistro DateTime @default(now())
+
+   @@unique([fecha])
+   @@index([activo])
+   @@map("dias_especiales")
+ }
