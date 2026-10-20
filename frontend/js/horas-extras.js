@@ -2002,4 +2002,23 @@ btnWhatsApp.addEventListener(
     );
   }
 );
+
+
+async function iniciarHorasExtras() {
+  try {
+    await cargarDiasEspeciales();
+    await cargarServicios();
+  } catch (error) {
+    console.error("Error al cargar días especiales:", error);
+
+    cargandoServicios.classList.add("d-none");
+    tablaServiciosContenedor.classList.add("d-none");
+    sinServicios.classList.remove("d-none");
+
+    sinServicios.textContent =
+      "No se pudieron cargar los días especiales: " + error.message;
+  }
+}
+
+iniciarHorasExtras();
 cargarServicios();
