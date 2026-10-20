@@ -271,3 +271,111 @@ body {
   padding: 15px;
   padding-bottom: calc(15px + env(safe-area-inset-bottom));
 }
+
+/* ====================================================
+   TECHASSIST - FONDO DE ONDAS ANIMADAS
+   CSS puro: sin videos, librerías ni JavaScript extra.
+   ==================================================== */
+html { min-height: 100%; }
+body {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  background: #070e28;
+}
+.animated-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(125deg, #070d23 0%, #101b49 45%, #09132f 100%);
+}
+.animated-background::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  background: conic-gradient(from 130deg at 50% 50%, #112966 0deg, #3e2079 95deg, #073f68 190deg, #101947 280deg, #112966 360deg);
+  opacity: .48;
+  filter: blur(70px);
+  animation: sky-drift 24s ease-in-out infinite alternate;
+}
+.ambient-glow {
+  position: absolute;
+  width: 65vmax;
+  height: 65vmax;
+  border-radius: 50%;
+  filter: blur(65px);
+  opacity: .45;
+  animation: glow-float 17s ease-in-out infinite alternate;
+}
+.glow-one { top: -38vmax; left: -20vmax; background: radial-gradient(circle, #2264f4 0%, transparent 68%); }
+.glow-two { right: -30vmax; bottom: -38vmax; background: radial-gradient(circle, #8948f5 0%, transparent 68%); animation-delay: -8s; }
+.glow-three { width: 40vmax; height: 40vmax; left: 25%; bottom: -24vmax; background: radial-gradient(circle, #00c5d4 0%, transparent 68%); animation-delay: -4s; }
+.wave {
+  position: absolute;
+  width: 150vw;
+  height: 52vh;
+  left: -25vw;
+  bottom: -25vh;
+  border-radius: 48% 52% 0 0 / 42% 48% 0 0;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+.wave-one {
+  background: linear-gradient(100deg, rgba(32,111,255,.30), rgba(108,73,236,.43), rgba(10,207,222,.22));
+  box-shadow: 0 -16px 75px rgba(83,102,255,.24);
+  animation: wave-motion-one 15s ease-in-out infinite alternate;
+}
+.wave-two {
+  bottom: -30vh;
+  background: linear-gradient(95deg, rgba(7,199,222,.22), rgba(51,82,238,.38), rgba(149,68,248,.23));
+  transform: rotate(-5deg);
+  animation: wave-motion-two 19s ease-in-out infinite alternate;
+}
+.wave-three {
+  bottom: -37vh;
+  background: linear-gradient(110deg, rgba(92,58,211,.34), rgba(16,153,220,.27), rgba(35,62,172,.35));
+  animation: wave-motion-three 23s ease-in-out infinite alternate;
+}
+.background-grid {
+  position: absolute;
+  inset: 0;
+  opacity: .12;
+  background-image: linear-gradient(rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.16) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 80%);
+}
+@keyframes sky-drift { from { transform: rotate(-8deg) scale(1); } to { transform: rotate(12deg) scale(1.12); } }
+@keyframes glow-float { from { transform: translate(-4%, 2%) scale(.9); } to { transform: translate(9%, -6%) scale(1.15); } }
+@keyframes wave-motion-one { from { transform: translateX(-4%) rotate(-7deg) scaleY(.94); } to { transform: translateX(5%) rotate(5deg) scaleY(1.13); } }
+@keyframes wave-motion-two { from { transform: translateX(4%) rotate(5deg) scaleY(1.08); } to { transform: translateX(-6%) rotate(-6deg) scaleY(.90); } }
+@keyframes wave-motion-three { from { transform: translateX(-3%) rotate(-3deg) scaleY(1); } to { transform: translateX(6%) rotate(6deg) scaleY(1.1); } }
+.login-container { position: relative; z-index: 1; }
+.login-card {
+  position: relative;
+  background: rgba(255,255,255,.93);
+  border: 1px solid rgba(255,255,255,.55);
+  box-shadow: 0 28px 90px rgba(0,0,0,.36), 0 0 55px rgba(70,111,252,.15);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  animation: login-appear .75s ease-out both;
+}
+.login-card::before { height: 5px; background: linear-gradient(90deg,#21c6db,#436bff,#9b5df4,#21c6db); background-size: 200% 100%; animation: shine-border 8s linear infinite; }
+@keyframes shine-border { to { background-position: 200% 0; } }
+@keyframes login-appear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.login-card .form-control { background: rgba(255,255,255,.82); }
+.login-card .btn-login { background: linear-gradient(105deg,#1654ce,#316df3,#7552d9); background-size: 160% 100%; }
+.login-card .btn-login:hover { background-position: 100% 0; }
+@media (max-width: 576px) {
+  .login-container { padding: 16px; }
+  .login-card { max-width: 440px; }
+  .wave { width: 210vw; left: -55vw; height: 42vh; }
+  .ambient-glow { filter: blur(45px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animated-background *, .animated-background::before,
+  .login-card, .login-card::before { animation: none !important; }
+}
