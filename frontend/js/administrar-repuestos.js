@@ -211,7 +211,18 @@ if (!token || !usuarioGuardado) {
 
       });
 
-    } else {
+    } 
+    const menuDiasEspeciales = document.getElementById(
+  "menuAdministrarDiasEspeciales"
+);
+
+if (menuDiasEspeciales) {
+  menuDiasEspeciales.classList.remove("d-none");
+}
+    
+    
+    
+    else {
 
       nombreUsuario.textContent =
         usuario.nombre;
