@@ -1,5 +1,6 @@
 let servicios = [];
 let serviciosReporteActual = [];
+let diasEspeciales = [];
 
 let descripcionPeriodoActual = "";
 
@@ -1327,158 +1328,94 @@ function formatearFecha(fecha) {
 
 // =============================================
 // CALCULAR HORAS EXTRAS
-// MISMA LÓGICA DE HORAS-EXTRAS.JS
+// MISMA LÓGICA DE HORAS-EXTRAS.JS (DÍAS ESPECIALES Y MEDIANOCHE)
 // =============================================
 
-function calcularMinutosExtra(
-  fechaInicio,
-  fechaFin,
-  fechaServicio
-) {
-
-  if (
-    !fechaInicio ||
-    !fechaFin
-  ) {
-
-    return 0;
+function fechaISOCalendario(valor) {
+  if (!valor) return "";
+  if (typeof valor === "string" && /^\d{4}-\d{2}-\d{2}/.test(valor)) {
+    return valor.slice(0, 10);
   }
-
-
-  const inicio =
-    new Date(
-      fechaInicio
-    );
-
-  const fin =
-    new Date(
-      fechaFin
-    );
-
-  const fechaBase =
-    new Date(
-      fechaServicio
-    );
-
-
-  if (
-    isNaN(inicio.getTime()) ||
-    isNaN(fin.getTime()) ||
-    isNaN(fechaBase.getTime())
-  ) {
-
-    return 0;
-  }
-
-
-  const diaSemana =
-    fechaBase.getDay();
-
-
-  const duracionTotal =
-    Math.max(
-      0,
-      Math.round(
-        (
-          fin -
-          inicio
-        ) / 60000
-      )
-    );
-
-
-  // SÁBADO Y DOMINGO
-  // TODO CUENTA COMO EXTRA
-
-  if (
-    diaSemana === 0 ||
-    diaSemana === 6
-  ) {
-
-    return duracionTotal;
-  }
-
-
-  // LUNES A VIERNES
-  // HORARIO NORMAL 08:00 - 18:00
-
-  const inicioHorarioNormal =
-    new Date(
-      fechaBase
-    );
-
-  inicioHorarioNormal.setHours(
-    8,
-    0,
-    0,
-    0
-  );
-
-
-  const finHorarioNormal =
-    new Date(
-      fechaBase
-    );
-
-  finHorarioNormal.setHours(
-    18,
-    0,
-    0,
-    0
-  );
-
-
-  const inicioDentroHorario =
-    new Date(
-      Math.max(
-        inicio.getTime(),
-        inicioHorarioNormal.getTime()
-      )
-    );
-
-
-  const finDentroHorario =
-    new Date(
-      Math.min(
-        fin.getTime(),
-        finHorarioNormal.getTime()
-      )
-    );
-
-
-  let minutosNormales = 0;
-
-
-  if (
-    finDentroHorario >
-    inicioDentroHorario
-  ) {
-
-    minutosNormales =
-      Math.round(
-        (
-          finDentroHorario -
-          inicioDentroHorario
-        ) / 60000
-      );
-  }
-
-
-  const minutosExtra =
-    duracionTotal -
-    minutosNormales;
-
-
-  return Math.max(
-    0,
-    minutosExtra
-  );
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return "";
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Guatemala", year: "numeric", month: "2-digit", day: "2-digit"
+  }).format(fecha);
 }
 
+function esDiaEspecial(fecha) {
+  const iso = fechaISOCalendario(fecha);
+  if (!iso) return false;
+  return diasEspeciales.some(dia => {
+    if (!dia.activo) return false;
+    const registrada = fechaISOCalendario(dia.fecha);
+    return registrada === iso ||
+      (dia.recurrente && registrada.slice(5) === iso.slice(5));
+  });
+}
 
-// =============================================
-// HORAS EXTRAS POR SERVICIO
-// =============================================
+function esDiaExtraCompleto(fecha) {
+  const iso = fechaISOCalendario(fecha);
+  if (!iso) return false;
+  const diaSemana = new Date(`${iso}T12:00:00Z`).getUTCDay();
+  return diaSemana === 0 || diaSemana === 6 || esDiaEspecial(iso);
+}
+
+// Cada tramo se evalúa en horario de Guatemala, incluso si cruza medianoche.
+function calcularMinutosExtra(fechaInicio, fechaFin, fechaServicio) {
+  if (!fechaInicio || !fechaFin || !fechaServicio) return 0;
+  const inicio = new Date(fechaInicio);
+  const fin = new Date(fechaFin);
+  if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime()) || fin <= inicio) return 0;
+
+  let extra = 0;
+  let cursor = inicio.getTime();
+  const limite = fin.getTime();
+  const zona = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Guatemala", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+  });
+
+  // Guatemala utiliza UTC-06:00 sin cambio estacional.
+  while (cursor < limite) {
+    const partes = Object.fromEntries(zona.formatToParts(new Date(cursor))
+      .filter(p => p.type !== "literal").map(p => [p.type, p.value]));
+    const iso = `${partes.year}-${partes.month}-${partes.day}`;
+    const medianocheSiguiente = Date.parse(`${iso}T06:00:00Z`) + 86400000;
+    const finTramo = Math.min(limite, medianocheSiguiente);
+    if (esDiaExtraCompleto(iso)) {
+      extra += (finTramo - cursor) / 60000;
+    } else {
+      const inicioNormal = Date.parse(`${iso}T14:00:00Z`); // 08:00 GT
+      const finNormal = Date.parse(`${iso}T00:00:00Z`) + 86400000; // 18:00 GT
+      const normales = Math.max(0, Math.min(finTramo, finNormal) - Math.max(cursor, inicioNormal)) / 60000;
+      extra += (finTramo - cursor) / 60000 - normales;
+    }
+    cursor = finTramo;
+  }
+  return Math.max(0, Math.round(extra));
+}
+
+async function cargarDiasEspeciales() {
+  const respuesta = await fetch(`${API_URL}/api/dias-especiales`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (respuesta.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    window.location.href = "./login.html";
+    throw new Error("La sesión expiró.");
+  }
+  if (!respuesta.ok) {
+    throw new Error(`No se pudieron consultar los días especiales (HTTP ${respuesta.status}).`);
+  }
+  const datos = await respuesta.json();
+  if (!Array.isArray(datos.diasEspeciales)) {
+    throw new Error("La respuesta de días especiales no tiene el formato esperado.");
+  }
+  diasEspeciales = datos.diasEspeciales;
+}
+
 
 function calcularHorasExtrasServicio(
   servicio
@@ -2563,8 +2500,19 @@ function iniciar() {
   actualizarFiltrosPeriodo();
 
 
-  cargarServicios();
+  iniciarCargaReportes();
 }
 
+async function iniciarCargaReportes() {
+  try {
+    await cargarDiasEspeciales();
+    await cargarServicios();
+  } catch (error) {
+    console.error("No se pudieron cargar los días especiales:", error);
+    cargandoReporte.classList.add("d-none");
+    sinResultados.classList.remove("d-none");
+    sinResultados.textContent = "No se pueden calcular las horas extras: " + error.message;
+  }
+}
 
 iniciar();

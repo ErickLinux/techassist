@@ -1,4 +1,5 @@
 let servicioSeleccionado = null;
+let diasEspeciales = [];
 
 // ==============================
 // DATOS DE SESIÓN
@@ -244,161 +245,96 @@ function convertirMinutos(minutos) {
 // CALCULAR MINUTOS EXTRA
 // ==============================
 
-function calcularMinutosExtra(
-  inicio,
-  fin,
-  fechaServicio
-) {
-
-  if (
-    !inicio ||
-    !fin ||
-    !fechaServicio
-  ) {
-    return 0;
+function fechaISOCalendario(valor) {
+  if (!valor) return "";
+  if (typeof valor === "string" && /^\d{4}-\d{2}-\d{2}/.test(valor)) {
+    return valor.slice(0, 10);
   }
-
-  const inicioFecha =
-    new Date(inicio);
-
-  const finFecha =
-    new Date(fin);
-
-  if (
-    Number.isNaN(
-      inicioFecha.getTime()
-    ) ||
-    Number.isNaN(
-      finFecha.getTime()
-    )
-  ) {
-    return 0;
-  }
-
-  let totalMinutos =
-    Math.round(
-      (
-        finFecha.getTime() -
-        inicioFecha.getTime()
-      ) / 60000
-    );
-
-  if (totalMinutos < 0) {
-    totalMinutos +=
-      24 * 60;
-  }
-
-  const fechaBase =
-    new Date(fechaServicio);
-
-  const diaSemana =
-    fechaBase.getDay();
-
-  // Sábado y domingo:
-  // todo cuenta como extra.
-  if (
-    diaSemana === 0 ||
-    diaSemana === 6
-  ) {
-
-    return Math.max(
-      totalMinutos,
-      0
-    );
-  }
-
-  // Lunes a viernes:
-  // horario normal 08:00 - 18:00.
-
-  const inicioNormal =
-    new Date(inicioFecha);
-
-  inicioNormal.setHours(
-    8,
-    0,
-    0,
-    0
-  );
-
-  const finNormal =
-    new Date(inicioFecha);
-
-  finNormal.setHours(
-    18,
-    0,
-    0,
-    0
-  );
-
-  const inicioSolapamiento =
-    Math.max(
-      inicioFecha.getTime(),
-      inicioNormal.getTime()
-    );
-
-  const finSolapamiento =
-    Math.min(
-      finFecha.getTime(),
-      finNormal.getTime()
-    );
-
-  let minutosNormales = 0;
-
-  if (
-    finSolapamiento >
-    inicioSolapamiento
-  ) {
-
-    minutosNormales =
-      Math.round(
-        (
-          finSolapamiento -
-          inicioSolapamiento
-        ) / 60000
-      );
-  }
-
-  return Math.max(
-    totalMinutos -
-    minutosNormales,
-    0
-  );
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return "";
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Guatemala", year: "numeric", month: "2-digit", day: "2-digit"
+  }).format(fecha);
 }
 
-// ==============================
-// HORAS EXTRA DE UN SERVICIO
-// ==============================
+function esDiaEspecial(fecha) {
+  const iso = fechaISOCalendario(fecha);
+  if (!iso) return false;
+  return diasEspeciales.some(dia => {
+    if (!dia.activo) return false;
+    const registrada = fechaISOCalendario(dia.fecha);
+    return registrada === iso ||
+      (dia.recurrente && registrada.slice(5) === iso.slice(5));
+  });
+}
 
-function calcularHorasExtrasServicio(
-  servicio
-) {
+function esDiaExtraCompleto(fecha) {
+  const iso = fechaISOCalendario(fecha);
+  if (!iso) return false;
+  const diaSemana = new Date(`${iso}T12:00:00Z`).getUTCDay();
+  return diaSemana === 0 || diaSemana === 6 || esDiaEspecial(iso);
+}
 
-  const extraAtencion =
-    calcularMinutosExtra(
-      servicio.horaIngreso,
-      servicio.horaEgreso,
-      servicio.fecha
-    );
+// Cada tramo se evalúa en horario de Guatemala, incluso si cruza medianoche.
+function calcularMinutosExtra(fechaInicio, fechaFin, fechaServicio) {
+  if (!fechaInicio || !fechaFin || !fechaServicio) return 0;
+  const inicio = new Date(fechaInicio);
+  const fin = new Date(fechaFin);
+  if (Number.isNaN(inicio.getTime()) || Number.isNaN(fin.getTime()) || fin <= inicio) return 0;
 
-  const extraViaje =
-    calcularMinutosExtra(
-      servicio.inicioViaje,
-      servicio.finViaje,
-      servicio.fecha
-    );
+  let extra = 0;
+  let cursor = inicio.getTime();
+  const limite = fin.getTime();
+  const zona = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Guatemala", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23"
+  });
 
-  const extraRegreso =
-    calcularMinutosExtra(
-      servicio.inicioRegresoCasa,
-      servicio.finRegresoCasa,
-      servicio.fecha
-    );
+  // Guatemala utiliza UTC-06:00 sin cambio estacional.
+  while (cursor < limite) {
+    const partes = Object.fromEntries(zona.formatToParts(new Date(cursor))
+      .filter(p => p.type !== "literal").map(p => [p.type, p.value]));
+    const iso = `${partes.year}-${partes.month}-${partes.day}`;
+    const medianocheSiguiente = Date.parse(`${iso}T06:00:00Z`) + 86400000;
+    const finTramo = Math.min(limite, medianocheSiguiente);
+    if (esDiaExtraCompleto(iso)) {
+      extra += (finTramo - cursor) / 60000;
+    } else {
+      const inicioNormal = Date.parse(`${iso}T14:00:00Z`); // 08:00 GT
+      const finNormal = Date.parse(`${iso}T00:00:00Z`) + 86400000; // 18:00 GT
+      const normales = Math.max(0, Math.min(finTramo, finNormal) - Math.max(cursor, inicioNormal)) / 60000;
+      extra += (finTramo - cursor) / 60000 - normales;
+    }
+    cursor = finTramo;
+  }
+  return Math.max(0, Math.round(extra));
+}
 
-  return (
-    extraAtencion +
-    extraViaje +
-    extraRegreso
-  );
+async function cargarDiasEspeciales() {
+  const respuesta = await fetch(`${API_URL}/api/dias-especiales`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (respuesta.status === 401) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    window.location.href = "./login.html";
+    throw new Error("La sesión expiró.");
+  }
+  if (!respuesta.ok) {
+    throw new Error(`No se pudieron consultar los días especiales (HTTP ${respuesta.status}).`);
+  }
+  const datos = await respuesta.json();
+  if (!Array.isArray(datos.diasEspeciales)) {
+    throw new Error("La respuesta de días especiales no tiene el formato esperado.");
+  }
+  diasEspeciales = datos.diasEspeciales;
+}
+
+
+function calcularHorasExtrasServicio(servicio) {
+  return calcularMinutosExtra(servicio.horaIngreso, servicio.horaEgreso, servicio.fecha)
+    + calcularMinutosExtra(servicio.inicioViaje, servicio.finViaje, servicio.fecha)
+    + calcularMinutosExtra(servicio.inicioRegresoCasa, servicio.finRegresoCasa, servicio.fecha);
 }
 
 // ==============================
@@ -440,61 +376,12 @@ function actualizarResumenDashboard(
       )
     );
 
-  const serviciosMes =
-    servicios.filter(
-      (servicio) => {
-
-        if (!servicio.fecha) {
-          return false;
-        }
-
-        const fecha =
-          new Date(
-            servicio.fecha
-          );
-
-        const partes =
-          new Intl.DateTimeFormat(
-            "en-US",
-            {
-              timeZone:
-                "America/Guatemala",
-
-              year:
-                "numeric",
-
-              month:
-                "numeric"
-            }
-          )
-            .formatToParts(
-              fecha
-            );
-
-        const anio =
-          Number(
-            partes.find(
-              (parte) =>
-                parte.type ===
-                "year"
-            )?.value
-          );
-
-        const mes =
-          Number(
-            partes.find(
-              (parte) =>
-                parte.type ===
-                "month"
-            )?.value
-          );
-
-        return (
-          anio === anioActual &&
-          mes === mesActual
-        );
-      }
-    );
+  const serviciosMes = servicios.filter((servicio) => {
+    const iso = fechaISOCalendario(servicio.fecha);
+    if (!iso) return false;
+    const [anio, mes] = iso.split("-").map(Number);
+    return anio === anioActual && mes === mesActual;
+  });
 
   let kilometros = 0;
   let atencion = 0;
@@ -2466,7 +2353,16 @@ iniciarDashboard();
 
 async function iniciarDashboard() {
 
-  // Cargar normalmente los servicios
+  // Primero consultar días especiales para aplicar las mismas reglas.
+  try {
+    await cargarDiasEspeciales();
+  } catch (error) {
+    console.error("No se pudieron cargar días especiales:", error);
+    if (typeof Swal !== "undefined") {
+      await Swal.fire({ icon: "error", title: "Días especiales no disponibles", text: "No se calcularán horas extras con datos incompletos. " + error.message });
+    }
+    return;
+  }
   await cargarServicios();
 
 

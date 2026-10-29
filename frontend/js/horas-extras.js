@@ -2025,4 +2025,3 @@ async function iniciarHorasExtras() {
 }
 
 iniciarHorasExtras();
-cargarServicios();
